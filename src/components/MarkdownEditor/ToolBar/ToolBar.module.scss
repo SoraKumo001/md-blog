@@ -1,0 +1,6 @@
+.root {
+  @apply flex flex-wrap gap-2 p-3;
+  .categories {
+    @apply w-40;
+  }
+}

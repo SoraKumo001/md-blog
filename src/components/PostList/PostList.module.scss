@@ -1,0 +1,41 @@
+.root {
+  .postList {
+    @apply m-auto flex max-w-[1240px] flex-wrap justify-center gap-4;
+  }
+  .unPublish {
+    @apply border-red-300 ring ring-red-300;
+  }
+  .title {
+    @apply m-auto  mb-4 border-b text-center text-3xl text-blue-900;
+    &:hover {
+      @apply border-blue-500 text-blue-500;
+    }
+  }
+  .post {
+    @apply flex h-32 w-[min(90%,600px)] max-w-[600px] items-center gap-3
+      overflow-hidden rounded-lg border border-blue-400
+       bg-slate-200 px-4 py-8 shadow;
+    &:hover {
+      @apply bg-slate-100;
+    }
+    .image {
+      @apply flex items-center justify-center text-6xl;
+    }
+
+    .postTitle {
+      @apply line-clamp-2 flex-1 border-b text-2xl;
+    }
+    .date {
+      @apply flex gap-2 whitespace-nowrap text-sm;
+    }
+  }
+  .more {
+    @apply mt-3 text-center text-xl text-blue-500;
+    &:hover {
+      @apply border-blue-500 text-blue-400;
+    }
+    > a {
+      @apply border-b p-1 px-4 text-blue-500;
+    }
+  }
+}

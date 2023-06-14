@@ -1,0 +1,75 @@
+$LabelMargin: 12px;
+
+.root {
+  @for $i from 2 through 7 {
+    h#{$i} {
+      margin-left: ($i - 2) * $LabelMargin;
+    }
+  }
+  @for $i from 1 through 7 {
+    h#{$i} ~ ul,
+    h#{$i} ~ p,
+    h#{$i} ~ table,
+    h#{$i} ~ pre,
+    h#{$i} ~ div {
+      margin-left: ($i - 1) * $LabelMargin;
+    }
+  }
+  h1.title {
+    text-align: center;
+    border-bottom: #dddddd 1px solid;
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  h2:nth-child(n + 2) {
+    // margin-top: 2em;
+  }
+  h2 {
+    @apply border-b-2 pb-1 text-2xl;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4 {
+    @apply text-base;
+  }
+  img {
+    margin: 4px 0;
+    border: #dddddd solid 1px;
+    max-width: 80%;
+    height: auto;
+    padding: 2px;
+    border-radius: 2px;
+  }
+  iframe {
+    width: 100%;
+    height: 720px;
+    border: #dddddd;
+    background: #f0f0f0;
+  }
+  .plain {
+    display: inline-block;
+    font-weight: 500;
+    background: #dceef0;
+    border-radius: 2px;
+    padding: 0 4px;
+    margin: 0 1px;
+  }
+  p {
+    @apply min-h-[1em];
+  }
+  em {
+    @apply italic;
+  }
+  li {
+    @apply ml-[1em] list-disc;
+  }
+  a {
+    @apply text-blue-700 underline;
+  }
+
+  td,
+  th {
+    @apply border px-2;
+  }
+}

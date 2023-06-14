@@ -1,0 +1,12 @@
+.root {
+  @apply h-full overflow-auto;
+  h1 {
+    @apply mb-8 border-b text-xl;
+  }
+  .items {
+    @apply flex flex-col divide-y-2;
+    > * {
+      @apply py-10;
+    }
+  }
+}

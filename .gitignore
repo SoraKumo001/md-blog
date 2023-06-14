@@ -1,0 +1,10 @@
+node_modules
+.next
+.swc
+.vscode
+out
+.env*
+*.log
+blog.json
+storybook-static
+tsconfig.tsbuildinfo

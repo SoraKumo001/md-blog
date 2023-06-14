@@ -1,0 +1,12 @@
+.root {
+  @apply flex h-full flex-col;
+
+  .body {
+    @apply flex h-full flex-1 overflow-hidden;
+    > * {
+      @apply flex-1;
+    }
+  }
+  .editor {
+  }
+}
