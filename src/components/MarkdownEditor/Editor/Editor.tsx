@@ -1,6 +1,7 @@
 import { OnMount, Editor as MonacoEditor, useMonaco } from '@monaco-editor/react';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
 import React, { DOMAttributes, FC, useEffect, useRef, useState, useTransition } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   usePostQuery,
   useUpdatePostMutation,
@@ -14,6 +15,14 @@ import { Separator } from '../../Commons/Separator';
 import { ContentMarkdown } from '../../ContentMarkdown';
 import { ToolBar } from '../ToolBar';
 import type { editor } from 'monaco-editor';
+
+export type FormInput = {
+  categories: string[];
+  title: string;
+  published: boolean;
+  publishedAt: Date;
+  card?: Blob | null;
+};
 
 interface Props {
   id: string;
@@ -31,6 +40,8 @@ export const Editor: FC<Props> = ({ id }) => {
   const refEditor = useRef<editor.IStandaloneCodeEditor>();
   const refMarkdown = useRef<HTMLDivElement>(null);
   const [currentLine, setCurrentLine] = useState(1);
+  const [card, setCard] = useState<Blob | null | undefined>();
+  const { control, handleSubmit } = useForm<FormInput>();
 
   const handleEditorDidMount: OnMount = (editor) => {
     refEditor.current = editor;
@@ -123,14 +134,16 @@ export const Editor: FC<Props> = ({ id }) => {
     }, 1);
   }, [currentLine]);
 
-  const handleSubmit: DOMAttributes<HTMLFormElement>['onSubmit'] = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const categories = form['categories'].value.split(',');
-    const title = form['postTitle'].value;
-    const published = form['published'].checked;
-    const publishedDate = new Date(form['publishedDate'].value).toISOString();
-    updatePost({ postId: id, title, content, published, categories, publishedDate });
+  const onSubmit: SubmitHandler<FormInput> = ({ title, categories, published, publishedAt }) => {
+    updatePost({
+      postId: id,
+      title,
+      content,
+      published,
+      categories,
+      card,
+      publishedAt: publishedAt.toISOString(),
+    });
   };
 
   const [{ fetching, data }] = usePostQuery({ variables: { postId: id } });
@@ -142,8 +155,8 @@ export const Editor: FC<Props> = ({ id }) => {
   const [children] = useMarkdown(content ?? data?.Post.content);
   if (fetching || !post) return null;
   return (
-    <form className={styled.root} onSubmit={handleSubmit}>
-      <ToolBar post={post} />
+    <form className={styled.root} onSubmit={handleSubmit(onSubmit)}>
+      <ToolBar post={post} control={control} onCard={setCard} />
       <div className={styled.body}>
         <Separator>
           <div
@@ -162,7 +175,7 @@ export const Editor: FC<Props> = ({ id }) => {
           >
             <MonacoEditor
               language="markdown"
-              defaultValue={data.Post.content}
+              defaultValue={content ?? post.content}
               onChange={(e) => update(() => setContent(e ?? ''))}
               onMount={handleEditorDidMount}
               options={{

@@ -4,10 +4,15 @@ export const config = {
   runtime: 'edge',
 };
 
-const og = (req: NextRequest) => {
+const font = fetch(new URL('https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Bold.otf')).then(
+  (res) => res.arrayBuffer()
+);
+
+const og = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const name = searchParams.get('name');
   const title = searchParams.get('title');
+  const image = searchParams.get('image');
   return new ImageResponse(
     (
       <div
@@ -16,39 +21,60 @@ const og = (req: NextRequest) => {
           flexDirection: 'column',
           width: '100%',
           height: '100%',
-          padding: '16px',
+          padding: '8px',
         }}
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            background: 'white',
             height: '100%',
-            border: 'solid 16px green',
-            borderRadius: '4px',
+            border: 'solid 8px #0044FF',
+            borderRadius: '24px',
             boxSizing: 'border-box',
+            background: 'linear-gradient(to bottom right, #ffffff, #d3eef9)',
           }}
         >
-          <h1
+          <div
             style={{
+              display: 'flex',
               flex: 1,
-              fontSize: 80,
-              width: '100%',
-              alignItems: 'center',
-              padding: '0 64px',
-              justifyContent: 'center',
             }}
           >
-            {title}
-          </h1>
+            {image && (
+              <img
+                style={{
+                  borderRadius: '100%',
+                  padding: '8px',
+                  marginRight: '16px',
+                  position: 'absolute',
+                }}
+                width={120}
+                src={image}
+                alt=""
+              />
+            )}
+            <h1
+              style={{
+                display: 'flex',
+                flex: 1,
+                fontSize: 80,
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingLeft: '32px',
+              }}
+            >
+              {title}
+            </h1>
+          </div>
           <div
             style={{
               width: '100%',
               justifyContent: 'flex-end',
               fontSize: 48,
               padding: '0 32px 32px 0',
-              color: 'burlywood',
+              color: '#CC3344',
             }}
           >
             {name}
@@ -56,7 +82,16 @@ const og = (req: NextRequest) => {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: 'NotoSansJP',
+          data: await font,
+        },
+      ],
+    }
   );
 };
 export default og;

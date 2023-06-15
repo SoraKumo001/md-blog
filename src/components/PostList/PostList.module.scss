@@ -19,7 +19,10 @@
       @apply bg-slate-100;
     }
     .image {
-      @apply flex items-center justify-center text-6xl;
+      @apply flex w-20 items-center justify-center rounded text-6xl;
+      .card {
+        @apply w-20 rounded-full;
+      }
     }
 
     .postTitle {

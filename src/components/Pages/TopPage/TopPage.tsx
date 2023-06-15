@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { PostsQuery, usePostsQuery } from '@/generated/graphql';
+import { PostsQuery, usePostsQuery, useSystemQuery } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import styled from './TopPage.module.scss';
 import { PostList } from '../../PostList';
@@ -13,6 +13,7 @@ interface Props {}
  * @param {Props} { }
  */
 export const TopPage: FC<Props> = ({}) => {
+  const [{ data: dataSystem }] = useSystemQuery();
   const [{ fetching, data }] = usePostsQuery();
   const posts = useMemo(() => {
     if (!data?.Posts) return undefined;
@@ -31,13 +32,13 @@ export const TopPage: FC<Props> = ({}) => {
     ]);
     return Object.entries(categoryPosts).sort(([, a], [, b]) => (a.name < b.name ? -1 : 1));
   }, [data?.Posts]);
-
+  const system = dataSystem?.System;
   useLoading(fetching);
 
-  if (!posts || !categories) return null;
+  if (!posts || !categories || !system) return null;
   return (
     <>
-      <Title>一覧</Title>
+      <Title>{system.description || 'Article List'}</Title>
       <div className={styled.root}>
         <PostList id="news" title="新着順" posts={posts} limit={10} />
         {categories.map(([id, { name, posts }]) => (

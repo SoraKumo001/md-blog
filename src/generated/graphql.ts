@@ -10,7 +10,7 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string | number; output: string; }
+  ID: { input: string; output: string; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
@@ -46,6 +46,7 @@ export type FireStore = {
   id: Scalars['ID']['output'];
   mimeType: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  postCards: Array<Post>;
   posts: Array<Post>;
   systemCards: Array<System>;
   systemIcons: Array<System>;
@@ -57,6 +58,7 @@ export type Mutation = {
   Category: Category;
   Post?: Maybe<Post>;
   PostFile: FireStore;
+  SignIn?: Maybe<User>;
   System: System;
 };
 
@@ -68,12 +70,13 @@ export type MutationCategoryArgs = {
 
 
 export type MutationPostArgs = {
+  card?: InputMaybe<Scalars['Upload']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   content?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   isTrash?: InputMaybe<Scalars['Boolean']['input']>;
   published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -84,8 +87,14 @@ export type MutationPostFileArgs = {
 };
 
 
+export type MutationSignInArgs = {
+  token?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationSystemArgs = {
   description?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['Upload']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -93,6 +102,8 @@ export type Post = {
   __typename?: 'Post';
   author: User;
   authorId: Scalars['String']['output'];
+  card?: Maybe<FireStore>;
+  cardId?: Maybe<Scalars['String']['output']>;
   categories: Array<Category>;
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
@@ -111,7 +122,6 @@ export type Query = {
   Post: Post;
   Posts: Array<Post>;
   System: System;
-  Users: Array<Maybe<User>>;
 };
 
 
@@ -147,22 +157,24 @@ export type User = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type SignInMutationVariables = Exact<{
+  token?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
-export type UsersQuery = { __typename?: 'Query', Users: Array<{ __typename?: 'User', id: string, email: string, name: string } | null> };
+export type SignInMutation = { __typename?: 'Mutation', SignIn?: { __typename?: 'User', id: string, email: string, createdAt: string, updatedAt: string, name: string } | null };
 
 export type PostQueryVariables = Exact<{
   postId: Scalars['String']['input'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', Post: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+export type PostQuery = { __typename?: 'Query', Post: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsQuery = { __typename?: 'Query', Posts: Array<{ __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> }> };
+export type PostsQuery = { __typename?: 'Query', Posts: Array<{ __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> }> };
 
 export type UpdatePostMutationVariables = Exact<{
   postId?: InputMaybe<Scalars['String']['input']>;
@@ -170,12 +182,13 @@ export type UpdatePostMutationVariables = Exact<{
   content?: InputMaybe<Scalars['String']['input']>;
   published?: InputMaybe<Scalars['Boolean']['input']>;
   isTrash?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedDate?: InputMaybe<Scalars['DateTime']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  card?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', Post?: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } | null };
+export type UpdatePostMutation = { __typename?: 'Mutation', Post?: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, cardId?: string | null, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } | null };
 
 export type UploadPostFileMutationVariables = Exact<{
   postId: Scalars['String']['input'];
@@ -188,15 +201,16 @@ export type UploadPostFileMutation = { __typename?: 'Mutation', PostFile: { __ty
 export type SystemQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SystemQuery = { __typename?: 'Query', System: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string } };
+export type SystemQuery = { __typename?: 'Query', System: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon?: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } | null } };
 
 export type UpdateSystemMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['Upload']['input']>;
 }>;
 
 
-export type UpdateSystemMutation = { __typename?: 'Mutation', System: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string } };
+export type UpdateSystemMutation = { __typename?: 'Mutation', System: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon?: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } | null } };
 
 export type CategoryQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -219,18 +233,20 @@ export type UpdateCategoryMutationVariables = Exact<{
 export type UpdateCategoryMutation = { __typename?: 'Mutation', Category: { __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string } };
 
 
-export const UsersDocument = gql`
-    query Users {
-  Users {
+export const SignInDocument = gql`
+    mutation SignIn($token: String) {
+  SignIn(token: $token) {
     id
     email
+    createdAt
+    updatedAt
     name
   }
 }
     `;
 
-export function useUsersQuery(options?: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>) {
-  return Urql.useQuery<UsersQuery, UsersQueryVariables>({ query: UsersDocument, ...options });
+export function useSignInMutation() {
+  return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
 };
 export const PostDocument = gql`
     query Post($postId: String!) {
@@ -240,6 +256,7 @@ export const PostDocument = gql`
     title
     content
     authorId
+    cardId
     createdAt
     updatedAt
     publishedAt
@@ -263,6 +280,7 @@ export const PostsDocument = gql`
     published
     title
     authorId
+    cardId
     createdAt
     updatedAt
     publishedAt
@@ -280,15 +298,16 @@ export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariabl
   return Urql.useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument, ...options });
 };
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($postId: String, $title: String, $content: String, $published: Boolean, $isTrash: Boolean, $publishedDate: DateTime, $categories: [String!]) {
+    mutation UpdatePost($postId: String, $title: String, $content: String, $published: Boolean, $isTrash: Boolean, $publishedAt: DateTime, $categories: [String!], $card: Upload) {
   Post(
     id: $postId
     title: $title
     content: $content
     published: $published
     isTrash: $isTrash
-    publishedDate: $publishedDate
+    publishedAt: $publishedAt
     categories: $categories
+    card: $card
   ) {
     id
     published
@@ -304,6 +323,7 @@ export const UpdatePostDocument = gql`
       createdAt
       updatedAt
     }
+    cardId
   }
 }
     `;
@@ -336,6 +356,13 @@ export const SystemDocument = gql`
     cardId
     createdAt
     updatedAt
+    icon {
+      id
+      name
+      mimeType
+      createdAt
+      updatedAt
+    }
   }
 }
     `;
@@ -344,8 +371,8 @@ export function useSystemQuery(options?: Omit<Urql.UseQueryArgs<SystemQueryVaria
   return Urql.useQuery<SystemQuery, SystemQueryVariables>({ query: SystemDocument, ...options });
 };
 export const UpdateSystemDocument = gql`
-    mutation UpdateSystem($title: String, $description: String) {
-  System(title: $title, description: $description) {
+    mutation UpdateSystem($title: String, $description: String, $icon: Upload) {
+  System(title: $title, description: $description, icon: $icon) {
     id
     title
     description
@@ -353,6 +380,13 @@ export const UpdateSystemDocument = gql`
     cardId
     createdAt
     updatedAt
+    icon {
+      id
+      name
+      mimeType
+      createdAt
+      updatedAt
+    }
   }
 }
     `;

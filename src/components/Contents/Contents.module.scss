@@ -2,7 +2,22 @@
   @apply relative h-full w-full overflow-x-hidden overflow-y-scroll;
 
   .title {
-    @apply m-4 border-b-2 border-gray-300 px-8 text-center text-3xl leading-10;
+    @apply m-4 flex items-center gap-4 border-b-2 border-gray-300 p-2 px-8 text-center text-3xl leading-10;
+  }
+  .date {
+    @apply px-8 text-end font-mono text-gray-500;
+    > .label {
+      @apply inline-block w-32;
+    }
+    > .value {
+      @apply inline-block w-24;
+    }
+  }
+  .card {
+    @apply flex h-20 w-20 items-center justify-center overflow-hidden rounded-full text-base;
+  }
+  .cardText {
+    @apply flex h-20 w-20 items-center justify-center overflow-hidden rounded-full text-6xl;
   }
 
   .separator {
@@ -15,8 +30,18 @@
   .table {
     @apply sticky top-0 mx-auto max-w-xs px-4;
   }
+  .main {
+    @apply w-full overflow-hidden;
+  }
+  .categories {
+    @apply m-4 flex flex-wrap gap-2;
+
+    .category {
+      @apply rounded bg-blue-500 px-4 py-2  text-white shadow hover:bg-blue-300;
+    }
+  }
   .content {
-    @apply z-10  flex-1 overflow-x-hidden rounded bg-slate-50 p-4;
+    @apply relative  z-10 flex-1 overflow-x-hidden rounded border bg-slate-100 p-4 shadow;
   }
 
   .edit {

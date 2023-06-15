@@ -102,6 +102,7 @@ export interface NexusGenObjects {
   Mutation: {};
   Post: { // root type
     authorId: string; // String!
+    cardId?: string | null; // String
     content: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
@@ -152,6 +153,7 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     mimeType: string; // String!
     name: string; // String!
+    postCards: NexusGenRootTypes['Post'][]; // [Post!]!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
     systemCards: NexusGenRootTypes['System'][]; // [System!]!
     systemIcons: NexusGenRootTypes['System'][]; // [System!]!
@@ -161,11 +163,14 @@ export interface NexusGenFieldTypes {
     Category: NexusGenRootTypes['Category']; // Category!
     Post: NexusGenRootTypes['Post'] | null; // Post
     PostFile: NexusGenRootTypes['FireStore']; // FireStore!
+    SignIn: NexusGenRootTypes['User'] | null; // User
     System: NexusGenRootTypes['System']; // System!
   }
   Post: { // field return type
     author: NexusGenRootTypes['User']; // User!
     authorId: string; // String!
+    card: NexusGenRootTypes['FireStore'] | null; // FireStore
+    cardId: string | null; // String
     categories: NexusGenRootTypes['Category'][]; // [Category!]!
     content: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -182,7 +187,6 @@ export interface NexusGenFieldTypes {
     Post: NexusGenRootTypes['Post']; // Post!
     Posts: NexusGenRootTypes['Post'][]; // [Post!]!
     System: NexusGenRootTypes['System']; // System!
-    Users: Array<NexusGenRootTypes['User'] | null>; // [User]!
   }
   System: { // field return type
     card: NexusGenRootTypes['FireStore'] | null; // FireStore
@@ -218,6 +222,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     mimeType: 'String'
     name: 'String'
+    postCards: 'Post'
     posts: 'Post'
     systemCards: 'System'
     systemIcons: 'System'
@@ -227,11 +232,14 @@ export interface NexusGenFieldTypeNames {
     Category: 'Category'
     Post: 'Post'
     PostFile: 'FireStore'
+    SignIn: 'User'
     System: 'System'
   }
   Post: { // field return type name
     author: 'User'
     authorId: 'String'
+    card: 'FireStore'
+    cardId: 'String'
     categories: 'Category'
     content: 'String'
     createdAt: 'DateTime'
@@ -248,7 +256,6 @@ export interface NexusGenFieldTypeNames {
     Post: 'Post'
     Posts: 'Post'
     System: 'System'
-    Users: 'User'
   }
   System: { // field return type name
     card: 'FireStore'
@@ -278,20 +285,25 @@ export interface NexusGenArgTypes {
       name: string; // String!
     }
     Post: { // args
+      card?: NexusGenScalars['Upload'] | null; // Upload
       categories?: string[] | null; // [String!]
       content?: string | null; // String
       id?: string | null; // String
       isTrash?: boolean | null; // Boolean
       published?: boolean | null; // Boolean
-      publishedDate?: NexusGenScalars['DateTime'] | null; // DateTime
+      publishedAt?: NexusGenScalars['DateTime'] | null; // DateTime
       title?: string | null; // String
     }
     PostFile: { // args
       binary: NexusGenScalars['Upload']; // Upload!
       postId: string; // String!
     }
+    SignIn: { // args
+      token?: string | null; // String
+    }
     System: { // args
       description?: string | null; // String
+      icon?: NexusGenScalars['Upload'] | null; // Upload
       title?: string | null; // String
     }
   }

@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import React, { FC, ReactNode, useMemo } from 'react';
 import { useSystemQuery } from '@/generated/graphql';
-import { hostUrl } from '@/libs/hostUrl';
+import { useSelector } from '@/libs/context';
 
 interface Props {
+  image?: string;
   children?: ReactNode;
 }
 
@@ -12,8 +13,9 @@ interface Props {
  *
  * @param {Props} { }
  */
-export const Title: FC<Props> = ({ children }) => {
+export const Title: FC<Props> = ({ image, children }) => {
   const [{ data }] = useSystemQuery();
+  const host = useSelector((state: { host?: string }) => state.host);
   const subTitle = useMemo(() => {
     return React.Children.map(children, (c) => (typeof c === 'object' ? '' : c))?.join('');
   }, [children]);
@@ -21,9 +23,13 @@ export const Title: FC<Props> = ({ children }) => {
   const systemTitle = data.System.title;
   const systemDescription = data.System.description;
   const title = (subTitle || '') + ` | ${systemTitle}`;
-  const imageUrl = `${hostUrl}/api/og?title=${encodeURI(subTitle || '')}&name=${encodeURI(
-    systemTitle
-  )}`;
+  const imageUrl = [
+    `${host}/api/og?title=${encodeURI(subTitle || '')}`,
+    `name=${encodeURI(systemTitle)}`,
+    image ? `image=${encodeURI(image)}` : [],
+  ]
+    .flat()
+    .join('&');
   return (
     <Head>
       <title>{title}</title>

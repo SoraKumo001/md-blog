@@ -4,9 +4,9 @@
     @apply mb-8 border-b text-xl;
   }
   .items {
-    @apply flex flex-col divide-y-2;
-    > * {
-      @apply py-10;
-    }
+    @apply grid gap-4;
+  }
+  .link {
+    @apply block rounded border p-4;
   }
 }

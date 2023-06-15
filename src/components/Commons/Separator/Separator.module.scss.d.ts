@@ -1,3 +1,3 @@
-export const client: string;
-export const root: string;
-export const separator: string;
+export declare const client: string;
+export declare const root: string;
+export declare const separator: string;

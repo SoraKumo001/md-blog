@@ -1,7 +1,10 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useMemo } from 'react';
 import { PostsQuery } from '@/generated/graphql';
 import { classNames } from '@/libs/classNames';
+import { DateString } from '@/libs/dateString';
+import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import styled from './PostList.module.scss';
 
 interface Props {
@@ -32,7 +35,21 @@ export const PostList: FC<Props> = ({ id, title, posts, limit }) => {
             className={classNames(styled.post, !post.published && styled.unPublish)}
             href={`/contents/${post.id}`}
           >
-            <div className={styled.image}>📖</div>
+            <div className={styled.image}>
+              {post.cardId ? (
+                <Image
+                  className={styled.card}
+                  src={getFirebaseUrl(post.cardId)}
+                  alt="Eye catch"
+                  loading="lazy"
+                  width={80}
+                  height={80}
+                  unoptimized={true}
+                />
+              ) : (
+                `📖`
+              )}
+            </div>
             <div className="flex flex-1 flex-col gap-2 overflow-hidden">
               <div className={styled.postTitle}>{post.title}</div>
               <div className={styled.date}>
@@ -52,10 +69,3 @@ export const PostList: FC<Props> = ({ id, title, posts, limit }) => {
     </div>
   );
 };
-
-const DateString = (value: string) =>
-  new Date(value).toLocaleString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });

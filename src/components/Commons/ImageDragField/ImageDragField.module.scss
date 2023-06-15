@@ -1,0 +1,18 @@
+.root {
+  .field {
+    @apply min-h-[64px] rounded border border-[rgba(0,0,0,0.23)] p-4;
+    &.drag {
+      @apply border-gray-700;
+    }
+  }
+
+  .image {
+    @apply m-auto;
+  }
+  .close {
+    @apply absolute right-0 top-0;
+  }
+  .placeholder {
+    @apply bg-white px-2;
+  }
+}

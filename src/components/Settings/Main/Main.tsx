@@ -1,8 +1,8 @@
 import { Container } from '@mui/material';
+
+import Link from 'next/link';
 import React, { FC } from 'react';
 import styled from './Main.module.scss';
-import { CategorySetting } from '../CategorySetting';
-import { SiteSetting } from '../SiteSetting';
 
 interface Props {}
 
@@ -17,8 +17,12 @@ export const Main: FC<Props> = ({}) => {
       <Container maxWidth="sm" sx={{ pt: 5 }}>
         <h1>システム設定</h1>
         <div className={styled.items}>
-          <SiteSetting />
-          <CategorySetting />
+          <Link className={styled.link} href="/settings/system">
+            サイト設定
+          </Link>
+          <Link className={styled.link} href="/settings/category">
+            カテゴリ設定
+          </Link>
         </div>
       </Container>
     </div>

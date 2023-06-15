@@ -1,7 +1,6 @@
 import { PrismaSelect } from '@paljs/plugins';
 import { PrismaClient } from '@prisma/client';
 import { getStorage } from 'firebase-admin/storage';
-import { Root } from 'mdast';
 import {
   arg,
   booleanArg,
@@ -13,7 +12,9 @@ import {
   stringArg,
 } from 'nexus';
 import { Post } from 'nexus-prisma';
-import type { Processor, Compiler } from 'unified';
+import { getImages } from '@/libs/getImages';
+import { isolatedFiles, uploadFile } from '@/libs/uploadFile';
+import { Upload } from './Upload';
 
 export const PostsType = objectType({
   name: Post.$name,
@@ -30,27 +31,30 @@ export const PostQuery = queryField('Post', {
   args: {
     id: nonNull(stringArg()),
   },
-  resolve: (_parent, { id }, { prisma, user }) => {
-    return prisma.post.findFirstOrThrow({
-      where: user
-        ? { id }
-        : {
-            id,
-            published: true,
-            publishedAt: {
-              lte: new Date(),
-            },
-          },
-    });
+  resolve: (_parent, { id }, { prisma, user }, info) => {
+    const select = new PrismaSelect(info, {
+      defaultFields: { Post: { id: true, published: true, updatedAt: true } },
+    }).value;
+    return prisma.post
+      .findUniqueOrThrow({
+        where: { id },
+        ...select,
+      })
+      .then((v) => {
+        if (!user) {
+          if (!v.published || new Date(v.publishedAt).getTime() > new Date().getTime())
+            throw new Error('not found');
+        }
+        return v;
+      });
   },
 });
 
 export const Posts = queryField('Posts', {
   type: nonNull(list(nonNull(PostsType))),
   resolve: (_parent, {}, { prisma, user }, info) => {
-    const select = new PrismaSelect(info).value.select;
+    const select = new PrismaSelect(info, { defaultFields: { Post: { id: true } } }).value;
     return prisma.post.findMany<{}>({
-      select: { ...select, id: true },
       where: user
         ? undefined
         : {
@@ -59,6 +63,7 @@ export const Posts = queryField('Posts', {
               lte: new Date(),
             },
           },
+      ...select,
     });
   },
 });
@@ -69,14 +74,15 @@ export const PostMutation = mutationField('Post', {
     id: stringArg(),
     title: stringArg(),
     content: stringArg(),
-    publishedDate: arg({ type: 'DateTime' }),
+    publishedAt: arg({ type: 'DateTime' }),
     published: booleanArg(),
     categories: list(nonNull(stringArg())),
+    card: Upload,
     isTrash: booleanArg(),
   },
   resolve: async (
     _parent,
-    { id, title, content, published, categories, isTrash },
+    { id, title, content, published, publishedAt, categories, card, isTrash },
     { prisma, user }
   ) => {
     if (!user?.email) throw new Error('Authentication error');
@@ -90,12 +96,14 @@ export const PostMutation = mutationField('Post', {
           const images = (await getImages(content)).result;
           await normalizationFiles(prisma, id, images);
         }
-        return prisma.post.update({
+        const file = card && (await uploadFile(card));
+        const result = await prisma.post.update({
           data: {
             title: title ?? undefined,
             content: content ?? undefined,
             authorId: auth.id,
             published: published ?? undefined,
+            publishedAt: publishedAt ?? undefined,
             categories: categories
               ? {
                   connect: categories.map((id) => ({
@@ -103,9 +111,12 @@ export const PostMutation = mutationField('Post', {
                   })),
                 }
               : undefined,
+            cardId: card === null ? null : file?.id,
           },
           where: { id },
         });
+        await isolatedFiles();
+        return result;
       }
     } else {
       return prisma.post.create({
@@ -126,35 +137,6 @@ export const PostMutation = mutationField('Post', {
     }
   },
 });
-
-const getImages = async (content: string) => {
-  function getImagesCompiler(this: Processor) {
-    const grep = /^https?:\/\//i;
-    const getImage = (nodes: Root['children']): string[] => {
-      return nodes.flatMap((node) => {
-        return 'children' in node
-          ? getImage(node.children)
-          : node.type === 'image' && node.url && !grep.test(node.url)
-          ? node.url
-          : [];
-      });
-    };
-    const Compiler: Compiler<Root, string[]> = (tree) => {
-      return Array.from(new Set(getImage(tree.children)));
-    };
-    this.Compiler = Compiler;
-  }
-  const remarkParse = (await import('remark-parse')).default;
-  const { unified } = await import('unified');
-
-  const processor = unified().use(remarkParse).use(getImagesCompiler) as Processor<
-    Root,
-    Root,
-    Root,
-    string[]
-  >;
-  return processor().process(content);
-};
 
 const normalizationFiles = async (prisma: PrismaClient, postId: string, images: string[]) => {
   const files = await prisma.fireStore.findMany({

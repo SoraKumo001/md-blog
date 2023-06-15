@@ -1,12 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Session } from 'next-auth';
 
 export type Context = {
   res: NextApiResponse;
   req: NextApiRequest;
   prisma: PrismaClient;
-  user: Session['user'];
+  user?: { email: string; name: string };
 };
 
 export const prisma =

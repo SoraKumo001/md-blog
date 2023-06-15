@@ -1,6 +1,6 @@
-import { Categories } from '.'
-import { Decorator } from '@/storybook'
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from '@/storybook';
+import { Categories } from '.';
 
 const meta: Meta<typeof Categories> = {
   component: Categories,
@@ -10,8 +10,7 @@ const meta: Meta<typeof Categories> = {
 };
 export default meta;
 
-
 export const Primary: StoryObj<typeof Categories> = {
-//  args:{},
-//  play: async ({ canvasElement }) => {},
+  //  args:{},
+  //  play: async ({ canvasElement }) => {},
 };

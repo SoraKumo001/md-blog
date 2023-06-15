@@ -1,5 +1,9 @@
 .root {
+  @apply h-full overflow-y-auto;
   h1 {
-    @apply mb-8 border-b text-xl;
+    @apply mb-4 border-b text-xl;
+  }
+  .favicon {
+    @apply h-16 rounded border p-4;
   }
 }

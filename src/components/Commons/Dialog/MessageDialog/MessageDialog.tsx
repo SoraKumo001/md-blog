@@ -25,10 +25,10 @@ export const MessageDialog: FC<Props> = ({ isOpen, onResult, children }) => {
     >
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={() => onResult?.(true)} color="primary">
+        <Button onClick={() => onResult?.(true)} color="primary" aria-label="yes">
           Yes
         </Button>
-        <Button onClick={() => onResult?.(false)} color="primary">
+        <Button onClick={() => onResult?.(false)} color="primary" aria-label="no">
           No
         </Button>
       </DialogActions>

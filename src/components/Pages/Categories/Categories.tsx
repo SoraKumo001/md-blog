@@ -1,12 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { PostList } from '@/components/PostList';
 import { Title } from '@/components/System/Title';
-import {
-  PostsQuery,
-  useCategoriesQuery,
-  useCategoryQuery,
-  usePostsQuery,
-} from '@/generated/graphql';
+import { useCategoryQuery, usePostsQuery } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import styled from './Categories.module.scss';
 

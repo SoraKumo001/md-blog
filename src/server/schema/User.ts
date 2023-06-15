@@ -1,6 +1,8 @@
-import { PrismaSelect } from '@paljs/plugins';
-import { list, nonNull, objectType, queryField } from 'nexus';
+import { PrismaClient } from '@prisma/client';
+import { serialize } from 'cookie';
+import { mutationField, objectType, stringArg } from 'nexus';
 import { User } from 'nexus-prisma';
+import { getUserInfo } from '@/libs/getUserInfo';
 
 export const UserType = objectType({
   name: User.$name,
@@ -12,12 +14,55 @@ export const UserType = objectType({
   },
 });
 
-export const Users = queryField('Users', {
-  type: nonNull(list('User')),
-  resolve: (_parent, {}, { prisma }, info) => {
-    const select = new PrismaSelect(info).value.select;
-    return prisma.user.findMany<{}>({
-      select: { ...select, id: true },
-    });
+export const SignIn = mutationField('SignIn', {
+  type: UserType,
+  args: {
+    token: stringArg(),
+  },
+  resolve: async (_parent, { token }, { res, prisma }) => {
+    const userInfo =
+      typeof token === 'string'
+        ? await getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
+        : undefined;
+    if (!userInfo) {
+      res.setHeader(
+        'Set-Cookie',
+        serialize('auth-token', '', {
+          httpOnly: true,
+          maxAge: -1,
+          path: '/',
+        })
+      );
+      return null;
+    }
+
+    const user = await getUser(prisma, userInfo.name, userInfo.email);
+    if (user) {
+      res.setHeader(
+        'Set-Cookie',
+        serialize('auth-token', token as string, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV !== 'development',
+          sameSite: 'strict',
+          maxAge: userInfo.exp - Date.now() / 1000,
+          path: '/',
+        })
+      );
+    }
+    return user;
   },
 });
+
+const getUser = async (prisma: PrismaClient, name: string, email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) return user;
+  else {
+    if (await prisma.user.count()) {
+      return null;
+    }
+    const user = await prisma.user.create({
+      data: { name: name, email: email },
+    });
+    return user;
+  }
+};

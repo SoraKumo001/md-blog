@@ -1,9 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { ElementType, Fragment, HTMLProps, useMemo } from 'react';
 import { PrismAsync } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { LinkTarget } from '@/components/Commons/LinkTarget';
+import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import { MarkdownComponents, createProcessor } from '@/libs/MarkdownCompiler';
 
 const components: MarkdownComponents = {
@@ -38,20 +39,19 @@ const components: MarkdownComponents = {
   },
   image({ node, props }) {
     const alt = node.alt;
-    const src = node.url.match(/https?:/)
-      ? node.url
-      : `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GOOGLE_STRAGE_BUCKET}/${node.url}`;
+    const src = node.url.match(/https?:/) ? node.url : getFirebaseUrl(node.url);
 
     try {
       const styleString = alt?.match(/^{.*}$/);
       const style = styleString ? JSON.parse(alt ?? '') : {};
       return (
-        <img
+        <Image
           key={props.key}
           src={src}
           width={style.width && parseInt(style.width)}
           height={style.height && parseInt(style.height)}
-          alt={alt ?? undefined}
+          alt={alt ?? ''}
+          unoptimized={true}
         />
       );
     } catch {}
@@ -64,7 +64,6 @@ const components: MarkdownComponents = {
         <PrismAsync
           language={node.lang ?? 'txt'}
           style={{ ...darcula }}
-          showLineNumbers={true}
           wrapLines={true}
           PreTag="div"
           lineProps={(number) =>

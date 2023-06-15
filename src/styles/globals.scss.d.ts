@@ -1,1 +1,1 @@
-export const next: string;
+export declare const next: string;

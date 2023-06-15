@@ -32,11 +32,13 @@ export const ContentTable: FC<Props> = ({ className, title, vnode }) => {
         </Link>
         <ul className="mt-2 flex flex-col gap-1">
           {titles?.map((node, index) => (
-            <Link key={index} href={`#header-${index}`}>
-              <li className="list-disc break-all" style={{ marginLeft: `${(node[0] + 1) * 12}px` }}>
-                {node[1]}
-              </li>
-            </Link>
+            <li
+              key={index}
+              className="list-disc break-all"
+              style={{ marginLeft: `${(node[0] + 1) * 12}px` }}
+            >
+              <Link href={`#header-${index}`}>{node[1]}</Link>
+            </li>
           ))}
         </ul>
       </div>

@@ -63,6 +63,7 @@ export const Separator: FC<Props> = ({ className, children }) => {
             setRato(0);
             e.preventDefault();
           }}
+          aria-label="left"
         >
           <LeftIcon className="w-6" />
         </Button>
@@ -74,6 +75,7 @@ export const Separator: FC<Props> = ({ className, children }) => {
             setRato(0.5);
             e.preventDefault();
           }}
+          aria-label="center"
         >
           <CenterIcon className="w-6" />
         </Button>
@@ -85,6 +87,7 @@ export const Separator: FC<Props> = ({ className, children }) => {
             setRato(1);
             e.preventDefault();
           }}
+          aria-label="right"
         >
           <RightIcon className="w-6" />
         </Button>

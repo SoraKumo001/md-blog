@@ -27,6 +27,8 @@ model Post {
   content     String      @default("")
   author      User        @relation(fields: [authorId], references: [id])
   authorId    String
+  cardId      String?
+  card        FireStore?  @relation("postCards", fields: [cardId], references: [id])
   categories  Category[]
   postFiles   FireStore[]
   createdAt   DateTime    @default(now())
@@ -60,6 +62,7 @@ model FireStore {
   mimeType    String
   systemIcons System[] @relation("systemIcons")
   systemCards System[] @relation("systemCards")
+  postCards   Post[]   @relation("postCards")
   posts       Post[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

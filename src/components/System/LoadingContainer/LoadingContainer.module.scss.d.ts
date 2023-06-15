@@ -1,2 +1,2 @@
-export const root: string;
-export const rotate: string;
+export declare const root: string;
+export declare const rotate: string;

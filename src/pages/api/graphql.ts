@@ -1,12 +1,10 @@
 import { ApolloServer } from '@apollo/server';
 import { executeHTTPGraphQLRequest } from '@react-libraries/next-apollo-server';
 import admin from 'firebase-admin';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './auth/[...nextauth]';
+import { getUserInfo } from '@/libs/getUserInfo';
 import { Context, prisma } from '../../server/context';
 import { schema } from '../../server/schema';
 import type { NextApiHandler } from 'next';
-
 /**
  * apolloServer
  */
@@ -24,13 +22,12 @@ const apolloServer = createApolloServer();
  * APIRoute handler for Next.js
  */
 const handler: NextApiHandler = async (req, res) => {
-  const session = await getServerSession(req, res, authOptions).catch(() => undefined);
+  const user = await getUserInfo(process.env.NEXT_PUBLIC_projectId, req.cookies['auth-token']);
   await executeHTTPGraphQLRequest({
     req,
     res,
     apolloServer: await apolloServer,
     context: async () => {
-      const user = session?.user;
       return { req, res, prisma, user };
     },
   });
@@ -51,7 +48,7 @@ export const config = {
       clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
       privateKey: process.env.GOOGLE_PRIVATE_KEY,
     }),
-    storageBucket: process.env.GOOGLE_STRAGE_BUCKET,
+    storageBucket: `${process.env.GOOGLE_PROJECT_ID}.appspot.com`,
   });
 
 prisma.system.findUnique({ where: { id: 'system' } }).then(async (v) => {

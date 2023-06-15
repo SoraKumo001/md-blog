@@ -32,6 +32,7 @@ type FireStore {
   id: ID!
   mimeType: String!
   name: String!
+  postCards: [Post!]!
   posts: [Post!]!
   systemCards: [System!]!
   systemIcons: [System!]!
@@ -45,14 +46,17 @@ scalar Json @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 
 type Mutation {
   Category(id: String, name: String!): Category!
-  Post(categories: [String!], content: String, id: String, isTrash: Boolean, published: Boolean, publishedDate: DateTime, title: String): Post
+  Post(card: Upload, categories: [String!], content: String, id: String, isTrash: Boolean, published: Boolean, publishedAt: DateTime, title: String): Post
   PostFile(binary: Upload!, postId: String!): FireStore!
-  System(description: String, title: String): System!
+  SignIn(token: String): User
+  System(description: String, icon: Upload, title: String): System!
 }
 
 type Post {
   author: User!
   authorId: String!
+  card: FireStore
+  cardId: String
   categories: [Category!]!
   content: String!
   createdAt: DateTime!
@@ -70,7 +74,6 @@ type Query {
   Post(id: String!): Post!
   Posts: [Post!]!
   System: System!
-  Users: [User]!
 }
 
 type System {

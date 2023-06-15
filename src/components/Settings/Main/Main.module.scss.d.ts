@@ -1,2 +1,3 @@
-export const items: string;
-export const root: string;
+export declare const items: string;
+export declare const link: string;
+export declare const root: string;

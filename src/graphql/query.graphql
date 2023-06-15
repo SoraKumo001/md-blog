@@ -1,7 +1,9 @@
-query Users {
-  Users {
+mutation SignIn($token: String) {
+  SignIn(token: $token) {
     id
     email
+    createdAt
+    updatedAt
     name
   }
 }
@@ -13,6 +15,7 @@ query Post($postId: String!) {
     title
     content
     authorId
+    cardId
     createdAt
     updatedAt
     publishedAt
@@ -31,6 +34,7 @@ query Posts {
     published
     title
     authorId
+    cardId
     createdAt
     updatedAt
     publishedAt
@@ -49,8 +53,9 @@ mutation UpdatePost(
   $content: String
   $published: Boolean
   $isTrash: Boolean
-  $publishedDate: DateTime
+  $publishedAt: DateTime
   $categories: [String!]
+  $card: Upload
 ) {
   Post(
     id: $postId
@@ -58,8 +63,9 @@ mutation UpdatePost(
     content: $content
     published: $published
     isTrash: $isTrash
-    publishedDate: $publishedDate
+    publishedAt: $publishedAt
     categories: $categories
+    card: $card
   ) {
     id
     published
@@ -75,6 +81,7 @@ mutation UpdatePost(
       createdAt
       updatedAt
     }
+    cardId
   }
 }
 
@@ -97,11 +104,18 @@ query System {
     cardId
     createdAt
     updatedAt
+    icon {
+      id
+      name
+      mimeType
+      createdAt
+      updatedAt
+    }
   }
 }
 
-mutation UpdateSystem($title: String, $description: String) {
-  System(title: $title, description: $description) {
+mutation UpdateSystem($title: String, $description: String, $icon: Upload) {
+  System(title: $title, description: $description, icon: $icon) {
     id
     title
     description
@@ -109,6 +123,13 @@ mutation UpdateSystem($title: String, $description: String) {
     cardId
     createdAt
     updatedAt
+    icon {
+      id
+      name
+      mimeType
+      createdAt
+      updatedAt
+    }
   }
 }
 

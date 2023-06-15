@@ -1,38 +1,10 @@
-import crypto from 'crypto';
 import fs from 'fs';
-import path from 'path';
+import { semaphore } from '@node-libraries/semaphore';
+import { Category, FireStore, Post, System, User } from '@prisma/client';
 import admin from 'firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
 import { prisma } from '@/server/context';
-
-export interface Root {
-  type: Type;
-  value?: string;
-  contentType?: ContentType;
-  path?: string;
-  collection?: Collection;
-  values?: Values;
-}
-
-export type Collection = 'Admins' | 'Application' | 'Content' | 'ContentBody';
-
-export type ContentType = 'image/webp' | 'image/gif';
-
-export type Type = 'storage' | 'file' | 'document';
-
-export interface Values {
-  id: string;
-  title?: string;
-  host?: string;
-  description?: string;
-  directStorage?: boolean;
-  cardUrl?: string;
-  visible?: boolean;
-  system?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-  body?: string;
-}
+import { getImages } from '../libs/getImages';
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -40,109 +12,91 @@ admin.initializeApp({
     clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
     privateKey: process.env.GOOGLE_PRIVATE_KEY,
   }),
-  storageBucket: process.env.GOOGLE_STRAGE_BUCKET,
+  storageBucket: `${process.env.GOOGLE_PROJECT_ID}.appspot.com`,
 });
 
+type DataType = {
+  users: User[];
+  categories: Category[];
+  system: System[];
+  posts: (Post & { categories: { id: string }[] })[];
+  files: (FireStore & { binary: string })[];
+};
+
 const main = async () => {
-  const value = fs.readFileSync(path.resolve(__dirname, './blog.json'), { encoding: 'utf8' });
-  const root = JSON.parse(value) as Root[];
-
-  const contents: {
-    [key: string]: {
-      id: string;
-      title: string;
-      visible: boolean;
-      system: boolean;
-      createdAt: string;
-      updatedAt: string;
-    };
-  } = {};
-  const bodies: {
-    [key: string]: {
-      id: string;
-      body: string;
-    };
-  } = {};
-  const files: {
-    [key: string]: {
-      id: string;
-      contentType: string;
-      name: string;
-    };
-  } = {};
-  const regex = /\/([^/]+)$/;
-
-  const bucket = getStorage().bucket();
-  await Promise.all((await bucket.getFiles())[0].map((file) => file.delete()));
-
-  for (const data of root) {
-    if (data.type === 'file') {
-      const fileName = data.path?.match(regex)?.[1];
-      const id = fileName?.split('.')[0];
-      if (id && data.contentType && data.value) {
-        const fileId = crypto.randomUUID().replaceAll('-', '');
-        await bucket.file(fileId).save(Buffer.from(data.value, 'base64'), {
-          public: true,
-          contentType: data.contentType ?? undefined,
-          metadata: { mime: data.contentType, cacheControl: 'public, max-age=31536000, immutable' },
-        });
-        files[id] = {
-          id: fileId,
-          contentType: data.contentType,
-          name: fileName,
-        };
-      }
+  const file = fs.readFileSync('output.json', 'utf8');
+  const data: DataType = JSON.parse(file);
+  if (data) {
+    for (const value of data.users) {
+      await prisma.user.upsert({
+        create: value,
+        update: value,
+        where: { id: value.id },
+      });
     }
-    if (data.collection === 'Content') contents[data.values?.id as string] = data.values as never;
-    if (data.collection === 'ContentBody') bodies[data.values?.id as string] = data.values as never;
-  }
-  const authorId = (await prisma.user.findFirstOrThrow()).id;
-  const regexContentFile1 = /!\[(.*?)\]\([^)]+\/[^%]+%2F.*?%2F([^\/]+)\..+?\)/g;
+    const bucket = getStorage().bucket();
+    const s = semaphore(10);
 
-  for (const header of Object.values(contents)) {
-    if (header.system) continue;
-    const id = header.id;
-    const body = bodies[header.id];
-    let content = body.body.replace(regexContentFile1, '![$1]($2)');
-    const images: string[] = [];
-    Object.entries(files).forEach(([key, file]) => {
-      content = content.replaceAll(`(${key})`, `(${file.id})`);
-      if (content !== content) {
-        images.push(file.id);
+    data.files.forEach(async (file) => {
+      await s.acquire();
+      const { binary, ...storeFile } = file;
+      await bucket.file(file.id).save(Buffer.from(binary, 'base64'), {
+        public: true,
+        contentType: file.mimeType,
+        metadata: { mime: file.mimeType, cacheControl: 'public, max-age=31536000, immutable' },
+      });
+      await prisma.fireStore.upsert({
+        create: storeFile,
+        update: storeFile,
+        where: {
+          id: file.id,
+        },
+      });
+      s.release();
+    });
+    await s.all();
+
+    await prisma.system.upsert({
+      create: data.system[0],
+      update: data.system[0],
+      where: { id: 'system' },
+    });
+
+    data.categories.forEach(async (value) => {
+      await s.acquire();
+      await prisma.category.upsert({
+        create: value,
+        update: value,
+        where: { id: value.id },
+      });
+      s.release();
+    });
+    await s.all();
+
+    const ids = new Set((await prisma.fireStore.findMany()).map(({ id }) => id));
+
+    data.posts.forEach(async (value) => {
+      await s.acquire();
+      const images = (await getImages(value.content)).result;
+      const { categories, ...post } = value;
+      await prisma.post.upsert({
+        create: post,
+        update: post,
+        where: { id: value.id },
+      });
+      const connectImages = images.filter((v) => ids.has(v));
+      if (connectImages.length) {
+        await prisma.post.update({
+          data: {
+            postFiles: { connect: connectImages.map((id) => ({ id })) },
+            categories: { connect: categories.map((id) => id) },
+          },
+          where: { id: value.id },
+        });
       }
+      s.release();
     });
-    await prisma.post.upsert({
-      where: { id },
-      create: {
-        id,
-        authorId,
-        content: content,
-        published: header.visible,
-        createdAt: new Date(header.createdAt),
-        publishedAt: new Date(header.createdAt),
-        updatedAt: new Date(header.updatedAt),
-        title: header.title,
-        postFiles: {
-          connect: images.map((id) => ({
-            id,
-          })),
-        },
-      },
-      update: {
-        authorId,
-        content: content,
-        published: header.visible,
-        createdAt: new Date(header.createdAt),
-        publishedAt: new Date(header.createdAt),
-        updatedAt: new Date(header.updatedAt),
-        title: header.title,
-        postFiles: {
-          connect: images.map((id) => ({
-            id,
-          })),
-        },
-      },
-    });
+    await s.all();
   }
 };
 

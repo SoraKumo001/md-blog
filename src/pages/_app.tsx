@@ -1,16 +1,17 @@
 import { ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { AppProps } from 'next/app';
+import { AppContext, AppProps } from 'next/app';
 import { Noto_Sans_Mono, Roboto_Mono } from 'next/font/google';
-import Head from 'next/head';
-import { Session } from 'next-auth';
-import { GetSessionParams, SessionProvider, getSession } from 'next-auth/react';
+import { GoogleAnalytics } from '@/components/Commons/GoogleAnalytics';
 import { UrqlProvider } from '@/components/Provider/UrqlProvider';
 import { Header } from '@/components/System/Header';
 import { LoadingContainer } from '@/components/System/LoadingContainer';
 import { StoreProvider } from '@/libs/context';
+import { getHost } from '@/libs/getHost';
+// import { getUserInfo } from '@/libs/getUserInfo';
 import { theme } from '@/styles/themes';
+
 import '@/styles/globals.scss';
 
 const noto = Noto_Sans_Mono({
@@ -26,57 +27,60 @@ const roboto = Roboto_Mono({
   display: 'swap',
 });
 
+type Session = { email: string; name: string };
+
 const App = ({
   Component,
-  pageProps: { session, cookie, host, ...pageProps },
-}: AppProps<{ session: Session; host?: string; cookie?: string }>) => {
+  pageProps: { session, cookie, host },
+}: AppProps<{ session?: Session; host?: string; cookie?: string }>) => {
   return (
-    <SessionProvider session={session}>
-      <Head>
-        <meta charSet="UTF-8" />
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
-        <link rel="alternate" type="application/rss+xml" href="/sitemap.xml" title="RSS2.0" />
-      </Head>
+    <StoreProvider initState={() => ({ host, user: session })}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <GoogleAnalytics />
         <UrqlProvider host={host} cookie={cookie}>
-          <StoreProvider>
-            <ThemeProvider theme={theme}>
-              <div
-                className={'flex h-screen flex-col'}
-                style={{ fontFamily: `${roboto.style.fontFamily} ,${noto.style.fontFamily}` }}
-              >
-                <Head>
-                  <meta charSet="UTF-8" />
-                  <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                  <meta
-                    name="viewport"
-                    content="width=device-width,minimum-scale=1,initial-scale=1"
-                  />
-                </Head>
-                <Header />
-                <main className="relative flex-1 overflow-hidden">
-                  <Component {...pageProps} />
-                </main>
-                <LoadingContainer />
-              </div>
-            </ThemeProvider>
-          </StoreProvider>
+          <ThemeProvider theme={theme}>
+            <div
+              className={'flex h-screen flex-col'}
+              style={{ fontFamily: `${roboto.style.fontFamily} ,${noto.style.fontFamily}` }}
+            >
+              <Header />
+              <main className="relative flex-1 overflow-hidden">
+                <Component />
+              </main>
+              <LoadingContainer />
+            </div>
+          </ThemeProvider>
         </UrqlProvider>
       </LocalizationProvider>
-    </SessionProvider>
+    </StoreProvider>
   );
 };
 
-App.getInitialProps = async (context: GetSessionParams | undefined) => {
-  const headers = context?.ctx?.req?.headers;
+class ServerString extends String {
+  constructor(value: string) {
+    super(value);
+  }
+  toJSON() {
+    return undefined;
+  }
+}
+
+App.getInitialProps = async (context: AppContext) => {
+  const req = context?.ctx?.req;
+  const host = getHost(req);
+  const cookie = req?.headers?.cookie;
+  const cookies = Object.fromEntries(cookie?.split(';').map((v) => v.trim().split('=')) ?? []);
+  const token = cookies['auth-token'];
+  const session =
+    typeof window === 'undefined'
+      ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+        await require('@/libs/getUserInfo').getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
+      : undefined;
   return {
     pageProps: {
-      session: typeof window === 'undefined' ? await getSession(context) : undefined,
-      cookie: context?.ctx?.req?.headers?.cookie,
-      host: headers
-        ? `${headers['x-forwarded-proto']}://${headers['x-forwarded-host']}`
-        : undefined,
+      cookie: cookie && new ServerString(cookie),
+      host,
+      session: session && { name: session.name, email: session.email },
     },
   };
 };
