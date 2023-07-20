@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useMemo } from 'react';
 import { usePostQuery } from '@/generated/graphql';
+import { useUser } from '@/hooks/useAuth';
 import { useLoading } from '@/hooks/useLoading';
 import { useMarkdown } from '@/hooks/useMarkdown';
-import { useSelector } from '@/libs/context';
 import { DateString } from '@/libs/dateString';
 import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import styled from './Contents.module.scss';
@@ -34,9 +34,7 @@ export const Contents: FC<Props> = ({ id }) => {
     if (error) router.replace('/error/404');
   }, [router, error]);
   const [children, vnode] = useMarkdown(data?.Post.content);
-  const session = useSelector(
-    (state: { session: { email: string; name: string } }) => state.session
-  );
+  const session = useUser();
   const categories = useMemo(() => {
     return [...(data?.Post.categories ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1));
   }, [data]);

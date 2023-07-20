@@ -29,7 +29,6 @@ export const Header: FC<Props> = () => {
   useLoading(fetching);
   if (!data) return null;
   const favicon = data.System.icon && getFirebaseUrl(data.System.icon.id);
-  console.log({ session });
   return (
     <>
       <Head>

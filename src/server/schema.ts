@@ -17,10 +17,13 @@ const nexusSchema = makeSchema({
       },
     ],
   },
-  outputs: {
-    typegen: join(process.cwd(), 'src', 'server', 'generated', 'nexus-typegen.ts'),
-    schema: join(process.cwd(), 'src', 'server', 'generated', 'schema.graphql'),
-  },
+  outputs:
+    process.env.NODE_ENV === 'development'
+      ? {
+          typegen: join(process.cwd(), 'src', 'server', 'generated', 'nexus-typegen.ts'),
+          schema: join(process.cwd(), 'src', 'server', 'generated', 'schema.graphql'),
+        }
+      : undefined,
 });
 
 export const schema = nexusSchema;

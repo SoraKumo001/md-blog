@@ -7,7 +7,26 @@ export const CategoryType = objectType({
   description: Category.$description,
   definition(t) {
     Object.entries(Category).forEach(([key, value]) => {
-      if (!key.startsWith('$')) t.field(value);
+      if (key === 'Posts') {
+        t.field({
+          ...value,
+          resolve: async (parent, {}, { prisma, user }) => {
+            return prisma.category
+              .findUniqueOrThrow({ where: { id: parent.id } })
+              .Posts(user ? undefined : { where: { published: true } });
+          },
+        });
+      } else if (!key.startsWith('$')) t.field(value);
+    });
+  },
+});
+
+export const Categories = queryField('Categories', {
+  type: nonNull(list(nonNull(CategoryType))),
+  resolve: (_parent, {}, { prisma }, info) => {
+    const select = new PrismaSelect(info).value.select;
+    return prisma.category.findMany<{}>({
+      select: { ...select, id: true },
     });
   },
 });
@@ -23,16 +42,6 @@ export const CategoryQuery = queryField('Category', {
       select: { ...select, id: true },
       where: { id },
     }) as never;
-  },
-});
-
-export const Categories = queryField('Categories', {
-  type: nonNull(list(nonNull(CategoryType))),
-  resolve: (_parent, {}, { prisma }, info) => {
-    const select = new PrismaSelect(info).value.select;
-    return prisma.category.findMany<{}>({
-      select: { ...select, id: true },
-    });
   },
 });
 

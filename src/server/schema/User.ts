@@ -35,7 +35,6 @@ export const SignIn = mutationField('SignIn', {
       );
       return null;
     }
-
     const user = await getUser(prisma, userInfo.name, userInfo.email);
     if (user) {
       res.setHeader(
