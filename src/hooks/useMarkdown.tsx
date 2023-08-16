@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { ElementType, Fragment, HTMLProps, useMemo } from 'react';
+import React, { ElementType, Fragment, HTMLProps, ReactNode, useMemo } from 'react';
 import { PrismAsync } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { LinkTarget } from '@/components/Commons/LinkTarget';
 import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
-import { MarkdownComponents, createProcessor } from '@/libs/MarkdownCompiler';
+import { MarkdownComponents, VNode, createProcessor } from '@/libs/MarkdownCompiler';
 
 const components: MarkdownComponents = {
   heading: ({ node, children, property, props }) => {
@@ -83,6 +83,6 @@ export const useMarkdown = (value?: string) => {
   const processor = useMemo(() => createProcessor(components as never), []);
   return useMemo(() => {
     if (value === undefined) return [];
-    return processor.processSync(value).result;
+    return processor.processSync(value).result as [ReactNode, VNode];
   }, [processor, value]);
 };

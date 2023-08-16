@@ -12,10 +12,10 @@ scalar BigInt
 scalar Bytes
 
 type Category {
-  Posts: [Post!]!
   createdAt: DateTime!
   id: ID!
   name: String!
+  posts: [Post!]!
   updatedAt: DateTime!
 }
 
@@ -91,10 +91,10 @@ type System {
 scalar Upload
 
 type User {
-  Post: [Post!]!
   createdAt: DateTime!
   email: String!
   id: ID!
   name: String!
+  post: [Post!]!
   updatedAt: DateTime!
 }

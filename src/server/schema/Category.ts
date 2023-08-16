@@ -1,22 +1,40 @@
 import { PrismaSelect } from '@paljs/plugins';
 import { list, mutationField, nonNull, objectType, queryField, stringArg } from 'nexus';
+import { FieldOutConfigWithName, ObjectDefinitionBlock, OutputScalarConfig } from 'nexus/dist/core';
 import { Category } from 'nexus-prisma';
+
+const createResolve = <
+  TypeName extends string,
+  FieldName extends string,
+  Model extends
+    | { [key in FieldName]: FieldOutConfigWithName<TypeName, FieldName> | string | undefined }
+    | { [key in `$name` | '$description']?: string }
+>(
+  t: ObjectDefinitionBlock<TypeName>,
+  model: Model,
+  resolves?: { [key in FieldName]?: OutputScalarConfig<TypeName, key>['resolve'] }
+) => {
+  Object.values<FieldOutConfigWithName<TypeName, FieldName> | string | undefined>(model).forEach(
+    (value) => {
+      if (typeof value === 'object' && 'name' in value) {
+        const { name } = value;
+        const resolve = resolves?.[name] ?? value.resolve;
+        t.field({ ...value, resolve });
+      }
+    }
+  );
+};
 
 export const CategoryType = objectType({
   name: Category.$name,
   description: Category.$description,
   definition(t) {
-    Object.entries(Category).forEach(([key, value]) => {
-      if (key === 'Posts') {
-        t.field({
-          ...value,
-          resolve: async (parent, {}, { prisma, user }) => {
-            return prisma.category
-              .findUniqueOrThrow({ where: { id: parent.id } })
-              .Posts(user ? undefined : { where: { published: true } });
-          },
-        });
-      } else if (!key.startsWith('$')) t.field(value);
+    createResolve(t, Category, {
+      posts: async (parent, {}, { prisma, user }) => {
+        return prisma.category
+          .findUniqueOrThrow({ where: { id: parent.id } })
+          .posts(user ? undefined : { where: { published: true } });
+      },
     });
   },
 });
@@ -24,9 +42,9 @@ export const CategoryType = objectType({
 export const Categories = queryField('Categories', {
   type: nonNull(list(nonNull(CategoryType))),
   resolve: (_parent, {}, { prisma }, info) => {
-    const select = new PrismaSelect(info).value.select;
+    const select = new PrismaSelect(info, { defaultFields: { Category: { id: true } } }).value;
     return prisma.category.findMany<{}>({
-      select: { ...select, id: true },
+      ...select,
     });
   },
 });

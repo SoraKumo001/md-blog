@@ -9,6 +9,7 @@ import {
 } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import { useMarkdown } from '@/hooks/useMarkdown';
+import { useNotification } from '@/hooks/useNotification';
 import { convertWebp, getImageSize } from '@/libs/webp';
 import styled from './Editor.module.scss';
 import { Separator } from '../../Commons/Separator';
@@ -113,7 +114,7 @@ export const Editor: FC<Props> = ({ id }) => {
   const handleDragOver: DOMAttributes<HTMLDivElement>['onDragOver'] = (event) => {
     event.preventDefault();
   };
-
+  const sendNotification = useNotification();
   useEffect(() => {
     setTimeout(() => {
       const node = refMarkdown.current;
@@ -143,6 +144,8 @@ export const Editor: FC<Props> = ({ id }) => {
       categories,
       card,
       publishedAt: publishedAt.toISOString(),
+    }).then(({ error }) => {
+      sendNotification(error ? 'Error' : 'Update Post Success');
     });
   };
 
@@ -173,6 +176,7 @@ export const Editor: FC<Props> = ({ id }) => {
               });
             }}
           >
+            {/* 入力補完を切る */}
             <MonacoEditor
               language="markdown"
               defaultValue={content ?? post.content}
@@ -186,6 +190,8 @@ export const Editor: FC<Props> = ({ id }) => {
                 dropIntoEditor: { enabled: true },
                 contextmenu: false,
                 occurrencesHighlight: false,
+                renderLineHighlight: 'none',
+                quickSuggestions: false,
               }}
             />
           </div>

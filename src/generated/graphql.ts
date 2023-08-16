@@ -33,10 +33,10 @@ export type Scalars = {
 
 export type Category = {
   __typename?: 'Category';
-  Posts: Array<Post>;
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  posts: Array<Post>;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -149,11 +149,11 @@ export type System = {
 
 export type User = {
   __typename?: 'User';
-  Post: Array<Post>;
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  post: Array<Post>;
   updatedAt: Scalars['DateTime']['output'];
 };
 

@@ -7,7 +7,6 @@ services:
       dockerfile: ./docker/production/Dockerfile
     restart: always
     networks:
-      - default
       - shared-network
     ports:
       - '3000:3000'

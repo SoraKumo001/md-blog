@@ -142,10 +142,10 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
   Category: { // field return type
-    Posts: NexusGenRootTypes['Post'][]; // [Post!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
     name: string; // String!
+    posts: NexusGenRootTypes['Post'][]; // [Post!]!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   FireStore: { // field return type
@@ -200,21 +200,21 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   User: { // field return type
-    Post: NexusGenRootTypes['Post'][]; // [Post!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     email: string; // String!
     id: string; // ID!
     name: string; // String!
+    post: NexusGenRootTypes['Post'][]; // [Post!]!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
 }
 
 export interface NexusGenFieldTypeNames {
   Category: { // field return type name
-    Posts: 'Post'
     createdAt: 'DateTime'
     id: 'ID'
     name: 'String'
+    posts: 'Post'
     updatedAt: 'DateTime'
   }
   FireStore: { // field return type name
@@ -269,11 +269,11 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   User: { // field return type name
-    Post: 'Post'
     createdAt: 'DateTime'
     email: 'String'
     id: 'ID'
     name: 'String'
+    post: 'Post'
     updatedAt: 'DateTime'
   }
 }

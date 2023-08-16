@@ -7,6 +7,7 @@ import { GoogleAnalytics } from '@/components/Commons/GoogleAnalytics';
 import { UrqlProvider } from '@/components/Provider/UrqlProvider';
 import { Header } from '@/components/System/Header';
 import { LoadingContainer } from '@/components/System/LoadingContainer';
+import { NotificationContainer } from '@/components/System/Notification/NotificationContainer';
 import { StoreProvider } from '@/libs/context';
 import { getHost } from '@/libs/getHost';
 // import { getUserInfo } from '@/libs/getUserInfo';
@@ -48,6 +49,7 @@ const App = ({
                 <Component />
               </main>
               <LoadingContainer />
+              <NotificationContainer />
             </div>
           </ThemeProvider>
         </UrqlProvider>

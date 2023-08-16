@@ -6,6 +6,7 @@ COPY . .
 RUN yarn build
 RUN cp -r -u .next/server .next/standalone/.next &&\
   cp -r -u .next/static .next/standalone/.next &&\
+  (cp -r -u .next/public .next/standalone/.next || true) &&\
   cp -u server/forker.js .next/standalone
 COPY package.json yarn.lock ./
 

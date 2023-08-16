@@ -16,7 +16,7 @@ import { getImages } from '@/libs/getImages';
 import { isolatedFiles, uploadFile } from '@/libs/uploadFile';
 import { Upload } from './Upload';
 
-export const PostsType = objectType({
+export const PostType = objectType({
   name: Post.$name,
   description: Post.$description,
   definition(t) {
@@ -27,7 +27,7 @@ export const PostsType = objectType({
 });
 
 export const PostQuery = queryField('Post', {
-  type: nonNull(PostsType),
+  type: nonNull(PostType),
   args: {
     id: nonNull(stringArg()),
   },
@@ -51,7 +51,7 @@ export const PostQuery = queryField('Post', {
 });
 
 export const Posts = queryField('Posts', {
-  type: nonNull(list(nonNull(PostsType))),
+  type: nonNull(list(nonNull(PostType))),
   resolve: (_parent, {}, { prisma, user }, info) => {
     const select = new PrismaSelect(info, { defaultFields: { Post: { id: true } } }).value;
     return prisma.post.findMany<{}>({
@@ -69,7 +69,7 @@ export const Posts = queryField('Posts', {
 });
 
 export const PostMutation = mutationField('Post', {
-  type: PostsType,
+  type: PostType,
   args: {
     id: stringArg(),
     title: stringArg(),
