@@ -20,7 +20,7 @@ let publicKeys: { [key: string]: string };
 let expirationTime: number;
 
 const getPublicKey = async (kid: string) => {
-  if (expirationTime === undefined || expirationTime > Date.now()) {
+  if (expirationTime === undefined || Date.now() >= expirationTime) {
     const result = await fetchPublicKeys();
     publicKeys = result.publicKeys;
     expirationTime = result.expirationTime;
