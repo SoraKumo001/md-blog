@@ -28,21 +28,21 @@ export const Header: FC<Props> = () => {
   const signOut = useSignOut();
   useLoading(fetching);
   if (!data) return null;
-  const favicon = data.System.icon && getFirebaseUrl(data.System.icon.id);
+  const favicon = data.findUniqueSystem.icon && getFirebaseUrl(data.findUniqueSystem.icon.id);
   return (
     <>
       <Head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
-        <meta name="description" content={data.System.description} />
+        <meta name="description" content={data.findUniqueSystem.description} />
         <link rel="alternate" type="application/rss+xml" href="/sitemap.xml" title="RSS2.0" />
         {favicon && <link rel="icon" href={favicon} />}
       </Head>
       <header className={styled.root}>
         <Link className={styled.title} href="/">
           <HomeIcon fontSize="large" />
-          {data.System.title}
+          {data.findUniqueSystem.title}
         </Link>
         <div className="flex gap-1">
           {session && (

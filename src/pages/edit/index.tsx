@@ -7,7 +7,7 @@ const Page = () => {
   const [, updatePost] = useUpdatePostMutation();
   useEffectOnce(() => {
     updatePost({}).then(({ data }) => {
-      const id = data?.Post?.id;
+      const id = data?.updateOnePost?.id;
       id && router.replace(`/edit/${id}`);
     });
   });

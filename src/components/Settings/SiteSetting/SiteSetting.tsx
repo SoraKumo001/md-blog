@@ -25,20 +25,24 @@ export const SiteSetting: FC<Props> = ({}) => {
   const [{ fetching: mutationFetching }, updateSystem] = useUpdateSystemMutation();
   const [icon, setIcon] = useState<Blob | null | undefined>();
   const onSubmit: SubmitHandler<FormInput> = ({ title, description }) => {
-    updateSystem({ title, description, icon });
+    updateSystem({ title, description /* icon*/ });
   };
   useLoading([fetching, mutationFetching]);
   if (!data) return null;
-  const url = getFirebaseUrl(data.System.icon?.id);
+  const url = getFirebaseUrl(data.findUniqueSystem.icon?.id);
   return (
     <div className={styled.root}>
       <Container maxWidth="sm" sx={{ pt: 5 }}>
         <Stack spacing={3}>
           <h1>サイト情報</h1>
-          <TextField label="タイトル" defaultValue={data.System.title} {...register('title')} />
+          <TextField
+            label="タイトル"
+            defaultValue={data.findUniqueSystem.title}
+            {...register('title')}
+          />
           <TextField
             label="説明"
-            defaultValue={data.System.description}
+            defaultValue={data.findUniqueSystem.description}
             {...register('description')}
           />
           <ImageDragField placeholder="Favicon" types={['x-icon']} onChange={setIcon} url={url} />

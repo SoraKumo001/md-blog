@@ -33,20 +33,20 @@ export const Contents: FC<Props> = ({ id }) => {
   useEffect(() => {
     if (error) router.replace('/error/404');
   }, [router, error]);
-  const [children, vnode] = useMarkdown(data?.Post.content);
+  const [children, vnode] = useMarkdown(data?.findUniquePost.content);
   const session = useUser();
   const categories = useMemo(() => {
-    return [...(data?.Post.categories ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1));
+    return [...(data?.findUniquePost.categories ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1));
   }, [data]);
   useLoading(fetching);
   if (!data) return null;
-  const image = getFirebaseUrl(data.Post.cardId);
+  const image = getFirebaseUrl(data.findUniquePost.cardId);
   return (
     <>
       <Head>
-        <meta name="date" content={new Date(data.Post.updatedAt).toISOString()} />
+        <meta name="date" content={new Date(data.findUniquePost.updatedAt).toISOString()} />
       </Head>
-      <Title image={image}>{data.Post.title}</Title>
+      <Title image={image}>{data.findUniquePost.title}</Title>
       <div className={styled.root}>
         {session && (
           <Button
@@ -74,18 +74,18 @@ export const Contents: FC<Props> = ({ id }) => {
           ) : (
             <div className={styled.cardText}>📖</div>
           )}
-          {data.Post.title}
+          {data.findUniquePost.title}
         </h1>
         <div className={styled.separator}>
-          <ContentTable className={styled.table} title={data.Post.title} vnode={vnode} />
+          <ContentTable className={styled.table} title={data.findUniquePost.title} vnode={vnode} />
           <div className={styled.main}>
             <div className={styled.date}>
               <span className={styled.label}>publication: </span>
-              <span className={styled.value}>{DateString(data.Post.publishedAt)}</span>
+              <span className={styled.value}>{DateString(data.findUniquePost.publishedAt)}</span>
             </div>
             <div className={styled.date}>
               <span className={styled.label}>update:</span>
-              <span className={styled.value}>{DateString(data.Post.updatedAt)}</span>
+              <span className={styled.value}>{DateString(data.findUniquePost.updatedAt)}</span>
             </div>
             {categories.length > 0 && (
               <div className={styled.categories}>

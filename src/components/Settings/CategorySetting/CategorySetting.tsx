@@ -23,7 +23,7 @@ export const CategorySetting: FC<Props> = ({}) => {
   const { register, handleSubmit, watch, control } = useForm<FormInput>({
     defaultValues: {
       categories: [
-        ...[...(data?.Categories ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1)),
+        ...[...(data?.findManyCategory ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1)),
         { id: '', name: '' },
       ],
     },
@@ -51,7 +51,7 @@ export const CategorySetting: FC<Props> = ({}) => {
   useEffect(() => {
     if (data) {
       remove();
-      [...data.Categories]
+      [...data.findManyCategory]
         .sort((a, b) => (a.name < b.name ? -1 : 1))
         .forEach(({ id, name }) => append({ id, name }));
       append({ id: '', name: '' });

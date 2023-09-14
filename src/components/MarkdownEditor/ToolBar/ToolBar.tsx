@@ -28,7 +28,7 @@ import styled from './ToolBar.module.scss';
 import { FormInput } from '../Editor';
 
 interface Props {
-  post: PostQuery['Post'];
+  post: PostQuery['findUniquePost'];
   control: Control<FormInput>;
   onCard: (card: Blob | null | undefined) => void;
 }
@@ -45,7 +45,7 @@ export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
   const [{ data, fetching }] = useCategoriesQuery();
   const categoryList = useMemo(() => {
     if (!data) return undefined;
-    return [...data?.Categories].sort((a, b) => (a.name < b.name ? -1 : 1));
+    return [...data?.findManyCategory].sort((a, b) => (a.name < b.name ? -1 : 1));
   }, [data]);
   const [isExpand, setExpand] = useState(false);
   const url = getFirebaseUrl(post.cardId);
@@ -150,10 +150,10 @@ export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
         <MessageDialog
           isOpen={isDelete}
           onResult={(result) => {
-            if (result)
-              updatePost({ postId: post.id, isTrash: true }).then(() => {
-                router.replace('/');
-              });
+            // if (result)
+            //   updatePost({ postId: post.id, isTrash: true }).then(() => {
+            //     router.replace('/');
+            //   });
             setDelete(false);
           }}
         >

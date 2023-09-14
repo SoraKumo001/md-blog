@@ -22,7 +22,8 @@ export const useSignIn = () => {
   return useCallback(
     (token: string) =>
       signIn({ token }).then(
-        ({ data }) => data?.SignIn && dispatch((state) => ({ ...state, user: data.SignIn }))
+        ({ data }) =>
+          data?.signIn && dispatch((state) => ({ ...state, user: data.signIn as never }))
       ),
     [dispatch, signIn]
   );

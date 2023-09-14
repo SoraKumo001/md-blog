@@ -10,7 +10,7 @@ import styled from './PostList.module.scss';
 interface Props {
   id?: string;
   title: string;
-  posts: PostsQuery['Posts'];
+  posts: PostsQuery['findManyPost'];
   limit?: number;
 }
 

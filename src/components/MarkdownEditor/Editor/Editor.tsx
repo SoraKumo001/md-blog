@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   usePostQuery,
   useUpdatePostMutation,
-  useUploadPostFileMutation,
+  // useUploadPostFileMutation,
 } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import { useMarkdown } from '@/hooks/useMarkdown';
@@ -36,7 +36,7 @@ interface Props {
  */
 export const Editor: FC<Props> = ({ id }) => {
   const [currentTop, setCurrentTop] = useState(0);
-  const [{ fetching: uploadFeting }, uploadFile] = useUploadPostFileMutation();
+  // const [{ fetching: uploadFeting }, uploadFile] = useUploadPostFileMutation();
   const monaco = useMonaco();
   const refEditor = useRef<editor.IStandaloneCodeEditor>();
   const refMarkdown = useRef<HTMLDivElement>(null);
@@ -73,15 +73,15 @@ export const Editor: FC<Props> = ({ id }) => {
     if (editor && monaco && p) {
       convertWebp(file).then((value) => {
         if (!value) throw 'convert error';
-        uploadFile({ postId: id, binary: value }).then(async (v) => {
-          const size = await getImageSize(value);
-          editor.executeEdits('', [
-            {
-              range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
-              text: `![{"width":"${size.width}px","height":"${size.height}px"}](${v.data?.PostFile.id})`,
-            },
-          ]);
-        });
+        // uploadFile({ postId: id, binary: value }).then(async (v) => {
+        //   const size = await getImageSize(value);
+        //   editor.executeEdits('', [
+        //     {
+        //       range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
+        //       text: `![{"width":"${size.width}px","height":"${size.height}px"}](${v.data?.PostFile.id})`,
+        //     },
+        //   ]);
+        // });
       });
     }
   };
@@ -96,15 +96,15 @@ export const Editor: FC<Props> = ({ id }) => {
         if (file.type.startsWith('image/')) {
           convertWebp(file).then((value) => {
             if (!value) throw 'convert error';
-            uploadFile({ postId: id, binary: value }).then(async (v) => {
-              const size = await getImageSize(value);
-              editor.executeEdits('', [
-                {
-                  range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
-                  text: `![{"width":"${size.width}px","height":"${size.height}px"}](${v.data?.PostFile.id})`,
-                },
-              ]);
-            });
+            // uploadFile({ postId: id, binary: value }).then(async (v) => {
+            //   const size = await getImageSize(value);
+            //   editor.executeEdits('', [
+            //     {
+            //       range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
+            //       text: `![{"width":"${size.width}px","height":"${size.height}px"}](${v.data?.PostFile.id})`,
+            //     },
+            //   ]);
+            // });
           });
         }
       }
@@ -141,8 +141,8 @@ export const Editor: FC<Props> = ({ id }) => {
       title,
       content,
       published,
-      categories,
-      card,
+      categories: categories.map((id) => ({ id })),
+      // card,
       publishedAt: publishedAt.toISOString(),
     }).then(({ error }) => {
       sendNotification(error ? 'Error' : 'Update Post Success');
@@ -153,9 +153,9 @@ export const Editor: FC<Props> = ({ id }) => {
   const [{ fetching: updateFetching }, updatePost] = useUpdatePostMutation();
   const [content, setContent] = useState<string>();
   const [, update] = useTransition();
-  const post = data?.Post;
-  useLoading([fetching, updateFetching, uploadFeting]);
-  const [children] = useMarkdown(content ?? data?.Post.content);
+  const post = data?.findUniquePost;
+  useLoading([fetching, updateFetching /*uploadFeting*/]);
+  const [children] = useMarkdown(content ?? data?.findUniquePost.content);
   if (fetching || !post) return null;
   return (
     <form className={styled.root} onSubmit={handleSubmit(onSubmit)}>

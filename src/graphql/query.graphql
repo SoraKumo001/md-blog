@@ -1,15 +1,9 @@
 mutation SignIn($token: String) {
-  SignIn(token: $token) {
-    id
-    email
-    createdAt
-    updatedAt
-    name
-  }
+  signIn(token: $token)
 }
 
 query Post($postId: String!) {
-  Post(id: $postId) {
+  findUniquePost(filter: { id: $postId }) {
     id
     published
     title
@@ -29,7 +23,7 @@ query Post($postId: String!) {
 }
 
 query Posts {
-  Posts {
+  findManyPost(orderBy: { publishedAt: Desc }) {
     id
     published
     title
@@ -47,25 +41,29 @@ query Posts {
   }
 }
 
+mutation UpdateOnePost($categories: [CategoryUniqueFilter!], $where: PostUniqueFilter!) {
+  updateOnePost(data: { categories: { set: $categories } }, where: $where) {
+    id
+  }
+}
 mutation UpdatePost(
   $postId: String
   $title: String
   $content: String
   $published: Boolean
-  $isTrash: Boolean
   $publishedAt: DateTime
-  $categories: [String!]
-  $card: Upload
+  $categories: [CategoryUniqueFilter!]
 ) {
-  Post(
-    id: $postId
-    title: $title
-    content: $content
-    published: $published
-    isTrash: $isTrash
-    publishedAt: $publishedAt
-    categories: $categories
-    card: $card
+  updateOnePost(
+    data: {
+      id: $postId
+      title: $title
+      content: $content
+      published: $published
+      publishedAt: $publishedAt
+      categories: { set: $categories }
+    }
+    where: { id: $postId }
   ) {
     id
     published
@@ -85,18 +83,18 @@ mutation UpdatePost(
   }
 }
 
-mutation UploadPostFile($postId: String!, $binary: Upload!) {
-  PostFile(postId: $postId, binary: $binary) {
-    id
-    createdAt
-    updatedAt
-    name
-    mimeType
-  }
-}
+# mutation UploadPostFile($postId: String!, $binary: Upload!) {
+#   PostFile(postId: $postId, binary: $binary) {
+#     id
+#     createdAt
+#     updatedAt
+#     name
+#     mimeType
+#   }
+# }
 
 query System {
-  System {
+  findUniqueSystem(filter: { id: "system" }) {
     id
     title
     description
@@ -114,8 +112,8 @@ query System {
   }
 }
 
-mutation UpdateSystem($title: String, $description: String, $icon: Upload) {
-  System(title: $title, description: $description, icon: $icon) {
+mutation UpdateSystem($title: String, $description: String) {
+  updateOneSystem(data: { title: $title, description: $description }, where: { id: "system" }) {
     id
     title
     description
@@ -134,7 +132,7 @@ mutation UpdateSystem($title: String, $description: String, $icon: Upload) {
 }
 
 query Category($id: String!) {
-  Category(id: $id) {
+  findUniqueCategory(filter: { id: $id }) {
     id
     name
     createdAt
@@ -142,7 +140,7 @@ query Category($id: String!) {
   }
 }
 query Categories {
-  Categories {
+  findManyCategory {
     id
     name
     createdAt
@@ -151,7 +149,7 @@ query Categories {
 }
 
 mutation UpdateCategory($id: String, $name: String!) {
-  Category(id: $id, name: $name) {
+  updateOneCategory(where: { id: $id }, data: { name: $name }) {
     id
     name
     createdAt

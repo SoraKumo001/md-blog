@@ -20,8 +20,8 @@ export const Title: FC<Props> = ({ image, children }) => {
     return React.Children.map(children, (c) => (typeof c === 'object' ? '' : c))?.join('');
   }, [children]);
   if (!data) return null;
-  const systemTitle = data.System.title;
-  const systemDescription = data.System.description;
+  const systemTitle = data.findUniqueSystem.title;
+  const systemDescription = data.findUniqueSystem.description;
   const title = (subTitle || '') + ` | ${systemTitle}`;
   const imageUrl = [
     `${host}/api/og?title=${encodeURI(subTitle || '')}`,

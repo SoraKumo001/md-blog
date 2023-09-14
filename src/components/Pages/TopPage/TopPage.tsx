@@ -16,23 +16,24 @@ export const TopPage: FC<Props> = ({}) => {
   const [{ data: dataSystem }] = useSystemQuery();
   const [{ fetching, data }] = usePostsQuery();
   const posts = useMemo(() => {
-    if (!data?.Posts) return undefined;
-    return [...data.Posts].sort(
+    if (!data?.findManyPost) return undefined;
+    return [...data.findManyPost].sort(
       (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
-  }, [data?.Posts]);
+  }, [data?.findManyPost]);
   const categories = useMemo(() => {
-    if (!data?.Posts) return undefined;
-    const categoryPosts: { [key: string]: { name: string; posts: PostsQuery['Posts'] } } = {};
-    data.Posts.forEach((post) => [
+    if (!data?.findManyPost) return undefined;
+    const categoryPosts: { [key: string]: { name: string; posts: PostsQuery['findManyPost'] } } =
+      {};
+    data.findManyPost.forEach((post) => [
       post.categories.forEach((c) => {
         const value = categoryPosts[c.id] ?? (categoryPosts[c.id] = { name: c.name, posts: [] });
         value.posts.push(post);
       }),
     ]);
     return Object.entries(categoryPosts).sort(([, a], [, b]) => (a.name < b.name ? -1 : 1));
-  }, [data?.Posts]);
-  const system = dataSystem?.System;
+  }, [data?.findManyPost]);
+  const system = dataSystem?.findUniqueSystem;
   useLoading(fetching);
 
   if (!posts || !categories || !system) return null;
