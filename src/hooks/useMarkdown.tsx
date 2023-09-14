@@ -80,9 +80,9 @@ const components: MarkdownComponents = {
 };
 
 export const useMarkdown = (value?: string) => {
-  const processor = useMemo(() => createProcessor(components as never), []);
+  const processor = useMemo(() => createProcessor(components), []);
   return useMemo(() => {
     if (value === undefined) return [];
-    return processor.processSync(value).result as [ReactNode, VNode];
+    return processor(value) as unknown as [ReactNode, VNode];
   }, [processor, value]);
 };

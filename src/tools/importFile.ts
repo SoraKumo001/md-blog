@@ -77,7 +77,7 @@ const main = async () => {
 
     data.posts.forEach(async (value) => {
       await s.acquire();
-      const images = (await getImages(value.content)).result;
+      const images = await getImages(value.content);
       const { categories, ...post } = value;
       await prisma.post.upsert({
         create: post,

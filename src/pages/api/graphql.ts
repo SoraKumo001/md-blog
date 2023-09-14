@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { executeHTTPGraphQLRequest } from '@react-libraries/next-apollo-server';
 import admin from 'firebase-admin';
-import { getUserInfo } from '@/libs/getUserInfo';
+import { getUserFromToken } from '@/libs/getUserFromToken';
 import { Context, prisma } from '../../server/context';
 import { schema } from '../../server/schema';
 import type { NextApiHandler } from 'next';
@@ -10,7 +10,7 @@ import type { NextApiHandler } from 'next';
  */
 const createApolloServer = async () => {
   const apolloServer = new ApolloServer<Context>({
-    schema: await schema,
+    schema,
   });
   apolloServer.start();
   return apolloServer;
@@ -22,7 +22,7 @@ const apolloServer = createApolloServer();
  * APIRoute handler for Next.js
  */
 const handler: NextApiHandler = async (req, res) => {
-  const user = await getUserInfo(process.env.NEXT_PUBLIC_projectId, req.cookies['auth-token']);
+  const user = await getUserFromToken(req.cookies['auth-token']);
   await executeHTTPGraphQLRequest({
     req,
     res,

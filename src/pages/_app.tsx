@@ -76,7 +76,7 @@ App.getInitialProps = async (context: AppContext) => {
   const session =
     typeof window === 'undefined'
       ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-        await require('@/libs/getUserInfo').getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
+        await import('@/libs/getUserFromToken').then((v) => v.getUserFromToken(token))
       : undefined;
   return {
     pageProps: {

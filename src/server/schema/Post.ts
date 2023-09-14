@@ -93,7 +93,7 @@ export const PostMutation = mutationField('Post', {
         return prisma.post.delete({ where: { id } });
       } else {
         if (typeof content === 'string') {
-          const images = (await getImages(content)).result;
+          const images = await getImages(content);
           await normalizationFiles(prisma, id, images);
         }
         const file = card && (await uploadFile(card));

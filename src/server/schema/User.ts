@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { serialize } from 'cookie';
+import * as jsonwebtoken from 'jsonwebtoken';
 import { mutationField, objectType, stringArg } from 'nexus';
 import { User } from 'nexus-prisma';
 import { getUserInfo } from '@/libs/getUserInfo';
@@ -37,9 +38,12 @@ export const SignIn = mutationField('SignIn', {
     }
     const user = await getUser(prisma, userInfo.name, userInfo.email);
     if (user) {
+      const secret = process.env.SECRET_KEY;
+      if (!secret) throw new Error('SECRET_KEY is not defined');
+      const token = jsonwebtoken.sign({ payload: { user: user } }, secret);
       res.setHeader(
         'Set-Cookie',
-        serialize('auth-token', token as string, {
+        serialize('auth-token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV !== 'development',
           sameSite: 'strict',

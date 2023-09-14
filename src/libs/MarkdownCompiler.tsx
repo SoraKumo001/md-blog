@@ -7,10 +7,9 @@ import React, {
   isValidElement,
   ReactNode,
 } from 'react';
+import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
-import remarkParse from 'remark-parse';
-import { unified, Processor, Compiler } from 'unified';
-import type { Root, Content } from 'mdast';
+import type { Content } from 'mdast';
 import type unist from 'unist';
 
 export type VNode = Content & Partial<unist.Parent<Content>>;
@@ -85,7 +84,10 @@ const defaultComponents: MarkdownComponents = {
   ),
 };
 
-function ReactCompiler(this: Processor, components?: MarkdownComponents) {
+function ReactCompiler(
+  tree: unist.Node & Partial<unist.Parent<unist.Node>>,
+  components?: MarkdownComponents
+) {
   const property = {};
   const reactNode = (vnode: VNode): React.ReactNode => {
     const children =
@@ -104,44 +106,40 @@ function ReactCompiler(this: Processor, components?: MarkdownComponents) {
     } as never);
   };
 
-  const Compiler: Compiler = (tree: unist.Node & Partial<unist.Parent<unist.Node>>) => {
-    tree.children = tree.children?.flatMap((node, index, array) => {
-      const beforeLine = array[index - 1]?.position?.end.line;
-      const nowLine = node.position?.start.line;
-      if (index === 0 || !beforeLine || !nowLine) return node;
-      const count = nowLine - beforeLine - 1;
-      return [
-        ...Array(count)
-          .fill(null)
-          .map((_, index) => ({
-            type: 'paragraph',
-            position: {
-              start: { column: 1, line: beforeLine + index + 1, offset: 0 },
-              end: { column: 1, line: beforeLine + index + 1, offset: 0 },
-            },
-            children: [
-              {
-                type: 'text',
-                value: '',
-                position: {
-                  start: { column: 1, line: beforeLine + index + 1, offset: 0 },
-                  end: { column: 1, line: beforeLine + index + 1, offset: 0 },
-                },
+  tree.children = tree.children?.flatMap((node, index, array) => {
+    const beforeLine = array[index - 1]?.position?.end.line;
+    const nowLine = node.position?.start.line;
+    if (index === 0 || !beforeLine || !nowLine) return node;
+    const count = nowLine - beforeLine - 1;
+    return [
+      ...Array(count)
+        .fill(null)
+        .map((_, index) => ({
+          type: 'paragraph',
+          position: {
+            start: { column: 1, line: beforeLine + index + 1, offset: 0 },
+            end: { column: 1, line: beforeLine + index + 1, offset: 0 },
+          },
+          children: [
+            {
+              type: 'text',
+              value: '',
+              position: {
+                start: { column: 1, line: beforeLine + index + 1, offset: 0 },
+                end: { column: 1, line: beforeLine + index + 1, offset: 0 },
               },
-            ],
-          })),
-        node,
-      ];
-    });
-    return [reactNode(tree as VNode), tree];
-  };
-  this.Compiler = Compiler;
+            },
+          ],
+        })),
+      node,
+    ];
+  });
+  return [reactNode(tree as VNode), tree];
 }
 export const createProcessor = (option?: MarkdownComponents) => {
-  return unified().use(remarkParse).use(remarkGfm).use(ReactCompiler, option) as Processor<
-    Root,
-    Root,
-    Root,
-    [React.ReactElement, VNode]
-  >;
+  const processor = remark().use(remarkGfm);
+  return (file: string) => {
+    const tree = processor.parse(file);
+    return ReactCompiler(tree, option);
+  };
 };

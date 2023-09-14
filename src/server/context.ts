@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export type Context = {
   res: NextApiResponse;
   req: NextApiRequest;
   prisma: PrismaClient;
-  user?: { email: string; name: string };
+  user?: User;
 };
 
 export const prisma =
