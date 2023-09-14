@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator pothos {
+  provider = "prisma-pothos-types"
+  output = "../src/server/generated/pothos-types.ts"
+}
+
 /// @pothos-generator option {include:["mutation"],option:{authScopes:{USER:true}}}
 model User {
   id        String   @id @default(uuid())

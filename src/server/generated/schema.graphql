@@ -1004,7 +1004,7 @@ type FireStore {
 }
 
 type Mutation {
-  signIn(token: String): Boolean!
+  signIn(token: String): User
   signOut: Boolean!
   createOneUser(input: UserCreateInput!): User!
   createOnePost(input: PostCreateInput!): Post!

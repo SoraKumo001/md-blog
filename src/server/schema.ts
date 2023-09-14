@@ -11,10 +11,12 @@ import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
 import PothosSchemaExporter from 'pothos-schema-exporter';
 import { getUserInfo } from '@/libs/getUserInfo';
 import { Context, prisma } from './context';
+import PrismaTypes from './generated/pothos-types';
 /**
  * Create a new schema builder instance
  */
 export const builder = new SchemaBuilder<{
+  PrismaTypes: PrismaTypes;
   Scalars: {
     Upload: {
       // type all ID arguments and input values as string
@@ -36,8 +38,6 @@ export const builder = new SchemaBuilder<{
       join(process.cwd(), 'src', 'server', 'generated', 'schema.graphql'),
   },
   pothosPrismaGenerator: {
-    // Set the following permissions
-    /// @pothos-generator any {authority:["ROLE"]}
     authority: ({ context }) => (context.user ? ['USER'] : []),
   },
 });
@@ -45,11 +45,11 @@ export const builder = new SchemaBuilder<{
 builder.mutationType({
   fields: (t) => {
     return {
-      // Example of how to add a custom auth query
-      // This query will return true if the user is authenticated
-      signIn: t.boolean({
+      signIn: t.prismaField({
         args: { token: t.arg({ type: 'String' }) },
-        resolve: async (_root, { token }, { res }) => {
+        type: 'User',
+        nullable: true,
+        resolve: async (_query, _root, { token }, { res }) => {
           const userInfo =
             typeof token === 'string'
               ? await getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
@@ -63,7 +63,7 @@ builder.mutationType({
                 path: '/',
               })
             );
-            return true;
+            return null;
           }
           const user = await getUser(prisma, userInfo.name, userInfo.email);
           if (user) {
@@ -81,18 +81,15 @@ builder.mutationType({
               })
             );
           }
-          return true;
+          return user;
         },
       }),
-      // Example of how to add a custom auth query
-      // and will clear the session cookie
       signOut: t.boolean({
-        resolve: (_root, args, ctx) => {
-          const token = jsonwebtoken.sign({ payload: { user: args.user } }, 'test');
+        resolve: (_root, _args, ctx) => {
           const res = ctx.res;
           res.setHeader(
             'Set-Cookie',
-            serialize('session', token, {
+            serialize('session', '', {
               maxAge: 0,
               path: '/',
             })

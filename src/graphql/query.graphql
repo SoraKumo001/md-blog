@@ -1,5 +1,11 @@
 mutation SignIn($token: String) {
-  signIn(token: $token)
+  signIn(token: $token) {
+    id
+    name
+    email
+    createdAt
+    updatedAt
+  }
 }
 
 query Post($postId: String!) {

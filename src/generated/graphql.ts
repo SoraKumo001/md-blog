@@ -512,7 +512,7 @@ export type Mutation = {
   deleteOnePost: Post;
   deleteOneSystem: System;
   deleteOneUser: User;
-  signIn: Scalars['Boolean']['output'];
+  signIn?: Maybe<User>;
   signOut: Scalars['Boolean']['output'];
   updateManyCategory: Scalars['Int']['output'];
   updateManyFireStore: Scalars['Int']['output'];
@@ -1470,7 +1470,7 @@ export type SignInMutationVariables = Exact<{
 }>;
 
 
-export type SignInMutation = { __typename?: 'Mutation', signIn: boolean };
+export type SignInMutation = { __typename?: 'Mutation', signIn?: { __typename?: 'User', id: string, name: string, email: string, createdAt: string, updatedAt: string } | null };
 
 export type PostQueryVariables = Exact<{
   postId: Scalars['String']['input'];
@@ -1540,7 +1540,13 @@ export type UpdateCategoryMutation = { __typename?: 'Mutation', updateOneCategor
 
 export const SignInDocument = gql`
     mutation SignIn($token: String) {
-  signIn(token: $token)
+  signIn(token: $token) {
+    id
+    name
+    email
+    createdAt
+    updatedAt
+  }
 }
     `;
 
