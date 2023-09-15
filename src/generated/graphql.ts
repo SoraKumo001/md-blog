@@ -1485,7 +1485,7 @@ export type DeleteOnePostMutationVariables = Exact<{
 }>;
 
 
-export type DeleteOnePostMutation = { __typename?: 'Mutation', deleteOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+export type DeleteOnePostMutation = { __typename?: 'Mutation', normalizationPostFiles: boolean, deleteOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
 
 export type UpdateOnePostMutationVariables = Exact<{
   categories?: InputMaybe<Array<CategoryUniqueFilter> | CategoryUniqueFilter>;
@@ -1693,6 +1693,7 @@ export const DeleteOnePostDocument = gql`
       updatedAt
     }
   }
+  normalizationPostFiles(postId: $id, removeAll: true)
 }
     `;
 
