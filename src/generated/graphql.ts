@@ -68,7 +68,7 @@ export type CategoryCreateInput = {
 
 export type CategoryCreatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutCategoriesInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCategoriesInput>>;
 };
 
 export type CategoryCreateWithoutPostsInput = {
@@ -114,7 +114,7 @@ export type CategoryUpdateInput = {
 
 export type CategoryUpdatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutCategoriesInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCategoriesInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutCategoriesFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -124,12 +124,12 @@ export type CategoryUpdatePostsRelationInput = {
 };
 
 export type CategoryUpdatePostsRelationInputUpdate = {
-  data?: InputMaybe<PostUpdateWithoutCategoriesInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutCategoriesInput>;
   where?: InputMaybe<PostUniqueFilter>;
 };
 
 export type CategoryUpdatePostsRelationInputUpdateMany = {
-  data?: InputMaybe<PostUpdateWithoutCategoriesInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutCategoriesInput>;
   where?: InputMaybe<PostWithoutCategoriesFilter>;
 };
 
@@ -243,12 +243,12 @@ export type FireStoreCreateInput = {
 
 export type FireStoreCreatePostCardsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutCardInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCardInput>>;
 };
 
 export type FireStoreCreatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutPostFilesInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutPostFilesInput>>;
 };
 
 export type FireStoreCreateSystemCardsRelationInput = {
@@ -353,7 +353,7 @@ export type FireStoreUpdateInput = {
 
 export type FireStoreUpdatePostCardsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutCardInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCardInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutCardFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -363,18 +363,18 @@ export type FireStoreUpdatePostCardsRelationInput = {
 };
 
 export type FireStoreUpdatePostCardsRelationInputUpdate = {
-  data?: InputMaybe<PostUpdateWithoutCardInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutCardInput>;
   where?: InputMaybe<PostUniqueFilter>;
 };
 
 export type FireStoreUpdatePostCardsRelationInputUpdateMany = {
-  data?: InputMaybe<PostUpdateWithoutCardInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutCardInput>;
   where?: InputMaybe<PostWithoutCardFilter>;
 };
 
 export type FireStoreUpdatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutPostFilesInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutPostFilesInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutPostFilesFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -384,12 +384,12 @@ export type FireStoreUpdatePostsRelationInput = {
 };
 
 export type FireStoreUpdatePostsRelationInputUpdate = {
-  data?: InputMaybe<PostUpdateWithoutPostFilesInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutPostFilesInput>;
   where?: InputMaybe<PostUniqueFilter>;
 };
 
 export type FireStoreUpdatePostsRelationInputUpdateMany = {
-  data?: InputMaybe<PostUpdateWithoutPostFilesInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutPostFilesInput>;
   where?: InputMaybe<PostWithoutPostFilesFilter>;
 };
 
@@ -512,8 +512,8 @@ export type Mutation = {
   deleteOnePost: Post;
   deleteOneSystem: System;
   deleteOneUser: User;
+  normalizationPostFiles: Scalars['Boolean']['output'];
   signIn?: Maybe<User>;
-  signOut: Scalars['Boolean']['output'];
   updateManyCategory: Scalars['Int']['output'];
   updateManyFireStore: Scalars['Int']['output'];
   updateManyPost: Scalars['Int']['output'];
@@ -524,6 +524,9 @@ export type Mutation = {
   updateOnePost: Post;
   updateOneSystem: System;
   updateOneUser: User;
+  uploadPostIcon: FireStore;
+  uploadPostImage: FireStore;
+  uploadSystemIcon: FireStore;
 };
 
 
@@ -538,7 +541,7 @@ export type MutationCreateManyFireStoreArgs = {
 
 
 export type MutationCreateManyPostArgs = {
-  input: Array<PostCreateInput>;
+  input: Array<PostCreateWithoutAuthorInput>;
 };
 
 
@@ -563,7 +566,7 @@ export type MutationCreateOneFireStoreArgs = {
 
 
 export type MutationCreateOnePostArgs = {
-  input: PostCreateInput;
+  input: PostCreateWithoutAuthorInput;
 };
 
 
@@ -627,6 +630,12 @@ export type MutationDeleteOneUserArgs = {
 };
 
 
+export type MutationNormalizationPostFilesArgs = {
+  postId: Scalars['String']['input'];
+  removeAll?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
 export type MutationSignInArgs = {
   token?: InputMaybe<Scalars['String']['input']>;
 };
@@ -645,7 +654,7 @@ export type MutationUpdateManyFireStoreArgs = {
 
 
 export type MutationUpdateManyPostArgs = {
-  data: PostUpdateInput;
+  data: PostUpdateWithoutAuthorWithoutAuthorInput;
   where: PostFilter;
 };
 
@@ -675,7 +684,7 @@ export type MutationUpdateOneFireStoreArgs = {
 
 
 export type MutationUpdateOnePostArgs = {
-  data: PostUpdateInput;
+  data: PostUpdateWithoutAuthorInput;
   where: PostUniqueFilter;
 };
 
@@ -691,6 +700,23 @@ export type MutationUpdateOneUserArgs = {
   where: UserUniqueFilter;
 };
 
+
+export type MutationUploadPostIconArgs = {
+  file?: InputMaybe<Scalars['Upload']['input']>;
+  postId: Scalars['String']['input'];
+};
+
+
+export type MutationUploadPostImageArgs = {
+  file: Scalars['Upload']['input'];
+  postId: Scalars['String']['input'];
+};
+
+
+export type MutationUploadSystemIconArgs = {
+  file: Scalars['Upload']['input'];
+};
+
 export enum OrderBy {
   Asc = 'Asc',
   Desc = 'Desc'
@@ -700,7 +726,7 @@ export type Post = {
   __typename?: 'Post';
   author: User;
   authorId: Scalars['String']['output'];
-  card: FireStore;
+  card?: Maybe<FireStore>;
   cardId?: Maybe<Scalars['String']['output']>;
   categories: Array<Category>;
   categoriesCount: Scalars['Int']['output'];
@@ -741,11 +767,6 @@ export type PostPostFilesCountArgs = {
   filter?: InputMaybe<PostFilter>;
 };
 
-export type PostCreateAuthorRelationInput = {
-  connect?: InputMaybe<UserUniqueFilter>;
-  create?: InputMaybe<UserCreateWithoutPostInput>;
-};
-
 export type PostCreateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
   create?: InputMaybe<FireStoreCreateWithoutPostCardsInput>;
@@ -754,20 +775,6 @@ export type PostCreateCardRelationInput = {
 export type PostCreateCategoriesRelationInput = {
   connect?: InputMaybe<Array<CategoryUniqueFilter>>;
   create?: InputMaybe<Array<CategoryCreateWithoutPostsInput>>;
-};
-
-export type PostCreateInput = {
-  author: PostCreateAuthorRelationInput;
-  card?: InputMaybe<PostCreateCardRelationInput>;
-  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PostCreatePostFilesRelationInput = {
@@ -788,8 +795,8 @@ export type PostCreateWithoutAuthorInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostCreateWithoutCardInput = {
-  author: PostCreateAuthorRelationInput;
+export type PostCreateWithoutAuthorWithoutAuthorInput = {
+  card?: InputMaybe<PostCreateCardRelationInput>;
   categories?: InputMaybe<PostCreateCategoriesRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -801,8 +808,19 @@ export type PostCreateWithoutCardInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostCreateWithoutCategoriesInput = {
-  author: PostCreateAuthorRelationInput;
+export type PostCreateWithoutAuthorWithoutCardInput = {
+  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PostCreateWithoutAuthorWithoutCategoriesInput = {
   card?: InputMaybe<PostCreateCardRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -814,8 +832,7 @@ export type PostCreateWithoutCategoriesInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostCreateWithoutPostFilesInput = {
-  author: PostCreateAuthorRelationInput;
+export type PostCreateWithoutAuthorWithoutPostFilesInput = {
   card?: InputMaybe<PostCreateCardRelationInput>;
   categories?: InputMaybe<PostCreateCategoriesRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
@@ -869,12 +886,6 @@ export type PostUniqueFilter = {
   id?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PostUpdateAuthorRelationInput = {
-  connect?: InputMaybe<UserUniqueFilter>;
-  create?: InputMaybe<UserCreateWithoutPostInput>;
-  update?: InputMaybe<UserUpdateWithoutPostInput>;
-};
-
 export type PostUpdateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
   create?: InputMaybe<FireStoreCreateWithoutPostCardsInput>;
@@ -902,20 +913,6 @@ export type PostUpdateCategoriesRelationInputUpdate = {
 export type PostUpdateCategoriesRelationInputUpdateMany = {
   data?: InputMaybe<CategoryUpdateWithoutPostsInput>;
   where?: InputMaybe<CategoryWithoutPostsFilter>;
-};
-
-export type PostUpdateInput = {
-  author?: InputMaybe<PostUpdateAuthorRelationInput>;
-  card?: InputMaybe<PostUpdateCardRelationInput>;
-  categories?: InputMaybe<PostUpdateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostUpdatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PostUpdatePostFilesRelationInput = {
@@ -952,8 +949,8 @@ export type PostUpdateWithoutAuthorInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostUpdateWithoutCardInput = {
-  author?: InputMaybe<PostUpdateAuthorRelationInput>;
+export type PostUpdateWithoutAuthorWithoutAuthorInput = {
+  card?: InputMaybe<PostUpdateCardRelationInput>;
   categories?: InputMaybe<PostUpdateCategoriesRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -965,8 +962,19 @@ export type PostUpdateWithoutCardInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostUpdateWithoutCategoriesInput = {
-  author?: InputMaybe<PostUpdateAuthorRelationInput>;
+export type PostUpdateWithoutAuthorWithoutCardInput = {
+  categories?: InputMaybe<PostUpdateCategoriesRelationInput>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  postFiles?: InputMaybe<PostUpdatePostFilesRelationInput>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PostUpdateWithoutAuthorWithoutCategoriesInput = {
   card?: InputMaybe<PostUpdateCardRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -978,8 +986,7 @@ export type PostUpdateWithoutCategoriesInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type PostUpdateWithoutPostFilesInput = {
-  author?: InputMaybe<PostUpdateAuthorRelationInput>;
+export type PostUpdateWithoutAuthorWithoutPostFilesInput = {
   card?: InputMaybe<PostUpdateCardRelationInput>;
   categories?: InputMaybe<PostUpdateCategoriesRelationInput>;
   content?: InputMaybe<Scalars['String']['input']>;
@@ -1211,11 +1218,11 @@ export type StringFilter = {
 
 export type System = {
   __typename?: 'System';
-  card: FireStore;
+  card?: Maybe<FireStore>;
   cardId?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
-  icon: FireStore;
+  icon?: Maybe<FireStore>;
   iconId?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   title: Scalars['String']['output'];
@@ -1393,15 +1400,7 @@ export type UserCreateInput = {
 
 export type UserCreatePostRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorInput>>;
-};
-
-export type UserCreateWithoutPostInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  email: Scalars['String']['input'];
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutAuthorInput>>;
 };
 
 export type UserFilter = {
@@ -1438,7 +1437,7 @@ export type UserUpdateInput = {
 
 export type UserUpdatePostRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorInput>>;
+  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutAuthorInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutAuthorFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -1448,21 +1447,13 @@ export type UserUpdatePostRelationInput = {
 };
 
 export type UserUpdatePostRelationInputUpdate = {
-  data?: InputMaybe<PostUpdateWithoutAuthorInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutAuthorInput>;
   where?: InputMaybe<PostUniqueFilter>;
 };
 
 export type UserUpdatePostRelationInputUpdateMany = {
-  data?: InputMaybe<PostUpdateWithoutAuthorInput>;
+  data?: InputMaybe<PostUpdateWithoutAuthorWithoutAuthorInput>;
   where?: InputMaybe<PostWithoutAuthorFilter>;
-};
-
-export type UserUpdateWithoutPostInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type SignInMutationVariables = Exact<{
@@ -1484,6 +1475,18 @@ export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type PostsQuery = { __typename?: 'Query', findManyPost: Array<{ __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> }> };
 
+export type CreateOnePostMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateOnePostMutation = { __typename?: 'Mutation', createOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+
+export type DeleteOnePostMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteOnePostMutation = { __typename?: 'Mutation', deleteOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+
 export type UpdateOnePostMutationVariables = Exact<{
   categories?: InputMaybe<Array<CategoryUniqueFilter> | CategoryUniqueFilter>;
   where: PostUniqueFilter;
@@ -1493,7 +1496,7 @@ export type UpdateOnePostMutationVariables = Exact<{
 export type UpdateOnePostMutation = { __typename?: 'Mutation', updateOnePost: { __typename?: 'Post', id: string } };
 
 export type UpdatePostMutationVariables = Exact<{
-  postId?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['String']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   published?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1502,20 +1505,29 @@ export type UpdatePostMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', updateOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, cardId?: string | null, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+export type UpdatePostMutation = { __typename?: 'Mutation', normalizationPostFiles: boolean, updateOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, content: string, authorId: string, createdAt: string, updatedAt: string, publishedAt: string, cardId?: string | null, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+
+export type UploadPostImageMutationVariables = Exact<{
+  postId: Scalars['String']['input'];
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type UploadPostImageMutation = { __typename?: 'Mutation', uploadPostImage: { __typename?: 'FireStore', id: string, createdAt: string, updatedAt: string, name: string, mimeType: string } };
 
 export type SystemQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SystemQuery = { __typename?: 'Query', findUniqueSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } } };
+export type SystemQuery = { __typename?: 'Query', findUniqueSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon?: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } | null } };
 
 export type UpdateSystemMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<SystemUpdateIconRelationInput>;
 }>;
 
 
-export type UpdateSystemMutation = { __typename?: 'Mutation', updateOneSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } } };
+export type UpdateSystemMutation = { __typename?: 'Mutation', updateOneSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon?: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } | null } };
 
 export type CategoryQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1529,13 +1541,50 @@ export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CategoriesQuery = { __typename?: 'Query', findManyCategory: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> };
 
+export type CreateCategoryMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createOneCategory: { __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string } };
+
 export type UpdateCategoryMutationVariables = Exact<{
-  id?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 }>;
 
 
 export type UpdateCategoryMutation = { __typename?: 'Mutation', updateOneCategory: { __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string } };
+
+export type DeleteOneCategoryMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteOneCategoryMutation = { __typename?: 'Mutation', deleteOneCategory: { __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string } };
+
+export type UploadSystemIconMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type UploadSystemIconMutation = { __typename?: 'Mutation', uploadSystemIcon: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } };
+
+export type UploadPostIconMutationVariables = Exact<{
+  postId: Scalars['String']['input'];
+  file?: InputMaybe<Scalars['Upload']['input']>;
+}>;
+
+
+export type UploadPostIconMutation = { __typename?: 'Mutation', uploadPostIcon: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } };
+
+export type NormalizationPostFilesMutationVariables = Exact<{
+  postId: Scalars['String']['input'];
+  removeAll?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type NormalizationPostFilesMutation = { __typename?: 'Mutation', normalizationPostFiles: boolean };
 
 
 export const SignInDocument = gql`
@@ -1602,6 +1651,54 @@ export const PostsDocument = gql`
 export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
   return Urql.useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument, ...options });
 };
+export const CreateOnePostDocument = gql`
+    mutation CreateOnePost {
+  createOnePost(input: {}) {
+    id
+    published
+    title
+    authorId
+    cardId
+    createdAt
+    updatedAt
+    publishedAt
+    categories {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+export function useCreateOnePostMutation() {
+  return Urql.useMutation<CreateOnePostMutation, CreateOnePostMutationVariables>(CreateOnePostDocument);
+};
+export const DeleteOnePostDocument = gql`
+    mutation DeleteOnePost($id: String!) {
+  deleteOnePost(where: {id: $id}) {
+    id
+    published
+    title
+    authorId
+    cardId
+    createdAt
+    updatedAt
+    publishedAt
+    categories {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+export function useDeleteOnePostMutation() {
+  return Urql.useMutation<DeleteOnePostMutation, DeleteOnePostMutationVariables>(DeleteOnePostDocument);
+};
 export const UpdateOnePostDocument = gql`
     mutation UpdateOnePost($categories: [CategoryUniqueFilter!], $where: PostUniqueFilter!) {
   updateOnePost(data: {categories: {set: $categories}}, where: $where) {
@@ -1614,7 +1711,7 @@ export function useUpdateOnePostMutation() {
   return Urql.useMutation<UpdateOnePostMutation, UpdateOnePostMutationVariables>(UpdateOnePostDocument);
 };
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($postId: String, $title: String, $content: String, $published: Boolean, $publishedAt: DateTime, $categories: [CategoryUniqueFilter!]) {
+    mutation UpdatePost($postId: String!, $title: String, $content: String, $published: Boolean, $publishedAt: DateTime, $categories: [CategoryUniqueFilter!]) {
   updateOnePost(
     data: {id: $postId, title: $title, content: $content, published: $published, publishedAt: $publishedAt, categories: {set: $categories}}
     where: {id: $postId}
@@ -1635,11 +1732,27 @@ export const UpdatePostDocument = gql`
     }
     cardId
   }
+  normalizationPostFiles(postId: $postId)
 }
     `;
 
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
+};
+export const UploadPostImageDocument = gql`
+    mutation UploadPostImage($postId: String!, $file: Upload!) {
+  uploadPostImage(postId: $postId, file: $file) {
+    id
+    createdAt
+    updatedAt
+    name
+    mimeType
+  }
+}
+    `;
+
+export function useUploadPostImageMutation() {
+  return Urql.useMutation<UploadPostImageMutation, UploadPostImageMutationVariables>(UploadPostImageDocument);
 };
 export const SystemDocument = gql`
     query System {
@@ -1666,9 +1779,9 @@ export function useSystemQuery(options?: Omit<Urql.UseQueryArgs<SystemQueryVaria
   return Urql.useQuery<SystemQuery, SystemQueryVariables>({ query: SystemDocument, ...options });
 };
 export const UpdateSystemDocument = gql`
-    mutation UpdateSystem($title: String, $description: String) {
+    mutation UpdateSystem($title: String, $description: String, $icon: SystemUpdateIconRelationInput) {
   updateOneSystem(
-    data: {title: $title, description: $description}
+    data: {title: $title, description: $description, icon: $icon}
     where: {id: "system"}
   ) {
     id
@@ -1720,8 +1833,22 @@ export const CategoriesDocument = gql`
 export function useCategoriesQuery(options?: Omit<Urql.UseQueryArgs<CategoriesQueryVariables>, 'query'>) {
   return Urql.useQuery<CategoriesQuery, CategoriesQueryVariables>({ query: CategoriesDocument, ...options });
 };
+export const CreateCategoryDocument = gql`
+    mutation CreateCategory($name: String!) {
+  createOneCategory(input: {name: $name}) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useCreateCategoryMutation() {
+  return Urql.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument);
+};
 export const UpdateCategoryDocument = gql`
-    mutation UpdateCategory($id: String, $name: String!) {
+    mutation UpdateCategory($id: String!, $name: String!) {
   updateOneCategory(where: {id: $id}, data: {name: $name}) {
     id
     name
@@ -1733,4 +1860,57 @@ export const UpdateCategoryDocument = gql`
 
 export function useUpdateCategoryMutation() {
   return Urql.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UpdateCategoryDocument);
+};
+export const DeleteOneCategoryDocument = gql`
+    mutation DeleteOneCategory($id: String!) {
+  deleteOneCategory(where: {id: $id}) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useDeleteOneCategoryMutation() {
+  return Urql.useMutation<DeleteOneCategoryMutation, DeleteOneCategoryMutationVariables>(DeleteOneCategoryDocument);
+};
+export const UploadSystemIconDocument = gql`
+    mutation UploadSystemIcon($file: Upload!) {
+  uploadSystemIcon(file: $file) {
+    id
+    name
+    mimeType
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useUploadSystemIconMutation() {
+  return Urql.useMutation<UploadSystemIconMutation, UploadSystemIconMutationVariables>(UploadSystemIconDocument);
+};
+export const UploadPostIconDocument = gql`
+    mutation UploadPostIcon($postId: String!, $file: Upload) {
+  uploadPostIcon(postId: $postId, file: $file) {
+    id
+    name
+    mimeType
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useUploadPostIconMutation() {
+  return Urql.useMutation<UploadPostIconMutation, UploadPostIconMutationVariables>(UploadPostIconDocument);
+};
+export const NormalizationPostFilesDocument = gql`
+    mutation NormalizationPostFiles($postId: String!, $removeAll: Boolean) {
+  normalizationPostFiles(postId: $postId, removeAll: $removeAll)
+}
+    `;
+
+export function useNormalizationPostFilesMutation() {
+  return Urql.useMutation<NormalizationPostFilesMutation, NormalizationPostFilesMutationVariables>(NormalizationPostFilesDocument);
 };

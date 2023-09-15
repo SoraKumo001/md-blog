@@ -19,7 +19,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { MessageDialog } from '@/components/Commons/Dialog/MessageDialog';
 import { ImageDragField } from '@/components/Commons/ImageDragField';
-import { PostQuery, useCategoriesQuery, useUpdatePostMutation } from '@/generated/graphql';
+import { PostQuery, useCategoriesQuery, useDeleteOnePostMutation } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import { classNames } from '@/libs/classNames';
 import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
@@ -40,7 +40,7 @@ interface Props {
  */
 export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
   const router = useRouter();
-  const [{ fetching: updateFetching }, updatePost] = useUpdatePostMutation();
+  const [{ fetching: updateFetching }, deletePost] = useDeleteOnePostMutation();
   const [isDelete, setDelete] = useState(false);
   const [{ data, fetching }] = useCategoriesQuery();
   const categoryList = useMemo(() => {
@@ -150,10 +150,11 @@ export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
         <MessageDialog
           isOpen={isDelete}
           onResult={(result) => {
-            // if (result)
-            //   updatePost({ postId: post.id, isTrash: true }).then(() => {
-            //     router.replace('/');
-            //   });
+            if (result) {
+              deletePost({ id: post.id }).then(() => {
+                router.replace('/');
+              });
+            }
             setDelete(false);
           }}
         >

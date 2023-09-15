@@ -1,7 +1,12 @@
 import { Button, Container, Stack, TextField } from '@mui/material';
 import React, { FC, Fragment, useEffect } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { useCategoriesQuery, useUpdateCategoryMutation } from '@/generated/graphql';
+import {
+  useCategoriesQuery,
+  useUpdateCategoryMutation,
+  useCreateCategoryMutation,
+  useDeleteOneCategoryMutation,
+} from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import styled from './CategorySetting.module.scss';
 
@@ -30,18 +35,24 @@ export const CategorySetting: FC<Props> = ({}) => {
   });
   const { fields, remove, append } = useFieldArray({ control, name: 'categories' });
   const [{ fetching: mutationFetching }, updateCategory] = useUpdateCategoryMutation();
+  const [{ fetching: mutationCreateFetching }, createCategory] = useCreateCategoryMutation();
+  const [{ fetching: mutationDeleteFetching }, deleteCategory] = useDeleteOneCategoryMutation();
   const onSubmit: SubmitHandler<FormInput> = async ({ categories }) => {
     await Promise.all(
       categories.map(async ({ id, name }) => {
-        if (id && name) {
-          await updateCategory({ id, name });
+        if (id) {
+          if (name) {
+            await updateCategory({ id, name });
+          } else {
+            await deleteCategory({ id });
+          }
         } else if (name) {
-          await updateCategory({ name });
+          await createCategory({ name });
         }
       })
     );
   };
-  useLoading([fetching, mutationFetching]);
+  useLoading([fetching, mutationFetching, mutationCreateFetching, mutationDeleteFetching]);
 
   watch(({ categories }) => {
     if (categories?.[categories.length - 1]?.name) {

@@ -230,11 +230,11 @@ input UserCreateInput {
 }
 
 input UserCreatePostRelationInput {
-  create: [PostCreateWithoutAuthorInput!]
+  create: [PostCreateWithoutAuthorWithoutAuthorInput!]
   connect: [PostUniqueFilter!]
 }
 
-input PostCreateWithoutAuthorInput {
+input PostCreateWithoutAuthorWithoutAuthorInput {
   id: String
   published: Boolean
   title: String
@@ -294,34 +294,20 @@ input FireStoreCreateWithoutSystemCardsInput {
 }
 
 input FireStoreCreatePostCardsRelationInput {
-  create: [PostCreateWithoutCardInput!]
+  create: [PostCreateWithoutAuthorWithoutCardInput!]
   connect: [PostUniqueFilter!]
 }
 
-input PostCreateWithoutCardInput {
+input PostCreateWithoutAuthorWithoutCardInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostCreateAuthorRelationInput!
   categories: PostCreateCategoriesRelationInput
   postFiles: PostCreatePostFilesRelationInput
   createdAt: DateTime
   updatedAt: DateTime
   publishedAt: DateTime
-}
-
-input PostCreateAuthorRelationInput {
-  create: UserCreateWithoutPostInput
-  connect: UserUniqueFilter
-}
-
-input UserCreateWithoutPostInput {
-  id: String
-  email: String!
-  name: String
-  createdAt: DateTime
-  updatedAt: DateTime
 }
 
 input PostCreateCategoriesRelationInput {
@@ -383,16 +369,15 @@ input FireStoreCreateWithoutSystemIconsInput {
 }
 
 input FireStoreCreatePostsRelationInput {
-  create: [PostCreateWithoutPostFilesInput!]
+  create: [PostCreateWithoutAuthorWithoutPostFilesInput!]
   connect: [PostUniqueFilter!]
 }
 
-input PostCreateWithoutPostFilesInput {
+input PostCreateWithoutAuthorWithoutPostFilesInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostCreateAuthorRelationInput!
   card: PostCreateCardRelationInput
   categories: PostCreateCategoriesRelationInput
   createdAt: DateTime
@@ -400,12 +385,11 @@ input PostCreateWithoutPostFilesInput {
   publishedAt: DateTime
 }
 
-input PostCreateInput {
+input PostCreateWithoutAuthorInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostCreateAuthorRelationInput!
   card: PostCreateCardRelationInput
   categories: PostCreateCategoriesRelationInput
   postFiles: PostCreatePostFilesRelationInput
@@ -423,16 +407,15 @@ input CategoryCreateInput {
 }
 
 input CategoryCreatePostsRelationInput {
-  create: [PostCreateWithoutCategoriesInput!]
+  create: [PostCreateWithoutAuthorWithoutCategoriesInput!]
   connect: [PostUniqueFilter!]
 }
 
-input PostCreateWithoutCategoriesInput {
+input PostCreateWithoutAuthorWithoutCategoriesInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostCreateAuthorRelationInput!
   card: PostCreateCardRelationInput
   postFiles: PostCreatePostFilesRelationInput
   createdAt: DateTime
@@ -472,7 +455,7 @@ input UserUpdateInput {
 }
 
 input UserUpdatePostRelationInput {
-  create: [PostCreateWithoutAuthorInput!]
+  create: [PostCreateWithoutAuthorWithoutAuthorInput!]
   set: [PostUniqueFilter!]
   disconnect: [PostUniqueFilter!]
   delete: [PostUniqueFilter!]
@@ -482,7 +465,7 @@ input UserUpdatePostRelationInput {
   deleteMany: [PostWithoutAuthorFilter!]
 }
 
-input PostUpdateWithoutAuthorInput {
+input PostUpdateWithoutAuthorWithoutAuthorInput {
   id: String
   published: Boolean
   title: String
@@ -554,7 +537,7 @@ input FireStoreUpdateWithoutSystemCardsInput {
 }
 
 input FireStoreUpdatePostCardsRelationInput {
-  create: [PostCreateWithoutCardInput!]
+  create: [PostCreateWithoutAuthorWithoutCardInput!]
   set: [PostUniqueFilter!]
   disconnect: [PostUniqueFilter!]
   delete: [PostUniqueFilter!]
@@ -564,31 +547,16 @@ input FireStoreUpdatePostCardsRelationInput {
   deleteMany: [PostWithoutCardFilter!]
 }
 
-input PostUpdateWithoutCardInput {
+input PostUpdateWithoutAuthorWithoutCardInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostUpdateAuthorRelationInput
   categories: PostUpdateCategoriesRelationInput
   postFiles: PostUpdatePostFilesRelationInput
   createdAt: DateTime
   updatedAt: DateTime
   publishedAt: DateTime
-}
-
-input PostUpdateAuthorRelationInput {
-  create: UserCreateWithoutPostInput
-  update: UserUpdateWithoutPostInput
-  connect: UserUniqueFilter
-}
-
-input UserUpdateWithoutPostInput {
-  id: String
-  email: String
-  name: String
-  createdAt: DateTime
-  updatedAt: DateTime
 }
 
 input PostUpdateCategoriesRelationInput {
@@ -688,7 +656,7 @@ input FireStoreUpdateWithoutSystemIconsInput {
 }
 
 input FireStoreUpdatePostsRelationInput {
-  create: [PostCreateWithoutPostFilesInput!]
+  create: [PostCreateWithoutAuthorWithoutPostFilesInput!]
   set: [PostUniqueFilter!]
   disconnect: [PostUniqueFilter!]
   delete: [PostUniqueFilter!]
@@ -698,12 +666,11 @@ input FireStoreUpdatePostsRelationInput {
   deleteMany: [PostWithoutPostFilesFilter!]
 }
 
-input PostUpdateWithoutPostFilesInput {
+input PostUpdateWithoutAuthorWithoutPostFilesInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostUpdateAuthorRelationInput
   card: PostUpdateCardRelationInput
   categories: PostUpdateCategoriesRelationInput
   createdAt: DateTime
@@ -728,12 +695,12 @@ input PostWithoutPostFilesFilter {
 
 input FireStoreUpdatePostsRelationInputUpdate {
   where: PostUniqueFilter
-  data: PostUpdateWithoutPostFilesInput
+  data: PostUpdateWithoutAuthorWithoutPostFilesInput
 }
 
 input FireStoreUpdatePostsRelationInputUpdateMany {
   where: PostWithoutPostFilesFilter
-  data: PostUpdateWithoutPostFilesInput
+  data: PostUpdateWithoutAuthorWithoutPostFilesInput
 }
 
 input SystemWithoutCardFilter {
@@ -793,12 +760,12 @@ input PostWithoutCardFilter {
 
 input FireStoreUpdatePostCardsRelationInputUpdate {
   where: PostUniqueFilter
-  data: PostUpdateWithoutCardInput
+  data: PostUpdateWithoutAuthorWithoutCardInput
 }
 
 input FireStoreUpdatePostCardsRelationInputUpdateMany {
   where: PostWithoutCardFilter
-  data: PostUpdateWithoutCardInput
+  data: PostUpdateWithoutAuthorWithoutCardInput
 }
 
 input SystemWithoutIconFilter {
@@ -837,20 +804,19 @@ input PostWithoutAuthorFilter {
 
 input UserUpdatePostRelationInputUpdate {
   where: PostUniqueFilter
-  data: PostUpdateWithoutAuthorInput
+  data: PostUpdateWithoutAuthorWithoutAuthorInput
 }
 
 input UserUpdatePostRelationInputUpdateMany {
   where: PostWithoutAuthorFilter
-  data: PostUpdateWithoutAuthorInput
+  data: PostUpdateWithoutAuthorWithoutAuthorInput
 }
 
-input PostUpdateInput {
+input PostUpdateWithoutAuthorInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostUpdateAuthorRelationInput
   card: PostUpdateCardRelationInput
   categories: PostUpdateCategoriesRelationInput
   postFiles: PostUpdatePostFilesRelationInput
@@ -868,7 +834,7 @@ input CategoryUpdateInput {
 }
 
 input CategoryUpdatePostsRelationInput {
-  create: [PostCreateWithoutCategoriesInput!]
+  create: [PostCreateWithoutAuthorWithoutCategoriesInput!]
   set: [PostUniqueFilter!]
   disconnect: [PostUniqueFilter!]
   delete: [PostUniqueFilter!]
@@ -878,12 +844,11 @@ input CategoryUpdatePostsRelationInput {
   deleteMany: [PostWithoutCategoriesFilter!]
 }
 
-input PostUpdateWithoutCategoriesInput {
+input PostUpdateWithoutAuthorWithoutCategoriesInput {
   id: String
   published: Boolean
   title: String
   content: String
-  author: PostUpdateAuthorRelationInput
   card: PostUpdateCardRelationInput
   postFiles: PostUpdatePostFilesRelationInput
   createdAt: DateTime
@@ -908,12 +873,12 @@ input PostWithoutCategoriesFilter {
 
 input CategoryUpdatePostsRelationInputUpdate {
   where: PostUniqueFilter
-  data: PostUpdateWithoutCategoriesInput
+  data: PostUpdateWithoutAuthorWithoutCategoriesInput
 }
 
 input CategoryUpdatePostsRelationInputUpdateMany {
   where: PostWithoutCategoriesFilter
-  data: PostUpdateWithoutCategoriesInput
+  data: PostUpdateWithoutAuthorWithoutCategoriesInput
 }
 
 input SystemUpdateInput {
@@ -956,7 +921,7 @@ type Post {
   author: User!
   authorId: String!
   cardId: String
-  card: FireStore!
+  card: FireStore
   categories(filter: CategoryFilter, orderBy: [CategoryOrderBy!], limit: Int, offset: Int): [Category!]!
   categoriesCount(filter: PostFilter): Int!
   postFiles(filter: FireStoreFilter, orderBy: [FireStoreOrderBy!], limit: Int, offset: Int): [FireStore!]!
@@ -980,9 +945,9 @@ type System {
   title: String!
   description: String!
   iconId: String
-  icon: FireStore!
+  icon: FireStore
   cardId: String
-  card: FireStore!
+  card: FireStore
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1005,24 +970,27 @@ type FireStore {
 
 type Mutation {
   signIn(token: String): User
-  signOut: Boolean!
+  uploadSystemIcon(file: Upload!): FireStore!
+  uploadPostIcon(postId: String!, file: Upload): FireStore!
+  uploadPostImage(postId: String!, file: Upload!): FireStore!
+  normalizationPostFiles(postId: String!, removeAll: Boolean): Boolean!
   createOneUser(input: UserCreateInput!): User!
-  createOnePost(input: PostCreateInput!): Post!
+  createOnePost(input: PostCreateWithoutAuthorInput!): Post!
   createOneCategory(input: CategoryCreateInput!): Category!
   createOneSystem(input: SystemCreateInput!): System!
   createOneFireStore(input: FireStoreCreateInput!): FireStore!
   createManyUser(input: [UserCreateInput!]!): Int!
-  createManyPost(input: [PostCreateInput!]!): Int!
+  createManyPost(input: [PostCreateWithoutAuthorInput!]!): Int!
   createManyCategory(input: [CategoryCreateInput!]!): Int!
   createManySystem(input: [SystemCreateInput!]!): Int!
   createManyFireStore(input: [FireStoreCreateInput!]!): Int!
   updateOneUser(where: UserUniqueFilter!, data: UserUpdateInput!): User!
-  updateOnePost(where: PostUniqueFilter!, data: PostUpdateInput!): Post!
+  updateOnePost(where: PostUniqueFilter!, data: PostUpdateWithoutAuthorInput!): Post!
   updateOneCategory(where: CategoryUniqueFilter!, data: CategoryUpdateInput!): Category!
   updateOneSystem(where: SystemUniqueFilter!, data: SystemUpdateInput!): System!
   updateOneFireStore(where: FireStoreUniqueFilter!, data: FireStoreUpdateInput!): FireStore!
   updateManyUser(where: UserFilter!, data: UserUpdateInput!): Int!
-  updateManyPost(where: PostFilter!, data: PostUpdateInput!): Int!
+  updateManyPost(where: PostFilter!, data: PostUpdateWithoutAuthorWithoutAuthorInput!): Int!
   updateManyCategory(where: CategoryFilter!, data: CategoryUpdateInput!): Int!
   updateManySystem(where: SystemFilter!, data: SystemUpdateInput!): Int!
   updateManyFireStore(where: FireStoreFilter!, data: FireStoreUpdateInput!): Int!

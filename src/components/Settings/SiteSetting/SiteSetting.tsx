@@ -2,7 +2,11 @@ import { Button, Container, Stack, TextField } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ImageDragField } from '@/components/Commons/ImageDragField';
-import { useSystemQuery, useUpdateSystemMutation } from '@/generated/graphql';
+import {
+  useSystemQuery,
+  useUpdateSystemMutation,
+  useUploadSystemIconMutation,
+} from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import styled from './SiteSetting.module.scss';
@@ -23,9 +27,13 @@ export const SiteSetting: FC<Props> = ({}) => {
   const { register, handleSubmit } = useForm<FormInput>();
   const [{ data, fetching }] = useSystemQuery();
   const [{ fetching: mutationFetching }, updateSystem] = useUpdateSystemMutation();
+  const [, uploadSystemIcon] = useUploadSystemIconMutation();
   const [icon, setIcon] = useState<Blob | null | undefined>();
   const onSubmit: SubmitHandler<FormInput> = ({ title, description }) => {
-    updateSystem({ title, description /* icon*/ });
+    updateSystem({ title, description, icon: icon === null ? { disconnect: true } : undefined });
+    if (icon) {
+      uploadSystemIcon({ file: icon });
+    }
   };
   useLoading([fetching, mutationFetching]);
   if (!data) return null;

@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffectOnce } from 'react-use';
-import { useUpdatePostMutation } from '@/generated/graphql';
+import { useCreateOnePostMutation } from '@/generated/graphql';
 
 const Page = () => {
   const router = useRouter();
-  const [, updatePost] = useUpdatePostMutation();
+  const [, createPost] = useCreateOnePostMutation();
   useEffectOnce(() => {
-    updatePost({}).then(({ data }) => {
-      const id = data?.updateOnePost?.id;
+    createPost({}).then(({ data }) => {
+      const id = data?.createOnePost?.id;
       id && router.replace(`/edit/${id}`);
     });
   });

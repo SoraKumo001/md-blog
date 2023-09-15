@@ -13568,10 +13568,10 @@ postcss@^8.4.29:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-pothos-prisma-generator@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/pothos-prisma-generator/-/pothos-prisma-generator-0.0.11.tgz#77f61f36a81d18de90efb63e5c6eb0540dfa89ca"
-  integrity sha512-omDg62i/ZLcYyvDZrIBH5ZM5jIeldFaqSDIP/eMNpcNODKp9+q9e8trxTJuZqBciEIhfuXPyDtEGKCD6CFQFBQ==
+pothos-prisma-generator@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/pothos-prisma-generator/-/pothos-prisma-generator-0.0.12.tgz#beab8b93e748d3b48439f976a540abe0860e545b"
+  integrity sha512-yv6YU/7C0cKoUMCN5QjSdOHNV4zUo8VxqV+qNHX3bbsPhWkrPcPMCj5XWmh8+KPiS6OqTZ/PI7H2P5k9mP8JHg==
   dependencies:
     graphql-scalars "^1.22.2"
     json5 "^2.2.3"

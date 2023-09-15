@@ -2,7 +2,6 @@ import { join } from 'path';
 import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import PrismaUtils from '@pothos/plugin-prisma-utils';
-import { PrismaClient } from '@prisma/client';
 import { FormidableFile } from '@react-libraries/next-apollo-server';
 import { serialize } from 'cookie';
 import { GraphQLScalarType } from 'graphql';
@@ -10,8 +9,11 @@ import jsonwebtoken from 'jsonwebtoken';
 import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
 import PothosSchemaExporter from 'pothos-schema-exporter';
 import { getUserInfo } from '@/libs/getUserInfo';
+import { isolatedFiles, uploadFile } from '@/libs/uploadFile';
 import { Context, prisma } from './context';
 import PrismaTypes from './generated/pothos-types';
+import { getUser } from './libs/getUser';
+import { normalizationPostFiles } from './libs/normalizationPostFiles';
 /**
  * Create a new schema builder instance
  */
@@ -19,14 +21,11 @@ export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
   Scalars: {
     Upload: {
-      // type all ID arguments and input values as string
       Input: FormidableFile;
-      // Allow resolvers for ID fields to return strings, numbers, or bigints
       Output: FormidableFile;
     };
   };
   Context: Context;
-  // PrismaTypes: PrismaTypes; //Not used because it is generated automatically
 }>({
   plugins: [PrismaPlugin, PrismaUtils, PothosPrismaGeneratorPlugin, PothosSchemaExporter],
   prisma: {
@@ -39,6 +38,7 @@ export const builder = new SchemaBuilder<{
   },
   pothosPrismaGenerator: {
     authority: ({ context }) => (context.user ? ['USER'] : []),
+    replace: { '%%USER%%': ({ context }) => context.user?.id },
   },
 });
 
@@ -76,7 +76,7 @@ builder.mutationType({
                 httpOnly: true,
                 secure: process.env.NODE_ENV !== 'development',
                 sameSite: 'strict',
-                maxAge: userInfo.exp - Date.now() / 1000,
+                maxAge: 7 * 24 * 60 * 60,
                 path: '/',
               })
             );
@@ -84,16 +84,84 @@ builder.mutationType({
           return user;
         },
       }),
-      signOut: t.boolean({
-        resolve: (_root, _args, ctx) => {
-          const res = ctx.res;
-          res.setHeader(
-            'Set-Cookie',
-            serialize('session', '', {
-              maxAge: 0,
-              path: '/',
-            })
-          );
+      uploadSystemIcon: t.prismaField({
+        type: 'FireStore',
+        args: {
+          file: t.arg({ type: 'Upload', required: true }),
+        },
+        resolve: async (_query, _root, { file }, { prisma, user }) => {
+          if (!user) throw new Error('Unauthorized');
+          const firestore = await uploadFile(file);
+          const system = await prisma.system.update({
+            select: { icon: true },
+            data: {
+              iconId: firestore.id,
+            },
+            where: { id: 'system' },
+          });
+          await isolatedFiles();
+          if (!system.icon) throw new Error('icon is not found');
+          return system.icon;
+        },
+      }),
+      uploadPostIcon: t.prismaField({
+        type: 'FireStore',
+        args: {
+          postId: t.arg({ type: 'String', required: true }),
+          file: t.arg({ type: 'Upload' }),
+        },
+        resolve: async (_query, _root, { postId, file }, { prisma, user }) => {
+          if (!user) throw new Error('Unauthorized');
+          if (!file) {
+            const firestore = await prisma.post
+              .findUniqueOrThrow({ select: { card: true }, where: { id: postId } })
+              .card();
+            if (!firestore) throw new Error('firestore is not found');
+            await prisma.fireStore.delete({
+              where: { id: firestore.id },
+            });
+            return firestore;
+          }
+          const firestore = await uploadFile(file);
+          const post = await prisma.post.update({
+            select: { card: true },
+            data: {
+              cardId: firestore.id,
+            },
+            where: { id: postId },
+          });
+          await isolatedFiles();
+          if (!post.card) throw new Error('card is not found');
+          return post.card;
+        },
+      }),
+      uploadPostImage: t.prismaField({
+        type: 'FireStore',
+        args: {
+          postId: t.arg({ type: 'String', required: true }),
+          file: t.arg({ type: 'Upload', required: true }),
+        },
+        resolve: async (_query, _root, { postId, file }, { prisma, user }) => {
+          if (!user) throw new Error('Unauthorized');
+          const firestore = await uploadFile(file);
+          await prisma.post.update({
+            data: {
+              postFiles: { connect: { id: firestore.id } },
+            },
+            where: { id: postId },
+          });
+          return firestore;
+        },
+      }),
+      normalizationPostFiles: t.boolean({
+        args: {
+          postId: t.arg({ type: 'String', required: true }),
+          removeAll: t.arg({ type: 'Boolean' }),
+        },
+        resolve: async (_root, { postId, removeAll }, { prisma, user }) => {
+          if (!user) throw new Error('Unauthorized');
+          await normalizationPostFiles(prisma, postId, removeAll === true);
+          await isolatedFiles();
           return true;
         },
       }),
@@ -103,26 +171,8 @@ builder.mutationType({
 
 const Upload = new GraphQLScalarType({
   name: 'Upload',
-  serialize: (value) => value,
-  parseValue: (value) => value,
-  parseLiteral: (value) => value,
-  extensions: {},
 });
 
 builder.addScalarType('Upload', Upload, {});
 
-const getUser = async (prisma: PrismaClient, name: string, email: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (user) return user;
-  else {
-    if (await prisma.user.count()) {
-      return null;
-    }
-    const user = await prisma.user.create({
-      data: { name: name, email: email },
-    });
-    return user;
-  }
-};
-
-export const schema = builder.toSchema();
+export const schema = builder.toSchema({ sortSchema: false });

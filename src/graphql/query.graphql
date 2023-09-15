@@ -47,13 +47,51 @@ query Posts {
   }
 }
 
+mutation CreateOnePost {
+  createOnePost(input: {}) {
+    id
+    published
+    title
+    authorId
+    cardId
+    createdAt
+    updatedAt
+    publishedAt
+    categories {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation DeleteOnePost($id: String!) {
+  deleteOnePost(where: { id: $id }) {
+    id
+    published
+    title
+    authorId
+    cardId
+    createdAt
+    updatedAt
+    publishedAt
+    categories {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+
 mutation UpdateOnePost($categories: [CategoryUniqueFilter!], $where: PostUniqueFilter!) {
   updateOnePost(data: { categories: { set: $categories } }, where: $where) {
     id
   }
 }
 mutation UpdatePost(
-  $postId: String
+  $postId: String!
   $title: String
   $content: String
   $published: Boolean
@@ -87,17 +125,18 @@ mutation UpdatePost(
     }
     cardId
   }
+  normalizationPostFiles(postId: $postId)
 }
 
-# mutation UploadPostFile($postId: String!, $binary: Upload!) {
-#   PostFile(postId: $postId, binary: $binary) {
-#     id
-#     createdAt
-#     updatedAt
-#     name
-#     mimeType
-#   }
-# }
+mutation UploadPostImage($postId: String!, $file: Upload!) {
+  uploadPostImage(postId: $postId, file: $file) {
+    id
+    createdAt
+    updatedAt
+    name
+    mimeType
+  }
+}
 
 query System {
   findUniqueSystem(filter: { id: "system" }) {
@@ -118,8 +157,11 @@ query System {
   }
 }
 
-mutation UpdateSystem($title: String, $description: String) {
-  updateOneSystem(data: { title: $title, description: $description }, where: { id: "system" }) {
+mutation UpdateSystem($title: String, $description: String, $icon: SystemUpdateIconRelationInput) {
+  updateOneSystem(
+    data: { title: $title, description: $description, icon: $icon }
+    where: { id: "system" }
+  ) {
     id
     title
     description
@@ -154,11 +196,52 @@ query Categories {
   }
 }
 
-mutation UpdateCategory($id: String, $name: String!) {
+mutation CreateCategory($name: String!) {
+  createOneCategory(input: { name: $name }) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+mutation UpdateCategory($id: String!, $name: String!) {
   updateOneCategory(where: { id: $id }, data: { name: $name }) {
     id
     name
     createdAt
     updatedAt
   }
+}
+
+mutation DeleteOneCategory($id: String!) {
+  deleteOneCategory(where: { id: $id }) {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UploadSystemIcon($file: Upload!) {
+  uploadSystemIcon(file: $file) {
+    id
+    name
+    mimeType
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UploadPostIcon($postId: String!, $file: Upload) {
+  uploadPostIcon(postId: $postId, file: $file) {
+    id
+    name
+    mimeType
+    createdAt
+    updatedAt
+  }
+}
+
+mutation NormalizationPostFiles($postId: String!, $removeAll: Boolean) {
+  normalizationPostFiles(postId: $postId, removeAll: $removeAll)
 }
