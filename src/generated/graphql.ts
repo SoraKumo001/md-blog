@@ -18,9 +18,11 @@ export type Scalars = {
   /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
   BigInt: { input: any; output: any; }
   /** The `Byte` scalar type represents byte value as a Buffer */
-  Byte: { input: any; output: any; }
+  Bytes: { input: any; output: any; }
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: string; output: string; }
+  /** A field whose value is a hexadecimal: https://en.wikipedia.org/wiki/Hexadecimal. */
+  Decimal: { input: any; output: any; }
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   Json: { input: any; output: any; }
   Upload: { input: any; output: any; }
@@ -55,23 +57,10 @@ export type CategoryPostsArgs = {
 
 
 export type CategoryPostsCountArgs = {
-  filter?: InputMaybe<CategoryFilter>;
+  filter?: InputMaybe<PostFilter>;
 };
 
 export type CategoryCreateInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  posts?: InputMaybe<CategoryCreatePostsRelationInput>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type CategoryCreatePostsRelationInput = {
-  connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCategoriesInput>>;
-};
-
-export type CategoryCreateWithoutPostsInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
@@ -114,7 +103,7 @@ export type CategoryUpdateInput = {
 
 export type CategoryUpdatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCategoriesInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutCategoriesFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -187,7 +176,7 @@ export type FireStorePostCardsArgs = {
 
 
 export type FireStorePostCardsCountArgs = {
-  filter?: InputMaybe<FireStoreFilter>;
+  filter?: InputMaybe<PostFilter>;
 };
 
 
@@ -200,7 +189,7 @@ export type FireStorePostsArgs = {
 
 
 export type FireStorePostsCountArgs = {
-  filter?: InputMaybe<FireStoreFilter>;
+  filter?: InputMaybe<PostFilter>;
 };
 
 
@@ -213,7 +202,7 @@ export type FireStoreSystemCardsArgs = {
 
 
 export type FireStoreSystemCardsCountArgs = {
-  filter?: InputMaybe<FireStoreFilter>;
+  filter?: InputMaybe<SystemFilter>;
 };
 
 
@@ -226,7 +215,7 @@ export type FireStoreSystemIconsArgs = {
 
 
 export type FireStoreSystemIconsCountArgs = {
-  filter?: InputMaybe<FireStoreFilter>;
+  filter?: InputMaybe<SystemFilter>;
 };
 
 export type FireStoreCreateInput = {
@@ -234,75 +223,25 @@ export type FireStoreCreateInput = {
   id: Scalars['String']['input'];
   mimeType: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  postCards?: InputMaybe<FireStoreCreatePostCardsRelationInput>;
   posts?: InputMaybe<FireStoreCreatePostsRelationInput>;
   systemCards?: InputMaybe<FireStoreCreateSystemCardsRelationInput>;
   systemIcons?: InputMaybe<FireStoreCreateSystemIconsRelationInput>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type FireStoreCreatePostCardsRelationInput = {
-  connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCardInput>>;
 };
 
 export type FireStoreCreatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutPostFilesInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
 };
 
 export type FireStoreCreateSystemCardsRelationInput = {
   connect?: InputMaybe<Array<SystemUniqueFilter>>;
-  create?: InputMaybe<Array<SystemCreateWithoutCardInput>>;
+  create?: InputMaybe<Array<SystemCreateInput>>;
 };
 
 export type FireStoreCreateSystemIconsRelationInput = {
   connect?: InputMaybe<Array<SystemUniqueFilter>>;
-  create?: InputMaybe<Array<SystemCreateWithoutIconInput>>;
-};
-
-export type FireStoreCreateWithoutPostCardsInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id: Scalars['String']['input'];
-  mimeType: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  posts?: InputMaybe<FireStoreCreatePostsRelationInput>;
-  systemCards?: InputMaybe<FireStoreCreateSystemCardsRelationInput>;
-  systemIcons?: InputMaybe<FireStoreCreateSystemIconsRelationInput>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type FireStoreCreateWithoutPostsInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id: Scalars['String']['input'];
-  mimeType: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  postCards?: InputMaybe<FireStoreCreatePostCardsRelationInput>;
-  systemCards?: InputMaybe<FireStoreCreateSystemCardsRelationInput>;
-  systemIcons?: InputMaybe<FireStoreCreateSystemIconsRelationInput>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type FireStoreCreateWithoutSystemCardsInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id: Scalars['String']['input'];
-  mimeType: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  postCards?: InputMaybe<FireStoreCreatePostCardsRelationInput>;
-  posts?: InputMaybe<FireStoreCreatePostsRelationInput>;
-  systemIcons?: InputMaybe<FireStoreCreateSystemIconsRelationInput>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type FireStoreCreateWithoutSystemIconsInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id: Scalars['String']['input'];
-  mimeType: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  postCards?: InputMaybe<FireStoreCreatePostCardsRelationInput>;
-  posts?: InputMaybe<FireStoreCreatePostsRelationInput>;
-  systemCards?: InputMaybe<FireStoreCreateSystemCardsRelationInput>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  create?: InputMaybe<Array<SystemCreateInput>>;
 };
 
 export type FireStoreFilter = {
@@ -353,7 +292,7 @@ export type FireStoreUpdateInput = {
 
 export type FireStoreUpdatePostCardsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutCardInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutCardFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -374,7 +313,7 @@ export type FireStoreUpdatePostCardsRelationInputUpdateMany = {
 
 export type FireStoreUpdatePostsRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutPostFilesInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutPostFilesFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
@@ -395,7 +334,7 @@ export type FireStoreUpdatePostsRelationInputUpdateMany = {
 
 export type FireStoreUpdateSystemCardsRelationInput = {
   connect?: InputMaybe<Array<SystemUniqueFilter>>;
-  create?: InputMaybe<Array<SystemCreateWithoutCardInput>>;
+  create?: InputMaybe<Array<SystemCreateInput>>;
   delete?: InputMaybe<Array<SystemUniqueFilter>>;
   deleteMany?: InputMaybe<Array<SystemWithoutCardFilter>>;
   disconnect?: InputMaybe<Array<SystemUniqueFilter>>;
@@ -416,7 +355,7 @@ export type FireStoreUpdateSystemCardsRelationInputUpdateMany = {
 
 export type FireStoreUpdateSystemIconsRelationInput = {
   connect?: InputMaybe<Array<SystemUniqueFilter>>;
-  create?: InputMaybe<Array<SystemCreateWithoutIconInput>>;
+  create?: InputMaybe<Array<SystemCreateInput>>;
   delete?: InputMaybe<Array<SystemUniqueFilter>>;
   deleteMany?: InputMaybe<Array<SystemWithoutIconFilter>>;
   disconnect?: InputMaybe<Array<SystemUniqueFilter>>;
@@ -541,7 +480,7 @@ export type MutationCreateManyFireStoreArgs = {
 
 
 export type MutationCreateManyPostArgs = {
-  input: Array<PostCreateWithoutAuthorInput>;
+  input: Array<PostCreateInput>;
 };
 
 
@@ -566,7 +505,7 @@ export type MutationCreateOneFireStoreArgs = {
 
 
 export type MutationCreateOnePostArgs = {
-  input: PostCreateWithoutAuthorInput;
+  input: PostCreateInput;
 };
 
 
@@ -751,7 +690,7 @@ export type PostCategoriesArgs = {
 
 
 export type PostCategoriesCountArgs = {
-  filter?: InputMaybe<PostFilter>;
+  filter?: InputMaybe<CategoryFilter>;
 };
 
 
@@ -764,84 +703,35 @@ export type PostPostFilesArgs = {
 
 
 export type PostPostFilesCountArgs = {
-  filter?: InputMaybe<PostFilter>;
+  filter?: InputMaybe<FireStoreFilter>;
 };
 
 export type PostCreateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutPostCardsInput>;
+  create?: InputMaybe<FireStoreCreateInput>;
 };
 
 export type PostCreateCategoriesRelationInput = {
   connect?: InputMaybe<Array<CategoryUniqueFilter>>;
-  create?: InputMaybe<Array<CategoryCreateWithoutPostsInput>>;
+  create?: InputMaybe<Array<CategoryCreateInput>>;
+};
+
+export type PostCreateInput = {
+  card?: InputMaybe<PostCreateCardRelationInput>;
+  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type PostCreatePostFilesRelationInput = {
   connect?: InputMaybe<Array<FireStoreUniqueFilter>>;
-  create?: InputMaybe<Array<FireStoreCreateWithoutPostsInput>>;
-};
-
-export type PostCreateWithoutAuthorInput = {
-  card?: InputMaybe<PostCreateCardRelationInput>;
-  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type PostCreateWithoutAuthorWithoutAuthorInput = {
-  card?: InputMaybe<PostCreateCardRelationInput>;
-  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type PostCreateWithoutAuthorWithoutCardInput = {
-  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type PostCreateWithoutAuthorWithoutCategoriesInput = {
-  card?: InputMaybe<PostCreateCardRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  postFiles?: InputMaybe<PostCreatePostFilesRelationInput>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type PostCreateWithoutAuthorWithoutPostFilesInput = {
-  card?: InputMaybe<PostCreateCardRelationInput>;
-  categories?: InputMaybe<PostCreateCategoriesRelationInput>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  published?: InputMaybe<Scalars['Boolean']['input']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  create?: InputMaybe<Array<FireStoreCreateInput>>;
 };
 
 export type PostFilter = {
@@ -888,7 +778,7 @@ export type PostUniqueFilter = {
 
 export type PostUpdateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutPostCardsInput>;
+  create?: InputMaybe<FireStoreCreateInput>;
   delete?: InputMaybe<Scalars['Boolean']['input']>;
   disconnect?: InputMaybe<Scalars['Boolean']['input']>;
   update?: InputMaybe<FireStoreUpdateWithoutPostCardsInput>;
@@ -896,7 +786,7 @@ export type PostUpdateCardRelationInput = {
 
 export type PostUpdateCategoriesRelationInput = {
   connect?: InputMaybe<Array<CategoryUniqueFilter>>;
-  create?: InputMaybe<Array<CategoryCreateWithoutPostsInput>>;
+  create?: InputMaybe<Array<CategoryCreateInput>>;
   delete?: InputMaybe<Array<CategoryUniqueFilter>>;
   deleteMany?: InputMaybe<Array<CategoryWithoutPostsFilter>>;
   disconnect?: InputMaybe<Array<CategoryUniqueFilter>>;
@@ -917,7 +807,7 @@ export type PostUpdateCategoriesRelationInputUpdateMany = {
 
 export type PostUpdatePostFilesRelationInput = {
   connect?: InputMaybe<Array<FireStoreUniqueFilter>>;
-  create?: InputMaybe<Array<FireStoreCreateWithoutPostsInput>>;
+  create?: InputMaybe<Array<FireStoreCreateInput>>;
   delete?: InputMaybe<Array<FireStoreUniqueFilter>>;
   deleteMany?: InputMaybe<Array<FireStoreWithoutPostsFilter>>;
   disconnect?: InputMaybe<Array<FireStoreUniqueFilter>>;
@@ -1231,34 +1121,10 @@ export type System = {
 
 export type SystemCreateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutSystemCardsInput>;
-};
-
-export type SystemCreateIconRelationInput = {
-  connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutSystemIconsInput>;
+  create?: InputMaybe<FireStoreCreateInput>;
 };
 
 export type SystemCreateInput = {
-  card?: InputMaybe<SystemCreateCardRelationInput>;
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  description: Scalars['String']['input'];
-  icon?: InputMaybe<SystemCreateIconRelationInput>;
-  id: Scalars['String']['input'];
-  title: Scalars['String']['input'];
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type SystemCreateWithoutCardInput = {
-  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
-  description: Scalars['String']['input'];
-  icon?: InputMaybe<SystemCreateIconRelationInput>;
-  id: Scalars['String']['input'];
-  title: Scalars['String']['input'];
-  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
-};
-
-export type SystemCreateWithoutIconInput = {
   card?: InputMaybe<SystemCreateCardRelationInput>;
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
@@ -1303,7 +1169,7 @@ export type SystemUniqueFilter = {
 
 export type SystemUpdateCardRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutSystemCardsInput>;
+  create?: InputMaybe<FireStoreCreateInput>;
   delete?: InputMaybe<Scalars['Boolean']['input']>;
   disconnect?: InputMaybe<Scalars['Boolean']['input']>;
   update?: InputMaybe<FireStoreUpdateWithoutSystemCardsInput>;
@@ -1311,7 +1177,7 @@ export type SystemUpdateCardRelationInput = {
 
 export type SystemUpdateIconRelationInput = {
   connect?: InputMaybe<FireStoreUniqueFilter>;
-  create?: InputMaybe<FireStoreCreateWithoutSystemIconsInput>;
+  create?: InputMaybe<FireStoreCreateInput>;
   delete?: InputMaybe<Scalars['Boolean']['input']>;
   disconnect?: InputMaybe<Scalars['Boolean']['input']>;
   update?: InputMaybe<FireStoreUpdateWithoutSystemIconsInput>;
@@ -1386,7 +1252,7 @@ export type UserPostArgs = {
 
 
 export type UserPostCountArgs = {
-  filter?: InputMaybe<UserFilter>;
+  filter?: InputMaybe<PostFilter>;
 };
 
 export type UserCreateInput = {
@@ -1400,7 +1266,7 @@ export type UserCreateInput = {
 
 export type UserCreatePostRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutAuthorInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
 };
 
 export type UserFilter = {
@@ -1437,7 +1303,7 @@ export type UserUpdateInput = {
 
 export type UserUpdatePostRelationInput = {
   connect?: InputMaybe<Array<PostUniqueFilter>>;
-  create?: InputMaybe<Array<PostCreateWithoutAuthorWithoutAuthorInput>>;
+  create?: InputMaybe<Array<PostCreateInput>>;
   delete?: InputMaybe<Array<PostUniqueFilter>>;
   deleteMany?: InputMaybe<Array<PostWithoutAuthorFilter>>;
   disconnect?: InputMaybe<Array<PostUniqueFilter>>;
