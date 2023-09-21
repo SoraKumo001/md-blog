@@ -90,4 +90,4 @@ const og = async (req: NextRequest) => {
     }
   );
 };
-export default og;
+export const GET = og;

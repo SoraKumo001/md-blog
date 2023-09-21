@@ -3,7 +3,7 @@ import { useGraphQlJit } from '@envelop/graphql-jit';
 import { useCookies } from '@whatwg-node/server-plugin-cookies';
 import admin from 'firebase-admin';
 import { createYoga } from 'graphql-yoga';
-import { getUserFromToken } from '@/libs/getUserFromToken';
+import { getUserFromToken } from '../../../libs/getUserFromToken';
 import { Context, prisma } from '../../libs/context';
 import { schema } from '../../libs/schema';
 
