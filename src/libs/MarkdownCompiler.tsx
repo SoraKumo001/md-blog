@@ -9,14 +9,14 @@ import React, {
 } from 'react';
 import { remark } from 'remark';
 import remarkGfm from 'remark-gfm';
-import type { Content } from 'mdast';
+import type { RootContent } from 'mdast';
 import type unist from 'unist';
 
-export type VNode = Content & Partial<unist.Parent<Content>>;
+export type VNode = RootContent & Partial<unist.Parent>;
 
 export type MarkdownComponents = {
-  [K in Content['type'] | 'root']?: (params: {
-    node: Content & { type: K };
+  [K in RootContent['type'] | 'root']?: (params: {
+    node: RootContent & { type: K };
     props: HTMLAttributes<HTMLElement> & Attributes;
     children: ReactNode;
     property: { [key: string]: unknown };
@@ -84,14 +84,12 @@ const defaultComponents: MarkdownComponents = {
   ),
 };
 
-function ReactCompiler(
-  tree: unist.Node & Partial<unist.Parent<unist.Node>>,
-  components?: MarkdownComponents
-) {
+function ReactCompiler(tree: unist.Node & Partial<unist.Parent>, components?: MarkdownComponents) {
   const property = {};
   const reactNode = (vnode: VNode): React.ReactNode => {
     const children =
-      vnode.children?.map((child) => reactNode(child)) ?? ('value' in vnode && vnode.value);
+      vnode.children?.map((child) => reactNode(child as VNode)) ??
+      ('value' in vnode && vnode.value);
     const markdownContent = components?.[vnode.type] ?? defaultComponents[vnode.type];
     if (!markdownContent) console.warn(vnode.type);
     return markdownContent?.({

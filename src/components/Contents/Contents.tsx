@@ -63,14 +63,7 @@ export const Contents: FC<Props> = ({ id }) => {
         )}
         <h1 className={styled.title} id="header-top">
           {image ? (
-            <Image
-              className={styled.card}
-              src={image}
-              alt="Eye catch"
-              width={80}
-              height={80}
-              unoptimized
-            />
+            <Image className={styled.card} src={image} alt="Eye catch" width={80} height={80} />
           ) : (
             <div className={styled.cardText}>📖</div>
           )}

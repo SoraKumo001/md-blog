@@ -3,6 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { classNames } from '@/libs/classNames';
 import { VNode } from '@/libs/MarkdownCompiler';
 import styled from './ContentTable.module.scss';
+import type { Heading } from 'mdast';
 
 export type MarkdownTitles = { text: string; depth: number }[];
 
@@ -20,7 +21,9 @@ interface Props {
 export const ContentTable: FC<Props> = ({ className, title, vnode }) => {
   const titles = useMemo(() => {
     return vnode?.children?.flatMap((node) =>
-      node.type !== 'heading' ? [] : ([[node.depth, convertText(node)]] as const)
+      node.type !== 'heading'
+        ? []
+        : ([[(node as Heading).depth, convertText(node as VNode)]] as const)
     );
   }, [vnode]);
   return (
@@ -48,5 +51,5 @@ export const ContentTable: FC<Props> = ({ className, title, vnode }) => {
 
 const convertText = (node: VNode): string => {
   if (node.type === 'text') return node.value;
-  return node.children?.map(convertText).join('') ?? '';
+  return node.children?.map((n) => convertText(n as VNode)).join('') ?? '';
 };

@@ -51,7 +51,6 @@ const components: MarkdownComponents = {
           width={style.width && parseInt(style.width)}
           height={style.height && parseInt(style.height)}
           alt={alt ?? ''}
-          unoptimized={true}
         />
       );
     } catch {}

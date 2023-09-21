@@ -41,10 +41,8 @@ export const PostList: FC<Props> = ({ id, title, posts, limit }) => {
                   className={styled.card}
                   src={getFirebaseUrl(post.cardId)}
                   alt="Eye catch"
-                  loading="lazy"
                   width={80}
                   height={80}
-                  unoptimized={true}
                 />
               ) : (
                 `📖`
