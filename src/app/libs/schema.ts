@@ -2,8 +2,6 @@ import { join } from 'path';
 import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import PrismaUtils from '@pothos/plugin-prisma-utils';
-import { FormidableFile } from '@react-libraries/next-apollo-server';
-import { serialize } from 'cookie';
 import { GraphQLScalarType } from 'graphql';
 import jsonwebtoken from 'jsonwebtoken';
 import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
@@ -11,9 +9,9 @@ import PothosSchemaExporter from 'pothos-schema-exporter';
 import { getUserInfo } from '@/libs/getUserInfo';
 import { isolatedFiles, uploadFile } from '@/libs/uploadFile';
 import { Context, prisma } from './context';
-import PrismaTypes from './generated/pothos-types';
-import { getUser } from './libs/getUser';
-import { normalizationPostFiles } from './libs/normalizationPostFiles';
+import { getUser } from './getUser';
+import { normalizationPostFiles } from './normalizationPostFiles';
+import PrismaTypes from '../../server/generated/pothos-types';
 /**
  * Create a new schema builder instance
  */
@@ -21,8 +19,8 @@ export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
   Scalars: {
     Upload: {
-      Input: FormidableFile;
-      Output: FormidableFile;
+      Input: File;
+      Output: File;
     };
   };
   Context: Context;
@@ -49,20 +47,19 @@ builder.mutationType({
         args: { token: t.arg({ type: 'String' }) },
         type: 'User',
         nullable: true,
-        resolve: async (_query, _root, { token }, { res }) => {
+        resolve: async (_query, _root, { token }, { cookieStore }) => {
           const userInfo =
             typeof token === 'string'
               ? await getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
               : undefined;
           if (!userInfo) {
-            res.setHeader(
-              'Set-Cookie',
-              serialize('auth-token', '', {
-                httpOnly: true,
-                maxAge: -1,
-                path: '/',
-              })
-            );
+            cookieStore.set({
+              name: 'auth-token',
+              value: '',
+              path: '/',
+              expires: 0,
+              domain: null,
+            });
             return null;
           }
           const user = await getUser(prisma, userInfo.name, userInfo.email);
@@ -70,16 +67,16 @@ builder.mutationType({
             const secret = process.env.SECRET_KEY;
             if (!secret) throw new Error('SECRET_KEY is not defined');
             const token = jsonwebtoken.sign({ payload: { user: user } }, secret);
-            res.setHeader(
-              'Set-Cookie',
-              serialize('auth-token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV !== 'development',
-                sameSite: 'strict',
-                maxAge: 7 * 24 * 60 * 60,
-                path: '/',
-              })
-            );
+            cookieStore.set({
+              name: 'auth-token',
+              httpOnly: true,
+              secure: process.env.NODE_ENV !== 'development',
+              expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+              sameSite: 'strict',
+              path: '/',
+              domain: null,
+              value: token,
+            });
           }
           return user;
         },

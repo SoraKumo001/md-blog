@@ -3,7 +3,7 @@ import { semaphore } from '@node-libraries/semaphore';
 import { Category, FireStore, Post, System, User } from '@prisma/client';
 import admin from 'firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
-import { prisma } from '@/server/context';
+import { prisma } from '@/app/libs/context';
 import { getImages } from '../libs/getImages';
 
 admin.initializeApp({

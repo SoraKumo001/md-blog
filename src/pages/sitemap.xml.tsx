@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http';
 import { GetServerSideProps } from 'next';
-import { prisma } from '@/server/context';
+import { prisma } from '@/app/libs/context';
 
 export const getServerSideProps: GetServerSideProps = async ({ res, req }) => {
   const xml = await generateSitemapXml(req);

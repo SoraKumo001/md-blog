@@ -1,5 +1,5 @@
 import { getStorage } from 'firebase-admin/storage';
-import { prisma } from '@/server/context';
+import { prisma } from '@/app/libs/context';
 
 export const restorationFiles = async () => {
   const ids = new Set((await prisma.fireStore.findMany()).map(({ id }) => id));

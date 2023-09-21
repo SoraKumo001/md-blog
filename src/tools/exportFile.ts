@@ -2,7 +2,7 @@ import fs from 'fs';
 import { semaphore } from '@node-libraries/semaphore';
 import admin from 'firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
-import { prisma } from '@/server/context';
+import { prisma } from '@/app/libs/context';
 
 admin.initializeApp({
   credential: admin.credential.cert({

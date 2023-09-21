@@ -1,19 +1,17 @@
-import { FormidableFile } from '@react-libraries/next-apollo-server';
 import { getStorage } from 'firebase-admin/storage';
-import { prisma } from '@/server/context';
+import { uuid } from 'uuidv4';
+import { prisma } from '@/app/libs/context';
 
-export const uploadFile = async (binary: FormidableFile) => {
+export const uploadFile = async (binary: File) => {
   const bucket = getStorage().bucket();
-  const name = binary.originalFilename ?? 'file';
-  const storage = await bucket.upload(binary.filepath, {
+  const id = uuid();
+  const storage = bucket.file(id);
+  await storage.save(Buffer.from(await binary.arrayBuffer()), {
     public: true,
-    contentType: binary.mimetype ?? undefined,
-    metadata: { mime: binary.mimetype, cacheControl: 'public, max-age=31536000, immutable' },
+    metadata: { mime: binary.type, cacheControl: 'public, max-age=31536000, immutable' },
   });
-  const id = storage[0]?.id;
-  if (!id) throw new Error('CloudStorage error');
   return prisma.fireStore.create({
-    data: { id, name, mimeType: binary.mimetype ?? '' },
+    data: { id, name: binary.name, mimeType: binary.type ?? '' },
   });
 };
 

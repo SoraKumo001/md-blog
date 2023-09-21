@@ -1,9 +1,5 @@
 import { NextRequest, ImageResponse } from 'next/server';
 
-export const config = {
-  runtime: 'edge',
-};
-
 const font = fetch(new URL('https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Bold.otf')).then(
   (res) => res.arrayBuffer()
 );
