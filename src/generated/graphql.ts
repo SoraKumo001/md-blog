@@ -452,6 +452,7 @@ export type Mutation = {
   deleteOneSystem: System;
   deleteOneUser: User;
   normalizationPostFiles: Scalars['Boolean']['output'];
+  restore: Scalars['Boolean']['output'];
   signIn?: Maybe<User>;
   updateManyCategory: Scalars['Int']['output'];
   updateManyFireStore: Scalars['Int']['output'];
@@ -572,6 +573,11 @@ export type MutationDeleteOneUserArgs = {
 export type MutationNormalizationPostFilesArgs = {
   postId: Scalars['String']['input'];
   removeAll?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+export type MutationRestoreArgs = {
+  file: Scalars['Upload']['input'];
 };
 
 
@@ -1351,7 +1357,7 @@ export type DeleteOnePostMutationVariables = Exact<{
 }>;
 
 
-export type DeleteOnePostMutation = { __typename?: 'Mutation', normalizationPostFiles: boolean, deleteOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
+export type DeleteOnePostMutation = { __typename?: 'Mutation', deleteOnePost: { __typename?: 'Post', id: string, published: boolean, title: string, authorId: string, cardId?: string | null, createdAt: string, updatedAt: string, publishedAt: string, categories: Array<{ __typename?: 'Category', id: string, name: string, createdAt: string, updatedAt: string }> } };
 
 export type UpdateOnePostMutationVariables = Exact<{
   categories?: InputMaybe<Array<CategoryUniqueFilter> | CategoryUniqueFilter>;
@@ -1451,6 +1457,13 @@ export type NormalizationPostFilesMutationVariables = Exact<{
 
 
 export type NormalizationPostFilesMutation = { __typename?: 'Mutation', normalizationPostFiles: boolean };
+
+export type RestoreMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type RestoreMutation = { __typename?: 'Mutation', restore: boolean };
 
 
 export const SignInDocument = gql`
@@ -1559,7 +1572,6 @@ export const DeleteOnePostDocument = gql`
       updatedAt
     }
   }
-  normalizationPostFiles(postId: $id, removeAll: true)
 }
     `;
 
@@ -1780,4 +1792,13 @@ export const NormalizationPostFilesDocument = gql`
 
 export function useNormalizationPostFilesMutation() {
   return Urql.useMutation<NormalizationPostFilesMutation, NormalizationPostFilesMutationVariables>(NormalizationPostFilesDocument);
+};
+export const RestoreDocument = gql`
+    mutation Restore($file: Upload!) {
+  restore(file: $file)
+}
+    `;
+
+export function useRestoreMutation() {
+  return Urql.useMutation<RestoreMutation, RestoreMutationVariables>(RestoreDocument);
 };

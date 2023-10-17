@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AppContext, AppProps } from 'next/app';
@@ -32,8 +32,9 @@ type Session = { email: string; name: string };
 
 const App = ({
   Component,
-  pageProps: { session, cookie, host },
+  pageProps,
 }: AppProps<{ session?: Session; host?: string; cookie?: string }>) => {
+  const { session, cookie, host } = pageProps;
   return (
     <StoreProvider initState={() => ({ host, user: session })}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -46,7 +47,7 @@ const App = ({
             >
               <Header />
               <main className="relative flex-1 overflow-hidden">
-                <Component />
+                <Component {...pageProps} />
               </main>
               <LoadingContainer />
               <NotificationContainer />

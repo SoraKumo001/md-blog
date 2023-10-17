@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
 import { useSignIn } from '@/hooks/useAuth';
 import { signInGoogle } from '@/libs/signInGoogle';

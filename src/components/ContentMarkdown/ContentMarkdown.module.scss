@@ -21,8 +21,8 @@ $LabelMargin: 12px;
     padding-bottom: 16px;
     margin-bottom: 32px;
   }
-  h2:nth-child(n + 2) {
-    // margin-top: 2em;
+  h2:nth-of-type(n + 2) {
+    @apply mt-8;
   }
   h2 {
     @apply border-b-2 pb-1 text-2xl;

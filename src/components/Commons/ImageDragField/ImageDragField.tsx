@@ -1,5 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, FormControl, InputLabel } from '@mui/material';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import React, { FC, ReactNode, useState } from 'react';
 import { classNames } from '@/libs/classNames';
 import styled from './ImageDragField.module.scss';

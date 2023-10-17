@@ -8,6 +8,7 @@ const config = {
   },
   experimental: {
     cpus: 4,
+    serverComponentsExternalPackages: ['@whatwg-node'],
   },
   images: {
     remotePatterns: [

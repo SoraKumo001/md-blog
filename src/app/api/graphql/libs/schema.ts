@@ -6,12 +6,14 @@ import { GraphQLScalarType } from 'graphql';
 import jsonwebtoken from 'jsonwebtoken';
 import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
 import PothosSchemaExporter from 'pothos-schema-exporter';
+import PrismaTypes from '@/app/generated/pothos-types';
 import { getUserInfo } from '@/libs/getUserInfo';
 import { isolatedFiles, uploadFile } from '@/libs/uploadFile';
 import { Context, prisma } from './context';
 import { getUser } from './getUser';
+import { importFile } from './importFile';
 import { normalizationPostFiles } from './normalizationPostFiles';
-import PrismaTypes from '../../server/generated/pothos-types';
+
 /**
  * Create a new schema builder instance
  */
@@ -32,7 +34,7 @@ export const builder = new SchemaBuilder<{
   pothosSchemaExporter: {
     output:
       process.env.NODE_ENV === 'development' &&
-      join(process.cwd(), 'src', 'server', 'generated', 'schema.graphql'),
+      join(process.cwd(), 'src', 'app', 'generated', 'schema.graphql'),
   },
   pothosPrismaGenerator: {
     authority: ({ context }) => (context.user ? ['USER'] : []),
@@ -47,18 +49,19 @@ builder.mutationType({
         args: { token: t.arg({ type: 'String' }) },
         type: 'User',
         nullable: true,
-        resolve: async (_query, _root, { token }, { cookieStore }) => {
+        resolve: async (_query, _root, { token }, { cookies }) => {
           const userInfo =
             typeof token === 'string'
               ? await getUserInfo(process.env.NEXT_PUBLIC_projectId, token)
               : undefined;
           if (!userInfo) {
-            cookieStore.set({
-              name: 'auth-token',
-              value: '',
+            cookies.set('auth-token', '', {
+              httpOnly: true,
+              secure: process.env.NODE_ENV !== 'development',
+              sameSite: 'strict',
               path: '/',
               expires: 0,
-              domain: null,
+              domain: undefined,
             });
             return null;
           }
@@ -67,15 +70,13 @@ builder.mutationType({
             const secret = process.env.SECRET_KEY;
             if (!secret) throw new Error('SECRET_KEY is not defined');
             const token = jsonwebtoken.sign({ payload: { user: user } }, secret);
-            cookieStore.set({
-              name: 'auth-token',
+            cookies.set('auth-token', token, {
               httpOnly: true,
               secure: process.env.NODE_ENV !== 'development',
               expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
               sameSite: 'strict',
               path: '/',
-              domain: null,
-              value: token,
+              domain: undefined,
             });
           }
           return user;
@@ -159,6 +160,16 @@ builder.mutationType({
           if (!user) throw new Error('Unauthorized');
           await normalizationPostFiles(prisma, postId, removeAll === true);
           await isolatedFiles();
+          return true;
+        },
+      }),
+      restore: t.boolean({
+        args: {
+          file: t.arg({ type: 'Upload', required: true }),
+        },
+        resolve: async (_root, { file }, { user }) => {
+          if (!user) throw new Error('Unauthorized');
+          importFile(await file.text());
           return true;
         },
       }),

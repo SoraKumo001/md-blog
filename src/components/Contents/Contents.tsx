@@ -1,5 +1,5 @@
 import EditIcon from '@mui/icons-material/EditNote';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';

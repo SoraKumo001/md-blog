@@ -1,19 +1,20 @@
-import fs from 'fs';
 import { semaphore } from '@node-libraries/semaphore';
-import admin from 'firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/app/api/graphql/libs/context';
+import { getUserFromToken } from '@/libs/getUserFromToken';
+import { initializeApp } from '../graphql/libs/initializeApp';
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.GOOGLE_PROJECT_ID,
-    clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
-    privateKey: process.env.GOOGLE_PRIVATE_KEY,
-  }),
-  storageBucket: `${process.env.GOOGLE_PROJECT_ID}.appspot.com`,
-});
+initializeApp();
 
-const main = async () => {
+export const POST = async (req: NextRequest) => {
+  const { cookies } = req;
+  if (!cookies) throw new Error('cookieStore is undefined');
+  const token = (await cookies.get('auth-token'))?.value;
+  const user = await getUserFromToken(token);
+  if (!user) {
+    throw new Error('Authentication error');
+  }
   const users = await prisma.user.findMany();
   const categories = await prisma.category.findMany();
   const system = await prisma.system.findMany();
@@ -36,11 +37,5 @@ const main = async () => {
       }
     })
   );
-
-  fs.writeFileSync(
-    'output.json',
-    JSON.stringify({ system, users, categories, posts, files: fireStoreFiles }, undefined, '  ')
-  );
+  return Response.json({ system, users, categories, posts, files: fireStoreFiles });
 };
-
-main();

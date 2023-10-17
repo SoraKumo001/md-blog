@@ -1,0 +1,12 @@
+.root {
+  @apply h-full overflow-auto;
+  h1 {
+    @apply mb-8 border-b text-xl;
+  }
+  .items {
+    @apply grid gap-4;
+  }
+  .link {
+    @apply block rounded border p-4;
+  }
+}

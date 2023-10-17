@@ -1,11 +1,11 @@
 import { PrismaClient, User } from '@prisma/client';
-import { CookieStore } from '@whatwg-node/cookie-store';
+import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
 export type Context = {
-  cookieStore: CookieStore;
   req: Request;
   prisma: PrismaClient;
   user?: User;
+  cookies: ReadonlyRequestCookies;
 };
 
 export const prisma =

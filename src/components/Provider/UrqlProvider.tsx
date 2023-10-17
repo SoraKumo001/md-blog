@@ -1,4 +1,4 @@
-import { NextSSRProvider, createNextSSRExchange } from '@react-libraries/next-exchange-ssr';
+import { NextSSRProvider, useCreateNextSSRExchange } from '@react-libraries/next-exchange-ssr';
 
 import { ReactNode, useMemo } from 'react';
 import { cacheExchange, Client, fetchExchange, Provider } from 'urql';
@@ -17,7 +17,7 @@ export const UrqlProvider = ({
   children: ReactNode;
 }) => {
   const session = useUser();
-  const nextSSRExchange = useMemo(createNextSSRExchange, []);
+  const nextSSRExchange = useCreateNextSSRExchange();
   const client = useMemo(() => {
     const url = isServerSide ? `${host}${endpoint}` : endpoint;
     return new Client({

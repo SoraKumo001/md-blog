@@ -1,7 +1,7 @@
 import LeftIcon from '@mui/icons-material/ArrowLeft';
 import RightIcon from '@mui/icons-material/ArrowRight';
 import CenterIcon from '@mui/icons-material/FilterCenterFocus';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import React, { FC, ReactNode, useRef, useState } from 'react';
 import { useEffectOnce } from 'react-use';
 import { classNames } from '@/libs/classNames';

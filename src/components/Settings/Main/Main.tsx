@@ -23,6 +23,9 @@ export const Main: FC<Props> = ({}) => {
           <Link className={styled.link} href="/settings/category">
             カテゴリ設定
           </Link>
+          <Link className={styled.link} href="/settings/backup">
+            バックアップ/リストア
+          </Link>
         </div>
       </Container>
     </div>

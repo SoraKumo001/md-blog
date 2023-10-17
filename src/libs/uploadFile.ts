@@ -1,6 +1,6 @@
 import { getStorage } from 'firebase-admin/storage';
 import { uuid } from 'uuidv4';
-import { prisma } from '@/app/libs/context';
+import { prisma } from '@/app/api/graphql/libs/context';
 
 export const uploadFile = async (binary: File) => {
   const bucket = getStorage().bucket();

@@ -169,6 +169,12 @@ export const Editor: FC<Props> = ({ id }) => {
         <Separator>
           <div
             className="h-full"
+            onKeyDown={(e) => {
+              if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                handleSubmit(onSubmit)();
+              }
+            }}
             onDropCapture={handleDrop}
             onDragOver={handleDragOver}
             onPasteCapture={(e) => {
@@ -181,15 +187,18 @@ export const Editor: FC<Props> = ({ id }) => {
               });
             }}
           >
-            {/* 入力補完を切る */}
             <MonacoEditor
               language="markdown"
               defaultValue={content ?? post.content}
               onChange={(e) => update(() => setContent(e ?? ''))}
               onMount={handleEditorDidMount}
               options={{
+                renderControlCharacters: true,
+                renderWhitespace: 'boundary',
+                automaticLayout: true,
                 scrollBeyondLastLine: false,
                 wordWrap: 'on',
+                wrappingStrategy: 'advanced',
                 minimap: { enabled: false },
                 dragAndDrop: true,
                 dropIntoEditor: { enabled: true },
@@ -197,6 +206,8 @@ export const Editor: FC<Props> = ({ id }) => {
                 occurrencesHighlight: false,
                 renderLineHighlight: 'none',
                 quickSuggestions: false,
+                wordBasedSuggestions: false,
+                language: 'markdown',
               }}
             />
           </div>

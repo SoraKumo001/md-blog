@@ -1,11 +1,7 @@
-import { dynamicImport } from '@node-libraries/dynamic-import';
+import { remark } from 'remark';
 import type { Root } from 'mdast';
 
 export const getImages = async (content: string) => {
-  const isNextJS = process.env.NEXT_RUNTIME;
-  const { remark } = !isNextJS
-    ? await dynamicImport<typeof import('remark')>('remark')
-    : await import('remark');
   const processor = remark();
   const tree = processor().parse(content);
 

@@ -1,19 +1,8 @@
-import fs from 'fs';
 import { semaphore } from '@node-libraries/semaphore';
 import { Category, FireStore, Post, System, User } from '@prisma/client';
-import admin from 'firebase-admin';
 import { getStorage } from 'firebase-admin/storage';
 import { prisma } from '@/app/api/graphql/libs/context';
-import { getImages } from '../libs/getImages';
-
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.GOOGLE_PROJECT_ID,
-    clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
-    privateKey: process.env.GOOGLE_PRIVATE_KEY,
-  }),
-  storageBucket: `${process.env.GOOGLE_PROJECT_ID}.appspot.com`,
-});
+import { getImages } from '@/libs/getImages';
 
 type DataType = {
   users: User[];
@@ -23,8 +12,7 @@ type DataType = {
   files: (FireStore & { binary: string })[];
 };
 
-const main = async () => {
-  const file = fs.readFileSync('output.json', 'utf8');
+export const importFile = async (file: string) => {
   const data: DataType = JSON.parse(file);
   if (data) {
     for (const value of data.users) {
@@ -99,5 +87,3 @@ const main = async () => {
     await s.all();
   }
 };
-
-main();

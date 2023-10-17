@@ -843,6 +843,7 @@ type Mutation {
   uploadPostIcon(postId: String!, file: Upload): FireStore!
   uploadPostImage(postId: String!, file: Upload!): FireStore!
   normalizationPostFiles(postId: String!, removeAll: Boolean): Boolean!
+  restore(file: Upload!): Boolean!
   createOneUser(input: UserCreateInput!): User!
   createOnePost(input: PostCreateInput!): Post!
   createOneCategory(input: CategoryCreateInput!): Category!

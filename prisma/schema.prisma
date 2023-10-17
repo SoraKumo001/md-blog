@@ -9,7 +9,7 @@ datasource db {
 
 generator pothos {
   provider = "prisma-pothos-types"
-  output = "../src/server/generated/pothos-types.ts"
+  output   = "../src/app/generated/pothos-types.ts"
 }
 
 /// @pothos-generator executable {include:["mutation"],authority:["USER"]}

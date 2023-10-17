@@ -83,7 +83,6 @@ mutation DeleteOnePost($id: String!) {
       updatedAt
     }
   }
-  normalizationPostFiles(postId: $id, removeAll: true)
 }
 
 mutation UpdateOnePost($categories: [CategoryUniqueFilter!], $where: PostUniqueFilter!) {
@@ -245,4 +244,8 @@ mutation UploadPostIcon($postId: String!, $file: Upload) {
 
 mutation NormalizationPostFiles($postId: String!, $removeAll: Boolean) {
   normalizationPostFiles(postId: $postId, removeAll: $removeAll)
+}
+
+mutation Restore($file: Upload!) {
+  restore(file: $file)
 }
