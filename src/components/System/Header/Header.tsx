@@ -1,13 +1,15 @@
-import CreateIcon from '@mui/icons-material/Create';
-import HomeIcon from '@mui/icons-material/Home';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Button from '@mui/material/Button';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
+import { Button } from 'react-daisyui';
+import {
+  MdCreate as CreateIcon,
+  MdHome as HomeIcon,
+  MdLogin as LoginIcon,
+  MdLogout as LogoutIcon,
+  MdSettings as SettingsIcon,
+} from 'react-icons/md';
 import { useSystemQuery } from '@/generated/graphql';
 import { useUser, useSignOut } from '@/hooks/useAuth';
 import { useLoading } from '@/hooks/useLoading';
@@ -41,52 +43,59 @@ export const Header: FC<Props> = () => {
       </Head>
       <header className={styled.root}>
         <Link className={styled.title} href="/">
-          <HomeIcon fontSize="large" />
+          <HomeIcon fontSize="large" size={24} />
           {data.findUniqueSystem.title}
         </Link>
         <div className="flex gap-1">
           {session && (
             <>
               <Button
-                variant="outlined"
+                variant="outline"
+                color="primary"
+                size="sm"
                 onClick={() => {
                   router.push('/edit');
                 }}
                 aria-label="create post"
               >
-                <CreateIcon />
+                <CreateIcon size={24} />
               </Button>
               <Button
-                variant="outlined"
+                variant="outline"
+                color="primary"
+                size="sm"
                 onClick={() => {
                   router.push('/settings');
                 }}
                 aria-label="setting"
               >
-                <SettingsIcon />
+                <SettingsIcon size={24} />
               </Button>
               <Button
-                variant="outlined"
+                variant="outline"
+                color="primary"
+                size="sm"
                 onClick={() => {
                   signOut();
                 }}
                 aria-label="logout"
               >
-                <LogoutIcon />
+                <LogoutIcon size={24} />
               </Button>
             </>
           )}
 
           {!session && (
             <Button
-              variant="outlined"
+              variant="outline"
+              color="primary"
+              size="sm"
               onClick={() => {
                 router.push('/login');
-                // signIn();
               }}
               aria-label="login"
             >
-              <LoginIcon />
+              <LoginIcon size={24} />
             </Button>
           )}
         </div>

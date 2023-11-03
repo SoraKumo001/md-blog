@@ -1,10 +1,10 @@
-import EditIcon from '@mui/icons-material/EditNote';
-import Button from '@mui/material/Button';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useMemo } from 'react';
+import { Button } from 'react-daisyui';
+import { MdEditNote as EditIcon } from 'react-icons/md';
 import { usePostQuery } from '@/generated/graphql';
 import { useUser } from '@/hooks/useAuth';
 import { useLoading } from '@/hooks/useLoading';
@@ -50,15 +50,14 @@ export const Contents: FC<Props> = ({ id }) => {
       <div className={styled.root}>
         {session && (
           <Button
+            variant="outline"
+            size="sm"
             className={styled.edit}
-            variant="outlined"
-            size="small"
             onClick={() => {
               router.push(`/edit/${id}`);
             }}
-            aria-label="edit"
           >
-            <EditIcon fontSize="small" />
+            <EditIcon size={24} />
           </Button>
         )}
         <h1 className={styled.title} id="header-top">

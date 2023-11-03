@@ -1,9 +1,10 @@
 .root {
-  .field {
-    @apply min-h-[64px] rounded border border-[rgba(0,0,0,0.23)] p-4;
-    &.drag {
-      @apply border-gray-700;
-    }
+  @apply relative;
+  &.field {
+    @apply min-h-[64px] p-4;
+  }
+  &.drag {
+    @apply border-gray-700;
   }
 
   .image {

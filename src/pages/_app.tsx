@@ -1,6 +1,3 @@
-import { ThemeProvider } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AppContext, AppProps } from 'next/app';
 import { Noto_Sans_Mono, Roboto_Mono } from 'next/font/google';
 import { GoogleAnalytics } from '@/components/Commons/GoogleAnalytics';
@@ -10,8 +7,6 @@ import { LoadingContainer } from '@/components/System/LoadingContainer';
 import { NotificationContainer } from '@/components/System/Notification/NotificationContainer';
 import { StoreProvider } from '@/libs/context';
 import { getHost } from '@/libs/getHost';
-// import { getUserInfo } from '@/libs/getUserInfo';
-import { theme } from '@/styles/themes';
 
 import '@/styles/globals.scss';
 
@@ -37,24 +32,20 @@ const App = ({
   const { session, cookie, host } = pageProps;
   return (
     <StoreProvider initState={() => ({ host, user: session })}>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <GoogleAnalytics />
-        <UrqlProvider host={host} cookie={cookie}>
-          <ThemeProvider theme={theme}>
-            <div
-              className={'flex h-screen flex-col'}
-              style={{ fontFamily: `${roboto.style.fontFamily} ,${noto.style.fontFamily}` }}
-            >
-              <Header />
-              <main className="relative flex-1 overflow-hidden">
-                <Component {...pageProps} />
-              </main>
-              <LoadingContainer />
-              <NotificationContainer />
-            </div>
-          </ThemeProvider>
-        </UrqlProvider>
-      </LocalizationProvider>
+      <GoogleAnalytics />
+      <UrqlProvider host={host} cookie={cookie}>
+        <div
+          className={'flex h-screen flex-col'}
+          style={{ fontFamily: `${roboto.style.fontFamily} ,${noto.style.fontFamily}` }}
+        >
+          <Header />
+          <main className="relative flex-1 overflow-hidden">
+            <Component {...pageProps} />
+          </main>
+          <LoadingContainer />
+          <NotificationContainer />
+        </div>
+      </UrqlProvider>
     </StoreProvider>
   );
 };

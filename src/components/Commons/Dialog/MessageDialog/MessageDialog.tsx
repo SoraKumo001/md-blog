@@ -1,9 +1,6 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import React, { FC, ReactNode } from 'react';
-import styled from './MessageDialog.module.scss';
+import { Button } from 'react-daisyui';
+import { classNames } from '@/libs/classNames';
 
 interface Props {
   isOpen: boolean;
@@ -18,23 +15,19 @@ interface Props {
  */
 export const MessageDialog: FC<Props> = ({ isOpen, onResult, children }) => {
   return (
-    <Dialog
-      className={styled.root}
-      open={isOpen}
-      keepMounted
-      onClose={() => onResult?.(false)}
-      aria-labelledby="common-dialog-title"
-      aria-describedby="common-dialog-description"
-    >
-      <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={() => onResult?.(true)} color="primary" aria-label="yes">
-          Yes
-        </Button>
-        <Button onClick={() => onResult?.(false)} color="primary" aria-label="no">
-          No
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <dialog className={classNames('modal', isOpen && 'modal-open')}>
+      <div className="modal-backdrop " onClick={() => onResult?.(false)} />
+      <div className="modal-box">
+        <div className="modal-top">{children}</div>
+        <div className="modal-action">
+          <Button type="button" onClick={() => onResult?.(true)} aria-label="yes">
+            Yes
+          </Button>
+          <Button type="button" onClick={() => onResult?.(false)} aria-label="no">
+            No
+          </Button>
+        </div>
+      </div>
+    </dialog>
   );
 };

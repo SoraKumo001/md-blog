@@ -1,4 +1,4 @@
-import '@/styles/global.scss';
+import '@/styles/globals.scss';
 import './storybook.scss';
 import React, { FunctionComponent } from 'react';
 

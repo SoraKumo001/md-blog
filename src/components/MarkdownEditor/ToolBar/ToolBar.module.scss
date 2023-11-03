@@ -1,10 +1,13 @@
 .root {
   @apply mb-1 shadow;
   .row {
-    @apply flex flex-wrap gap-2 p-2;
+    @apply flex flex-wrap gap-2 p-2 items-center;
   }
   .categories {
     @apply w-40;
+    :global(.MuiOutlinedInput-notchedOutline) {
+      @apply hidden;
+    }
   }
   .invisible {
     @apply hidden;

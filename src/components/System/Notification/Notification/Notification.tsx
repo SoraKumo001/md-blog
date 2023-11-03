@@ -1,5 +1,5 @@
-import IconInfo from '@mui/icons-material/InfoOutlined';
 import React, { AnimationEventHandler, FC } from 'react';
+import { MdInfoOutline as IconInfo } from 'react-icons/md';
 import styled from './Notification.module.scss';
 interface Props {
   onClose?: () => void;

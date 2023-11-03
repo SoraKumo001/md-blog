@@ -1,4 +1,3 @@
-import { useGraphQlJit } from '@envelop/graphql-jit';
 import { createYoga } from 'graphql-yoga';
 import { cookies as getCookies } from 'next/headers';
 import { Context, prisma } from './libs/context';
@@ -12,7 +11,6 @@ const { handleRequest } = createYoga<Context>({
   schema,
   fetchAPI: { Response },
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  plugins: [useGraphQlJit()],
   context: async ({ request: req }) => {
     const cookies = getCookies();
     const token = cookies.get('auth-token')?.value;

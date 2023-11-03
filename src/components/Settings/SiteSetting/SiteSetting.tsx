@@ -1,7 +1,8 @@
-import { Button, Container, Stack, TextField } from '@mui/material';
 import React, { FC, useState } from 'react';
+import { Button } from 'react-daisyui';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ImageDragField } from '@/components/Commons/ImageDragField';
+import { TextField } from '@/components/Commons/TextField';
 import {
   useSystemQuery,
   useUpdateSystemMutation,
@@ -40,8 +41,8 @@ export const SiteSetting: FC<Props> = ({}) => {
   const url = getFirebaseUrl(data.findUniqueSystem.icon?.id);
   return (
     <div className={styled.root}>
-      <Container maxWidth="sm" sx={{ pt: 5 }}>
-        <Stack spacing={3}>
+      <div className="max-w-2xl m-auto p-8">
+        <div className="grid gap-8">
           <h1>サイト情報</h1>
           <TextField
             label="タイトル"
@@ -54,16 +55,11 @@ export const SiteSetting: FC<Props> = ({}) => {
             {...register('description')}
           />
           <ImageDragField placeholder="Favicon" types={['x-icon']} onChange={setIcon} url={url} />
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleSubmit(onSubmit)}
-            aria-label="save"
-          >
+          <Button onClick={handleSubmit(onSubmit)} aria-label="save" color="primary">
             保存
           </Button>
-        </Stack>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };

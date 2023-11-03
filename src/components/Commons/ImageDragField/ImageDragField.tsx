@@ -1,10 +1,9 @@
-import CloseIcon from '@mui/icons-material/Close';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import React, { FC, ReactNode, useState } from 'react';
+import { Button } from 'react-daisyui';
+import { MdClose as CloseIcon } from 'react-icons/md';
 import { classNames } from '@/libs/classNames';
 import styled from './ImageDragField.module.scss';
+import { FieldSet } from '../FieldSet';
 
 interface Props {
   className?: string;
@@ -30,48 +29,43 @@ export const ImageDragField: FC<Props> = ({
   const [isDrag, setDrag] = useState(false);
   const [image, setImage] = useState(url);
   return (
-    <FormControl fullWidth className={classNames(styled.root, className)}>
-      {placeholder && (
-        <InputLabel shrink={!!image} focused={false} className={styled.placeholder}>
-          {placeholder}
-        </InputLabel>
+    <FieldSet
+      className={classNames(styled.root, styled.field, isDrag && styled.drag, className)}
+      label={placeholder}
+      onDragOver={(e) => {
+        setDrag(true);
+        e.preventDefault();
+      }}
+      onDragLeave={() => {
+        setDrag(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const type = file.type.split('/')[1];
+          if (!type || !types.includes(type as (typeof types)[number])) return;
+          convertUrl(file, type).then(setImage);
+          onChange?.(file);
+        }
+      }}
+    >
+      {image && (
+        <Button
+          type="button"
+          variant="link"
+          className={styled.close}
+          onClick={() => {
+            onChange?.(null);
+            setImage(undefined);
+          }}
+          aria-label="close"
+        >
+          <CloseIcon size={24} />
+        </Button>
       )}
-      <div
-        className={classNames(styled.field, isDrag && styled.drag)}
-        onDragOver={(e) => {
-          setDrag(true);
-          e.preventDefault();
-        }}
-        onDragLeave={() => {
-          setDrag(false);
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          const file = e.dataTransfer.files[0];
-          if (file) {
-            const type = file.type.split('/')[1];
-            if (!type || !types.includes(type as (typeof types)[number])) return;
-            convertUrl(file, type).then(setImage);
-            onChange?.(file);
-          }
-        }}
-      >
-        {image && (
-          <Button
-            size="small"
-            className={styled.close}
-            onClick={() => {
-              onChange?.(null);
-              setImage(undefined);
-            }}
-            aria-label="close"
-          >
-            <CloseIcon />
-          </Button>
-        )}
-        {image && <img className={styled.image} src={image} alt={placeholder || ''} />}
-      </div>
-    </FormControl>
+      {image && <img className={styled.image} src={image} alt={placeholder || ''} />}
+    </FieldSet>
   );
 };
 

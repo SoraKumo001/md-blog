@@ -1,7 +1,7 @@
 import { OnMount, Editor as MonacoEditor, useMonaco } from '@monaco-editor/react';
-import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
 import React, { DOMAttributes, FC, useEffect, useRef, useState, useTransition } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { MdModeStandby as ModeStandbyIcon } from 'react-icons/md';
 import {
   usePostQuery,
   useUpdatePostMutation,
@@ -145,7 +145,7 @@ export const Editor: FC<Props> = ({ id }) => {
         content,
         published,
         categories: categories.map((id) => ({ id })),
-        publishedAt: publishedAt.toISOString(),
+        publishedAt: new Date(publishedAt).toISOString(),
       }),
       (card !== undefined && uploadPostIcon({ postId: id, file: card })) || {},
     ]).then((result) => {

@@ -1,6 +1,7 @@
-import { Button, Container, Stack, TextField } from '@mui/material';
 import React, { FC, Fragment, useEffect } from 'react';
+import { Button } from 'react-daisyui';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { TextField } from '@/components/Commons/TextField';
 import {
   useCategoriesQuery,
   useUpdateCategoryMutation,
@@ -73,8 +74,8 @@ export const CategorySetting: FC<Props> = ({}) => {
 
   return (
     <div className={styled.root}>
-      <Container maxWidth="sm" sx={{ pt: 5 }}>
-        <Stack spacing={3}>
+      <div className="max-w-2xl m-auto pt-8">
+        <div className="grid gap-4">
           <h1>カテゴリ</h1>
           {fields.map(({ id, name }, index) => (
             <Fragment key={id}>
@@ -87,16 +88,11 @@ export const CategorySetting: FC<Props> = ({}) => {
               />
             </Fragment>
           ))}
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleSubmit(onSubmit)}
-            aria-label="save"
-          >
+          <Button onClick={handleSubmit(onSubmit)} aria-label="save" color="primary">
             保存
           </Button>
-        </Stack>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };

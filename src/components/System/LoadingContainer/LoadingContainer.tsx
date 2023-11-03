@@ -1,5 +1,5 @@
-import IconRefresh from '@mui/icons-material/Refresh';
 import React, { FC } from 'react';
+import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { useSelector } from '@/libs/context';
 import styled from './LoadingContainer.module.scss';
 

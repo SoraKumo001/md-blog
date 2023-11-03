@@ -1,5 +1,3 @@
-import { Container } from '@mui/material';
-
 import Link from 'next/link';
 import React, { FC } from 'react';
 import styled from './Main.module.scss';
@@ -14,7 +12,7 @@ interface Props {}
 export const Main: FC<Props> = ({}) => {
   return (
     <div className={styled.root}>
-      <Container maxWidth="sm" sx={{ pt: 5 }}>
+      <div className="max-w-2xl m-auto grid gap-8">
         <h1>システム設定</h1>
         <div className={styled.items}>
           <Link className={styled.link} href="/settings/system">
@@ -27,7 +25,7 @@ export const Main: FC<Props> = ({}) => {
             バックアップ/リストア
           </Link>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };

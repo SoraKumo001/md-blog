@@ -1,21 +1,14 @@
-import React from 'react';
+import { Meta, StoryObj } from '@storybook/react';
 import { Decorator } from '@/storybook';
 import { ContentMarkdown } from '.';
 
-const StoryInfo = {
-  title: 'Components/Contents/ContentMarkdown',
+const meta: Meta<typeof ContentMarkdown> = {
   decorators: [Decorator],
   component: ContentMarkdown,
 };
-export default StoryInfo;
+export default meta;
 
-export const Primary = (args: Parameters<typeof ContentMarkdown>[0]) => {
-  return (
-    <>
-      <ContentMarkdown {...args}>Test</ContentMarkdown>
-    </>
-  );
+export const Primary: StoryObj<typeof ContentMarkdown> = {
+  //  args:{},
+  //  play: async ({ canvasElement }) => {},
 };
-Primary.args = {} as Parameters<typeof ContentMarkdown>[0];
-
-Primary.parameters = {};

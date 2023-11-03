@@ -1,24 +1,18 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import LessIcon from '@mui/icons-material/ExpandLess';
-import ExpandIcon from '@mui/icons-material/ExpandMore';
-import SaveIcon from '@mui/icons-material/Save';
-import {
-  TextField,
-  Switch,
-  Button,
-  Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-  InputLabel,
-  FormControl,
-} from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import { useRouter } from 'next/router';
 import React, { FC, useMemo, useState } from 'react';
+import { Button, Checkbox } from 'react-daisyui';
 import { Control, Controller } from 'react-hook-form';
+import {
+  MdDelete as DeleteIcon,
+  MdExpandLess as LessIcon,
+  MdExpandMore as ExpandIcon,
+  MdSave as SaveIcon,
+} from 'react-icons/md';
 import { MessageDialog } from '@/components/Commons/Dialog/MessageDialog';
+import { FieldSet } from '@/components/Commons/FieldSet';
 import { ImageDragField } from '@/components/Commons/ImageDragField';
+import { MultiSelect } from '@/components/Commons/MultiSelect';
+import { TextField } from '@/components/Commons/TextField';
 import { PostQuery, useCategoriesQuery, useDeleteOnePostMutation } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
 import { classNames } from '@/libs/classNames';
@@ -26,7 +20,6 @@ import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import { convertWebp } from '@/libs/webp';
 import styled from './ToolBar.module.scss';
 import { FormInput } from '../Editor';
-
 interface Props {
   post: PostQuery['findUniquePost'];
   control: Control<FormInput>;
@@ -51,31 +44,41 @@ export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
   const url = getFirebaseUrl(post.cardId);
   useLoading([fetching, updateFetching]);
   if (!categoryList) return null;
-
+  const dateOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  } as const;
   return (
     <div className={styled.root}>
       <div className={styled.row}>
         <Button
-          variant="outlined"
-          size="small"
+          type="button"
           onClick={() => setExpand((v) => !v)}
+          size="sm"
+          variant="outline"
           aria-label="expand"
         >
-          {isExpand ? <LessIcon /> : <ExpandIcon />}
+          {isExpand ? <LessIcon size={24} /> : <ExpandIcon size={24} />}
         </Button>
-        <Button type="submit" variant="outlined" size="small" aria-label="save">
-          <SaveIcon />
+        <Button type="submit" size="sm" variant="outline" aria-label="save">
+          <SaveIcon size={24} />
         </Button>
-        <Switch
+        <input
+          type="checkbox"
+          className="toggle toggle-primary"
           id="published"
           key={String(post.published)}
           defaultChecked={post.published}
           {...control.register('published')}
         />
+
         <TextField
           className="min-w-[300px] flex-1"
           id="postTitle"
-          size="small"
+          size="sm"
           defaultValue={post.title}
           label="Title"
           {...control.register('title')}
@@ -85,67 +88,64 @@ export const ToolBar: FC<Props> = ({ post, control, onCard }) => {
           defaultValue={post.categories.map((v) => v.id) ?? []}
           name="categories"
           render={({ field: { onChange, ...field } }) => (
-            <FormControl size="small">
-              <InputLabel>Category</InputLabel>
-              <Select
-                label="Category"
-                className={styled.categories}
-                multiple
-                renderValue={(selected) =>
-                  selected.map((id) => categoryList.find((c) => c.id === id)?.name).join(',')
-                }
-                {...field}
+            <FieldSet label="Category">
+              <MultiSelect
+                className="w-64 border-none py-0"
+                items={categoryList.map(({ id, name }) => (
+                  <label key={id} className="flex items-center gap-1 cursor-pointer">
+                    <Checkbox
+                      size="sm"
+                      color="primary"
+                      checked={field.value.find((n) => id === n) !== undefined}
+                      onChange={(e) =>
+                        onChange(
+                          e.target.checked
+                            ? [...field.value, e.target.value]
+                            : field.value.filter((name) => name !== e.target.value)
+                        )
+                      }
+                      value={id}
+                    />
+                    <div>{name}</div>
+                  </label>
+                ))}
               >
-                <div className="flex flex-col gap-1">
-                  {categoryList.map(({ id, name }) => (
-                    <MenuItem key={id} value={name}>
-                      <label className="flex items-center">
-                        <Checkbox
-                          checked={field.value.find((n) => id === n) !== undefined}
-                          onChange={(e) =>
-                            onChange(
-                              e.target.checked
-                                ? [...field.value, e.target.value]
-                                : field.value.filter((name) => name !== e.target.value)
-                            )
-                          }
-                          value={id}
-                        />
-                        <ListItemText primary={name} />
-                      </label>
-                    </MenuItem>
-                  ))}
-                </div>
-              </Select>
-            </FormControl>
+                {field.value.map((id) => categoryList.find((c) => c.id === id)?.name).join(',')}
+              </MultiSelect>
+            </FieldSet>
           )}
         ></Controller>
-        <Controller
-          control={control}
-          name="publishedAt"
-          defaultValue={new Date(post.publishedAt)}
-          render={({ field: { onChange, ...field } }) => (
-            <DateTimePicker
-              format="yyyy/MM/dd HH:mm:ss"
-              slotProps={{ textField: { size: 'small' } }}
-              label="Publish"
-              defaultValue={field.value}
-              onChange={(date) => {
-                date && onChange(date);
-              }}
-              {...field}
-            />
-          )}
-        ></Controller>
-        <DateTimePicker
-          format="yyyy/MM/dd HH:mm:ss"
-          slotProps={{ textField: { size: 'small' } }}
-          label="Update"
-          value={new Date(post.updatedAt)}
-          readOnly={true}
-        />
-        <Button variant="outlined" size="small" color="warning" aria-label="delete">
-          <DeleteIcon onClick={() => setDelete(true)} />
+        {post.publishedAt && (
+          <TextField
+            type="datetime-local"
+            lang="ja"
+            label="PublishedAt"
+            size="sm"
+            defaultValue={new Date(post.publishedAt)
+              .toLocaleString(undefined, dateOptions)
+              .replaceAll('/', '-')}
+            {...control.register('publishedAt')}
+          />
+        )}
+        {post.updatedAt && (
+          <TextField
+            type="datetime-local"
+            label="UpdatedAt"
+            size="sm"
+            defaultValue={new Date(post.updatedAt)
+              .toLocaleString(undefined, dateOptions)
+              .replaceAll('/', '-')}
+          />
+        )}
+        <Button
+          type="button"
+          variant="outline"
+          className="btn-warning"
+          size="sm"
+          aria-label="delete"
+          onClick={() => setDelete(true)}
+        >
+          <DeleteIcon />
         </Button>
         <MessageDialog
           isOpen={isDelete}

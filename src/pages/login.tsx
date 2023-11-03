@@ -1,5 +1,5 @@
-import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
+import { Button } from 'react-daisyui';
 import { useSignIn } from '@/hooks/useAuth';
 import { signInGoogle } from '@/libs/signInGoogle';
 
@@ -14,9 +14,7 @@ const Page = () => {
 
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <Button variant="contained" onClick={handleSignIn}>
-        SignIn
-      </Button>
+      <Button onClick={handleSignIn}>SignIn</Button>
     </div>
   );
 };

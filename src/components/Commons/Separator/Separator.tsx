@@ -1,8 +1,10 @@
-import LeftIcon from '@mui/icons-material/ArrowLeft';
-import RightIcon from '@mui/icons-material/ArrowRight';
-import CenterIcon from '@mui/icons-material/FilterCenterFocus';
-import Button from '@mui/material/Button';
 import React, { FC, ReactNode, useRef, useState } from 'react';
+import { Button } from 'react-daisyui';
+import {
+  MdArrowLeft as LeftIcon,
+  MdArrowRight as RightIcon,
+  MdFilterCenterFocus as CenterIcon,
+} from 'react-icons/md';
 import { useEffectOnce } from 'react-use';
 import { classNames } from '@/libs/classNames';
 import styled from './Separator.module.scss';
@@ -56,9 +58,8 @@ export const Separator: FC<Props> = ({ className, children }) => {
         }}
       >
         <Button
-          className="w-6"
           type="button"
-          variant="contained"
+          variant="outline"
           onClick={(e) => {
             setRato(0);
             e.preventDefault();
@@ -68,9 +69,8 @@ export const Separator: FC<Props> = ({ className, children }) => {
           <LeftIcon className="w-6" />
         </Button>
         <Button
-          className="w-6"
           type="button"
-          variant="contained"
+          variant="outline"
           onClick={(e) => {
             setRato(0.5);
             e.preventDefault();
@@ -80,9 +80,8 @@ export const Separator: FC<Props> = ({ className, children }) => {
           <CenterIcon className="w-6" />
         </Button>
         <Button
-          className="w-6"
           type="button"
-          variant="contained"
+          variant="outline"
           onClick={(e) => {
             setRato(1);
             e.preventDefault();

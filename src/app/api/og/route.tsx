@@ -1,4 +1,5 @@
-import { NextRequest, ImageResponse } from 'next/server';
+import { ImageResponse } from 'next/og';
+import type { NextRequest } from 'next/server';
 
 const font = fetch(new URL('https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Bold.otf')).then(
   (res) => res.arrayBuffer()

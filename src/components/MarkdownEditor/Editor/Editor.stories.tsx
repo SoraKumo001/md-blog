@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import { Decorator } from '@/storybook';
 import { Editor } from '.';
 
@@ -10,7 +10,7 @@ const meta: Meta<typeof Editor> = {
 };
 export default meta;
 
-export const Primary: StoryObj<typeof Editor> = {
-  //  args:{},
-  //  play: async ({ canvasElement }) => {},
-};
+// export const Primary: StoryObj<typeof Editor> = {
+//   //  args:{},
+//   //  play: async ({ canvasElement }) => {},
+// };

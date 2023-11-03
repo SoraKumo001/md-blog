@@ -1,4 +1,3 @@
-import Container from '@mui/material/Container';
 import React, { FC, useState } from 'react';
 import { useRestoreMutation } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
@@ -53,7 +52,7 @@ export const Backup: FC<Props> = ({}) => {
   useLoading(fetching || download);
   return (
     <div className={styled.root}>
-      <Container maxWidth="sm" sx={{ pt: 5 }}>
+      <div className="max-w-2xl m-auto pt-8">
         <h1>バックアップ/リストア</h1>
         <div className={styled.items}>
           <a className={styled.link} onClick={handleBackup}>
@@ -63,7 +62,7 @@ export const Backup: FC<Props> = ({}) => {
             リストア
           </a>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };

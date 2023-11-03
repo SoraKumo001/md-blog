@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Decorator } from '@/storybook';
-import { Separator } from '.';
+import { MultiSelect } from '.';
 
-const meta: Meta<typeof Separator> = {
-  component: Separator,
+const meta: Meta<typeof MultiSelect> = {
+  component: MultiSelect,
   decorators: [Decorator],
   parameters: {},
-  args: { children: ['test1', 'test2'] },
+  args: { children: 'test', items: ['test1', 'test2'] },
 };
 export default meta;
 
-export const Primary: StoryObj<typeof Separator> = {
+export const Primary: StoryObj<typeof MultiSelect> = {
   //  args:{},
   //  play: async ({ canvasElement }) => {},
 };
