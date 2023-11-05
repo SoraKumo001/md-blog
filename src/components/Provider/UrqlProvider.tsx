@@ -1,5 +1,5 @@
+'use client';
 import { NextSSRProvider, useCreateNextSSRExchange } from '@react-libraries/next-exchange-ssr';
-
 import { ReactNode, useMemo } from 'react';
 import { cacheExchange, Client, fetchExchange, Provider } from 'urql';
 import { useUser } from '@/hooks/useAuth';
@@ -34,7 +34,7 @@ export const UrqlProvider = ({
   }, [host, nextSSRExchange, session, cookie]);
   return (
     <Provider value={client}>
-      <NextSSRProvider>{children}</NextSSRProvider>
+      <NextSSRProvider client={client}>{children}</NextSSRProvider>
     </Provider>
   );
 };

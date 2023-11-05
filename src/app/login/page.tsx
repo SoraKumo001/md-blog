@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+'use client';
+import { useRouter } from 'next/navigation';
 import { Button } from 'react-daisyui';
 import { useSignIn } from '@/hooks/useAuth';
 import { signInGoogle } from '@/libs/signInGoogle';

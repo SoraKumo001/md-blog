@@ -35,7 +35,6 @@ export const TopPage: FC<Props> = ({}) => {
   }, [data?.findManyPost]);
   const system = dataSystem?.findUniqueSystem;
   useLoading(fetching);
-
   if (!posts || !categories || !system) return null;
   return (
     <>

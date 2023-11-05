@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { FC, useEffect, useMemo } from 'react';
 import { Button } from 'react-daisyui';
 import { MdEditNote as EditIcon } from 'react-icons/md';

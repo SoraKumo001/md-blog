@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import React, { FC, useEffect } from 'react';
 
@@ -10,27 +10,19 @@ interface Props {}
  * @param {Props} { }
  */
 export const GoogleAnalytics: FC<Props> = ({}) => {
-  const router = useRouter();
   const id = process.env.NEXT_PUBLIC_measurementId;
+  const path = usePathname();
   useEffect(() => {
     if (id) {
-      const handleRoute: Parameters<typeof router.events.on>[1] = (path, { shallow }) => {
-        if (!shallow) {
-          (window as { gtag?: (name: string, id: string, config: object) => void }).gtag?.(
-            'config',
-            id,
-            {
-              page_path: path,
-            }
-          );
+      (window as { gtag?: (name: string, id: string, config: object) => void }).gtag?.(
+        'config',
+        id,
+        {
+          page_path: path,
         }
-      };
-      router.events.on('routeChangeComplete', handleRoute);
-      return () => {
-        router.events.off('routeChangeComplete', handleRoute);
-      };
+      );
     }
-  }, [router, id]);
+  }, [path, id]);
   return (
     <>
       {id && (

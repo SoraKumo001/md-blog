@@ -61,7 +61,7 @@ class ServerString extends String {
 
 App.getInitialProps = async (context: AppContext) => {
   const req = context?.ctx?.req;
-  const host = getHost(req);
+  const host = getHost(req?.headers);
   const cookie = req?.headers?.cookie;
   const cookies = Object.fromEntries(cookie?.split(';').map((v) => v.trim().split('=')) ?? []);
   const token = cookies['auth-token'];

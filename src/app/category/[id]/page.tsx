@@ -1,9 +1,11 @@
-import { useRouter } from 'next/router';
+'use client';
+
+import { useParams } from 'next/navigation';
 import { Categories } from '@/components/Pages/Categories';
 
 const Page = () => {
-  const router = useRouter();
-  const id = router.query['id'];
+  const params = useParams();
+  const id = params?.id;
   if (typeof id !== 'string') return null;
   return <Categories id={id} />;
 };
