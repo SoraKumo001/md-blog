@@ -1,3 +1,4 @@
+'use client';
 import { SiteSetting } from '@/components/Settings/SiteSetting';
 
 const Page = () => {

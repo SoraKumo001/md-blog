@@ -1,3 +1,4 @@
+'use client';
 import { CategorySetting } from '@/components/Settings/CategorySetting';
 
 const Page = () => {

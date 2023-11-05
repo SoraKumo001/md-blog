@@ -28,11 +28,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getUserFromToken(token);
 
   return (
-    <html
-      lang="en"
-      className={[noto.className, roboto.className, 'flex h-screen flex-col'].join(' ')}
-    >
-      <body>
+    <html lang="en" className={[noto.className, roboto.className].join(' ')}>
+      <body className="flex h-screen flex-col">
         <App host={host} session={session}>
           {children}
         </App>

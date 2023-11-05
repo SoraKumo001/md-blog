@@ -1,3 +1,4 @@
+'use client';
 import { ApolloExplorer } from '@apollo/explorer/react';
 import { printSchema } from 'graphql';
 import { GetStaticProps, NextPage } from 'next';

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { FC, useMemo, useState } from 'react';
 import { Button, Checkbox } from 'react-daisyui';
 import { Control, Controller } from 'react-hook-form';

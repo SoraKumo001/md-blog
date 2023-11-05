@@ -3102,10 +3102,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@react-libraries/next-exchange-ssr@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@react-libraries/next-exchange-ssr/-/next-exchange-ssr-1.0.1.tgz#f8ffd384b2da9271eb6c546bd2727b79d792b147"
-  integrity sha512-bDESdHRKnEXe/1ziPFC0aVG3bv3GpaaP+2GaOnWPYjmvaaO8ko4+6dstiDk/u/NyOG8tod2BR2c5rmEYTJ/LMQ==
+"@react-libraries/next-exchange-ssr@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@react-libraries/next-exchange-ssr/-/next-exchange-ssr-1.0.2.tgz#9e28ccddeb21ca98100acabecea1f39c1002e690"
+  integrity sha512-/o6mbNjo7JvdGM7cb4A5wuD6aUNkNcCSrI6fZAlxHsHU9t5SsVYLaNm1vmRs4yrxs1wGzy81n3Sc6SJq5dAMBQ==
 
 "@repeaterjs/repeater@^3.0.4":
   version "3.0.4"
@@ -4539,10 +4539,19 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@18.2.34", "@types/react@>=16":
+"@types/react@*", "@types/react@>=16":
   version "18.2.34"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.34.tgz#aed20f19473721ba328feb99d1ec3307ebc1a8dd"
   integrity sha512-U6eW/alrRk37FU/MS2RYMjx0Va2JGIVXELTODaTIYgvWGCV4Y4TfTUzG8DdmpDNIT0Xpj/R7GfyHOJJrDttcvg==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@18.2.35":
+  version "18.2.35"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.35.tgz#bacdc6d139a4d6d47e5186e1a96952c65e1f3792"
+  integrity sha512-LG3xpFZ++rTndV+/XFyX5vUP7NI9yxyk+MQvBDq+CVs8I9DLSc3Ymwb1Vmw5YDoeNeHN4PDZa3HylMKJYT9PNQ==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -13024,7 +13033,7 @@ react-element-to-jsx-string@^15.0.0:
     is-plain-object "5.0.0"
     react-is "18.1.0"
 
-react-hook-form@^7.47.0:
+react-hook-form@^7.48.2:
   version "7.48.2"
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.48.2.tgz#01150354d2be61412ff56a030b62a119283b9935"
   integrity sha512-H0T2InFQb1hX7qKtDIZmvpU1Xfn/bdahWBN1fH19gSe4bBEqTfmlr7H3XWTaVtiK4/tpPaI1F3355GPMZYge+A==

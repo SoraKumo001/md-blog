@@ -1,3 +1,4 @@
+'use client';
 import { Backup } from '@/components/Settings/Backup';
 
 const Page = () => {
