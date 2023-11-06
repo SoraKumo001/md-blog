@@ -20,6 +20,5 @@ const config = {
     ],
   },
   output: 'standalone',
-  productionBrowserSourceMaps: true,
 };
-module.exports = config;
+export default config;
