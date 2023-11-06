@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -43,9 +42,9 @@ export const Contents: FC<Props> = ({ id }) => {
   const image = getFirebaseUrl(data.findUniquePost.cardId);
   return (
     <>
-      <Head>
+      <head>
         <meta name="date" content={new Date(data.findUniquePost.updatedAt).toISOString()} />
-      </Head>
+      </head>
       <Title image={image}>{data.findUniquePost.title}</Title>
       <div className={styled.root}>
         {session && (

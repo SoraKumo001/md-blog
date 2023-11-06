@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
@@ -33,14 +32,14 @@ export const Header: FC<Props> = () => {
   const favicon = data.findUniqueSystem.icon && getFirebaseUrl(data.findUniqueSystem.icon.id);
   return (
     <>
-      <Head>
+      <head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
         <meta name="description" content={data.findUniqueSystem.description} />
         <link rel="alternate" type="application/rss+xml" href="/sitemap.xml" title="RSS2.0" />
         {favicon && <link rel="icon" href={favicon} />}
-      </Head>
+      </head>
       <header className={styled.root}>
         <Link className={styled.title} href="/">
           <HomeIcon fontSize="large" size={24} />

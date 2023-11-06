@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import React, { FC, ReactNode, useMemo } from 'react';
 import { useSystemQuery } from '@/generated/graphql';
 import { useSelector } from '@/libs/context';
@@ -31,7 +30,7 @@ export const Title: FC<Props> = ({ image, children }) => {
     .flat()
     .join('&');
   return (
-    <Head>
+    <head>
       <title>{title}</title>
       <meta property="description" content={systemDescription} />
       <meta property="og:title" content={title} />
@@ -42,6 +41,6 @@ export const Title: FC<Props> = ({ image, children }) => {
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={systemDescription} />
       <meta name="twitter:image" content={imageUrl} />
-    </Head>
+    </head>
   );
 };
