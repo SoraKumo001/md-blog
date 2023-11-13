@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { getStorage } from 'firebase-admin/storage';
 import { getImages } from '@/libs/getImages';
+import type { PrismaClient } from '@prisma/client';
 
 export const normalizationPostFiles = async (
   prisma: PrismaClient,

@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { Decorator } from '@/storybook'
-import { Portal } from '.'
+import { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from '@/storybook';
+import { Portal } from '.';
 
 const meta: Meta<typeof Portal> = {
   component: Portal,
@@ -10,8 +10,7 @@ const meta: Meta<typeof Portal> = {
 };
 export default meta;
 
-
 export const Primary: StoryObj<typeof Portal> = {
-//  args:{},
-//  play: async ({ canvasElement }) => {},
+  //  args:{},
+  //  play: async ({ canvasElement }) => {},
 };

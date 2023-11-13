@@ -1,8 +1,8 @@
 import { semaphore } from '@node-libraries/semaphore';
-import { Category, FireStore, Post, System, User } from '@prisma/client';
 import { getStorage } from 'firebase-admin/storage';
 import { prisma } from '@/app/api/graphql/libs/context';
 import { getImages } from '@/libs/getImages';
+import type { Category, FireStore, Post, System, User } from '@prisma/client';
 
 type DataType = {
   users: User[];

@@ -1,5 +1,5 @@
-import { User } from '@prisma/client';
 import * as jsonwebtoken from 'jsonwebtoken';
+import type { User } from '@prisma/client';
 
 export const getUserFromToken = async (token?: string) => {
   if (!token) return undefined;

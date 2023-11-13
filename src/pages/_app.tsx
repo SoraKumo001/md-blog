@@ -7,7 +7,6 @@ import { LoadingContainer } from '@/components/System/LoadingContainer';
 import { NotificationContainer } from '@/components/System/Notification/NotificationContainer';
 import { StoreProvider } from '@/libs/context';
 import { getHost } from '@/libs/getHost';
-
 import '@/styles/globals.scss';
 
 const noto = Noto_Sans_Mono({
@@ -30,6 +29,7 @@ const App = ({
   pageProps,
 }: AppProps<{ session?: Session; host?: string; cookie?: string }>) => {
   const { session, cookie, host } = pageProps;
+
   return (
     <StoreProvider initState={() => ({ host, user: session })}>
       <GoogleAnalytics />
@@ -39,9 +39,7 @@ const App = ({
           style={{ fontFamily: `${roboto.style.fontFamily} ,${noto.style.fontFamily}` }}
         >
           <Header />
-          <main className="relative flex-1 overflow-hidden">
-            <Component {...pageProps} />
-          </main>
+          <Component {...pageProps} />
           <LoadingContainer />
           <NotificationContainer />
         </div>
