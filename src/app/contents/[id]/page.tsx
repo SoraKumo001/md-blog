@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { Contents } from '@/components/Contents';
 
 const Page = () => {
-  // const router = useRouter();
   const p = useParams();
   const id = p?.id;
   if (typeof id !== 'string') return null;
