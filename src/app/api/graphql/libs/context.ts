@@ -1,5 +1,4 @@
 import { PrismaClient, User } from '@prisma/client';
-import { withAccelerate } from '@prisma/extension-accelerate';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
 export type Context = {
@@ -18,6 +17,6 @@ export const prisma =
         level: 'query',
       },
     ],
-  }).$extends(withAccelerate());
+  });
 
 (global as { prisma?: PrismaClient }).prisma = prisma as never;
