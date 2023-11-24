@@ -1,14 +1,22 @@
-import { getStorage } from 'firebase-admin/storage';
+import { FirebaseOptions, initializeApp } from '@firebase/app';
+import { ref, uploadBytes, getStorage, deleteObject } from '@firebase/storage';
 import { uuid } from 'uuidv4';
 import { prisma } from '@/app/api/graphql/libs/context';
 
+const firebaseConfig: FirebaseOptions = {
+  apiKey: process.env.NEXT_PUBLIC_apiKey,
+  projectId: process.env.NEXT_PUBLIC_projectId,
+  authDomain: `${process.env.NEXT_PUBLIC_projectId}.firebaseapp.com`,
+  storageBucket: `${process.env.NEXT_PUBLIC_projectId}.appspot.com`,
+};
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+
 export const uploadFile = async (binary: File) => {
-  const bucket = getStorage().bucket();
   const id = uuid();
-  const storage = bucket.file(id);
-  await storage.save(Buffer.from(await binary.arrayBuffer()), {
-    public: true,
-    metadata: { mime: binary.type, cacheControl: 'public, max-age=31536000, immutable' },
+  uploadBytes(ref(storage, id), binary, {
+    contentType: binary.type,
+    cacheControl: 'public, max-age=31536000, immutable',
   });
   return prisma.fireStore.create({
     data: { id, name: binary.name, mimeType: binary.type ?? '' },
@@ -24,12 +32,8 @@ export const isolatedFiles = async () => {
       systemCards: { none: {} },
     },
   });
-  const bucket = getStorage().bucket();
   for (const { id } of files) {
-    await bucket
-      .file(id)
-      .delete()
-      .catch(() => null);
+    await deleteObject(ref(storage, id));
     await prisma.fireStore.delete({ where: { id } });
   }
 };

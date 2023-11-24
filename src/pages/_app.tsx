@@ -80,3 +80,5 @@ App.getInitialProps = async (context: AppContext) => {
 };
 
 export default App;
+
+export const runtime = 'experimental-edge';
