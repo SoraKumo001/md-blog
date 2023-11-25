@@ -92,3 +92,4 @@ const og = async (req: NextRequest) => {
   );
 };
 export const GET = og;
+export const runtime = 'edge';

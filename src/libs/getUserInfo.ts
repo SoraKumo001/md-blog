@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { jwtVerify, importX509 } from 'jose';
 
 const fetchPublicKeys = async () => {
   const response = await fetch(
@@ -33,22 +33,17 @@ export const getUserInfo = async (
   token?: string
 ): Promise<{ name: string; email: string; exp: number } | undefined> => {
   if (!projectId || !token) return undefined;
-
-  const [headerBase64, payloadBase64, signatureBase64] = token.split('.');
-
+  const [headerBase64] = token.split('.');
   const header = JSON.parse(Buffer.from(headerBase64, 'base64').toString('utf8')) as {
     kid: string;
   };
-  const payload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf8'));
-  if (Date.now() > payload.exp * 1000 || payload.aud !== projectId) return undefined;
-
-  const verifier = crypto.createVerify('RSA-SHA256');
-  verifier.update(`${headerBase64}.${payloadBase64}`);
-
   const publicKey = await getPublicKey(header.kid);
-  const signature = Buffer.from(signatureBase64, 'base64');
-  if (verifier.verify(publicKey, signature)) {
-    const { name, email, exp } = payload;
+  const result = await jwtVerify<{ name: string; email: string; exp: number }>(
+    token,
+    await importX509(publicKey, 'RS256')
+  ).catch(() => undefined);
+  if (result) {
+    const { name, email, exp } = result.payload;
     return { name, email, exp };
   }
   return undefined;

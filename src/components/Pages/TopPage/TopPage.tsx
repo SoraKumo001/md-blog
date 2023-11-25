@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { PostsQuery, usePostsQuery, useSystemQuery } from '@/generated/graphql';
 import { useLoading } from '@/hooks/useLoading';
-import styled from './TopPage.module.scss';
 import { PostList } from '../../PostList';
 import { Title } from '../../System/Title';
 
@@ -39,7 +38,7 @@ export const TopPage: FC<Props> = ({}) => {
   return (
     <>
       <Title>{system.description || 'Article List'}</Title>
-      <div className={styled.root}>
+      <div className="flex h-full w-full flex-col gap-16 overflow-auto p-8">
         <PostList id="news" title="新着順" posts={posts} limit={10} />
         {categories.map(([id, { name, posts }]) => (
           <PostList key={id} id={id} title={name} posts={posts} limit={10} />

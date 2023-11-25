@@ -4,7 +4,7 @@ import { schema } from '@/app/api/graphql/libs/schema';
 import { Explorer } from './explorer';
 
 const Page: NextPage = async () => {
-  return <Explorer schema={await printSchema(schema)} />;
+  return <Explorer schema={printSchema(schema)} />;
 };
 
 export default Page;

@@ -1,8 +1,8 @@
 import { semaphore } from '@node-libraries/semaphore';
-import { Category, FireStore, Post, System, User } from '@prisma/client';
-import { getStorage } from 'firebase-admin/storage';
 import { prisma } from '@/app/api/graphql/libs/context';
+import { storage } from '@/app/api/graphql/libs/getStorage';
 import { getImages } from '@/libs/getImages';
+import type { Category, FireStore, Post, System, User } from '@prisma/client';
 
 type DataType = {
   users: User[];
@@ -22,16 +22,18 @@ export const importFile = async (file: string) => {
         where: { id: value.id },
       });
     }
-    const bucket = getStorage().bucket();
     const s = semaphore(10);
 
     data.files.forEach(async (file) => {
       await s.acquire();
       const { binary, ...storeFile } = file;
-      await bucket.file(file.id).save(Buffer.from(binary, 'base64'), {
-        public: true,
-        contentType: file.mimeType,
-        metadata: { mime: file.mimeType, cacheControl: 'public, max-age=31536000, immutable' },
+      //Buffer.from(binary, 'base64')をblobに変換
+      const blob = new Blob([Buffer.from(binary, 'base64')], { type: file.mimeType });
+      await storage.upload({
+        file: blob,
+        name: file.id,
+        published: true,
+        metadata: { cacheControl: 'public, max-age=31536000, immutable' },
       });
       await prisma.fireStore.upsert({
         create: storeFile,

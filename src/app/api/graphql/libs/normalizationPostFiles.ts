@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { getStorage } from 'firebase-admin/storage';
+import { storage } from '@/app/api/graphql/libs/getStorage';
 import { getImages } from '@/libs/getImages';
+import type { PrismaClient } from '@prisma/client';
 
 export const normalizationPostFiles = async (
   prisma: PrismaClient,
@@ -18,7 +18,6 @@ export const normalizationPostFiles = async (
   });
   const adds = images.filter((image) => !files.some(({ id }) => id === image));
   const deletes = files.filter((file) => !images.includes(file.id));
-  const bucket = getStorage().bucket();
   return Promise.all([
     ...deletes.map(({ id }) =>
       prisma.fireStore.update({
@@ -32,6 +31,6 @@ export const normalizationPostFiles = async (
         where: { id: image },
       })
     ),
-    ...deletes.map(({ id, posts }) => posts.length === 1 && bucket.file(id).delete()),
+    ...deletes.map(({ id, posts }) => posts.length === 1 && storage.del({ name: id })),
   ]);
 };

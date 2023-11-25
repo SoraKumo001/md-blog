@@ -35,3 +35,5 @@ const generateSitemapXml = async (req: NextRequest) => {
   xml += `</urlset>`;
   return xml;
 };
+
+export const runtime = 'edge';
