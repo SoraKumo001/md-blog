@@ -1,16 +1,9 @@
-import { FirebaseOptions, initializeApp } from '@firebase/app';
 import { ref, uploadBytes, getStorage, deleteObject } from '@firebase/storage';
 import { uuid } from 'uuidv4';
 import { prisma } from '@/app/api/graphql/libs/context';
+import { firebaseApp } from './getFirebaseApp';
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: process.env.NEXT_PUBLIC_apiKey,
-  projectId: process.env.NEXT_PUBLIC_projectId,
-  authDomain: `${process.env.NEXT_PUBLIC_projectId}.firebaseapp.com`,
-  storageBucket: `${process.env.NEXT_PUBLIC_projectId}.appspot.com`,
-};
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
+const storage = getStorage(firebaseApp);
 
 export const uploadFile = async (binary: File) => {
   const id = uuid();

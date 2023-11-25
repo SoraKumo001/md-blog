@@ -12,7 +12,7 @@ export type Context = {
   user?: User;
   cookies: ReadonlyRequestCookies;
 };
-console.log({ isEdge });
+
 export const prisma =
   (global as { prisma?: PrismaClient }).prisma ?? isEdge
     ? (new PrismaEdge({
