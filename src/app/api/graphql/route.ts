@@ -1,16 +1,12 @@
 import { createYoga } from 'graphql-yoga';
 import { cookies as getCookies } from 'next/headers';
-import { Context, prisma } from './libs/context';
-import { initializeApp } from './libs/initializeApp';
+import { Context, isEdge, prisma } from './libs/context';
 import { schema } from './libs/schema';
 import { getUserFromToken } from '../../../libs/getUserFromToken';
-
-initializeApp();
 
 const { handleRequest } = createYoga<Context>({
   schema,
   fetchAPI: { Response },
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   context: async ({ request: req }) => {
     const cookies = getCookies();
     const token = cookies.get('auth-token')?.value;
@@ -20,3 +16,5 @@ const { handleRequest } = createYoga<Context>({
 });
 
 export { handleRequest as GET, handleRequest as POST };
+
+export const runtime = isEdge ? 'edge' : 'nodejs';

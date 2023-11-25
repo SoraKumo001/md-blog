@@ -1,4 +1,4 @@
-import * as jsonwebtoken from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 import type { User } from '@prisma/client';
 
 export const getUserFromToken = async (token?: string) => {
@@ -6,8 +6,12 @@ export const getUserFromToken = async (token?: string) => {
   const secret = process.env.SECRET_KEY;
   if (!secret) throw new Error('SECRET_KEY is not defined');
   return new Promise<User | undefined>((resolve) => {
-    jsonwebtoken.verify(token, secret, (_, data) => {
-      resolve(typeof data === 'object' ? (data.payload?.user as User | undefined) : undefined);
-    });
+    jwtVerify<{ payload: { user?: User } }>(token, new TextEncoder().encode(secret))
+      .then((data) => {
+        resolve(
+          typeof data === 'object' ? (data.payload.payload?.user as User | undefined) : undefined
+        );
+      })
+      .catch(() => resolve(undefined));
   });
 };

@@ -1,11 +1,8 @@
 import { semaphore } from '@node-libraries/semaphore';
-import { getStorage } from 'firebase-admin/storage';
 import { NextRequest } from 'next/server';
-import { prisma } from '@/app/api/graphql/libs/context';
+import { isEdge, prisma } from '@/app/api/graphql/libs/context';
+import { storage } from '@/libs/getStorage';
 import { getUserFromToken } from '@/libs/getUserFromToken';
-import { initializeApp } from '../graphql/libs/initializeApp';
-
-initializeApp();
 
 export const POST = async (req: NextRequest) => {
   const { cookies } = req;
@@ -23,13 +20,12 @@ export const POST = async (req: NextRequest) => {
 
   const s = semaphore(5);
 
-  const bucket = getStorage().bucket();
   const fireStoreFiles = await Promise.all(
     files.map(async (file) => {
       await s.acquire();
       try {
-        const storageFile = await bucket.file(file.id).download();
-        return { ...file, binary: storageFile[0].toString('base64') };
+        const storageFile = await storage.download({ name: file.id });
+        return { ...file, binary: Buffer.from(storageFile).toString('base64') };
       } catch (e) {
         return { ...file, binary: '' };
       } finally {
@@ -39,3 +35,5 @@ export const POST = async (req: NextRequest) => {
   );
   return Response.json({ system, users, categories, posts, files: fireStoreFiles });
 };
+
+export const runtime = isEdge ? 'edge' : 'nodejs';

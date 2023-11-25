@@ -3,7 +3,7 @@ import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import PrismaUtils from '@pothos/plugin-prisma-utils';
 import { GraphQLScalarType } from 'graphql';
-import jsonwebtoken from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
 import PothosSchemaExporter from 'pothos-schema-exporter';
 import PrismaTypes from '@/app/generated/pothos-types';
@@ -69,7 +69,9 @@ builder.mutationType({
           if (user) {
             const secret = process.env.SECRET_KEY;
             if (!secret) throw new Error('SECRET_KEY is not defined');
-            const token = jsonwebtoken.sign({ payload: { user: user } }, secret);
+            const token = await new SignJWT({ payload: { user: user } })
+              .setProtectedHeader({ alg: 'HS256' })
+              .sign(new TextEncoder().encode(secret));
             cookies.set('auth-token', token, {
               httpOnly: true,
               secure: process.env.NODE_ENV !== 'development',
