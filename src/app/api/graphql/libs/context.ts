@@ -13,23 +13,20 @@ export type Context = {
   cookies: ReadonlyRequestCookies;
 };
 
-export const prisma =
-  (global as { prisma?: PrismaClient }).prisma ?? isEdge
-    ? (new PrismaEdge({
-        log: [
-          {
-            emit: 'stdout',
-            level: 'query',
-          },
-        ],
-      }).$extends(withAccelerate()) as unknown as PrismaClient)
-    : new PrismaNormal({
-        log: [
-          {
-            emit: 'stdout',
-            level: 'query',
-          },
-        ],
-      });
-
-(global as { prisma?: PrismaClient }).prisma = prisma;
+export const prisma = isEdge
+  ? (new PrismaEdge({
+      log: [
+        {
+          emit: 'stdout',
+          level: 'query',
+        },
+      ],
+    }).$extends(withAccelerate()) as unknown as PrismaClient)
+  : new PrismaNormal({
+      log: [
+        {
+          emit: 'stdout',
+          level: 'query',
+        },
+      ],
+    });

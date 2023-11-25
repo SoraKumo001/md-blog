@@ -1,5 +1,5 @@
+import { storage } from '@/app/api/graphql/libs/getStorage';
 import { getImages } from '@/libs/getImages';
-import { storage } from '@/libs/getStorage';
 import type { PrismaClient } from '@prisma/client';
 
 export const normalizationPostFiles = async (

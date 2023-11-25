@@ -1,15 +1,14 @@
-import { ref, uploadBytes, getStorage, deleteObject } from '@firebase/storage';
-import { uuid } from 'uuidv4';
-import { prisma } from '@/app/api/graphql/libs/context';
-import { firebaseApp } from './getFirebaseApp';
-
-const storage = getStorage(firebaseApp);
+import uuid from 'pure-uuid';
+import { prisma } from './context';
+import { storage } from './getStorage';
 
 export const uploadFile = async (binary: File) => {
-  const id = uuid();
-  uploadBytes(ref(storage, id), binary, {
-    contentType: binary.type,
-    cacheControl: 'public, max-age=31536000, immutable',
+  const id = new uuid(4).format();
+  await storage.upload({
+    name: id,
+    file: binary,
+    published: true,
+    metadata: { cacheControl: 'public, max-age=31536000, immutable' },
   });
   return prisma.fireStore.create({
     data: { id, name: binary.name, mimeType: binary.type ?? '' },
@@ -26,7 +25,7 @@ export const isolatedFiles = async () => {
     },
   });
   for (const { id } of files) {
-    await deleteObject(ref(storage, id));
+    await storage.del({ name: id }).catch(() => undefined);
     await prisma.fireStore.delete({ where: { id } });
   }
 };

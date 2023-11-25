@@ -14,7 +14,7 @@
     "start:standalone": "cd .next/standalone && node server.js",
     "prisma": "npm-run-all -p prisma:*",
     "prisma:migrate": "prisma format && next-exec prisma migrate dev",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --no-engine",
     "sf": "scaffold create -t Templates/Component",
     "test": "yarn storybook:build && npm-run-all -p -r storybook:start storybook:test",
     "storybook": "storybook dev -p 9001",
@@ -33,7 +33,6 @@
     "@apollo/explorer": "^3.6.0",
     "@firebase/app": "^0.9.23",
     "@firebase/auth": "^1.4.0",
-    "@firebase/storage": "^0.11.2",
     "@monaco-editor/react": "^4.6.0",
     "@node-libraries/wasm-webp-encoder": "^1.0.5",
     "@pothos/core": "^3.38.0",
@@ -51,6 +50,7 @@
     "next": "^14.0.3",
     "pothos-prisma-generator": "^1.0.1",
     "pothos-schema-exporter": "^1.0.0",
+    "pure-uuid": "^1.8.1",
     "react": "^18.2.0",
     "react-daisyui": "^4.1.2",
     "react-dom": "^18.2.0",
@@ -62,8 +62,7 @@
     "remark-gfm": "^4.0.0",
     "sharp": "^0.32.6",
     "urql": "^4.0.6",
-    "use-deep-compare-effect": "^1.8.1",
-    "uuidv4": "^6.2.13"
+    "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",

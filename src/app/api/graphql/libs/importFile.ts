@@ -1,7 +1,7 @@
 import { semaphore } from '@node-libraries/semaphore';
 import { prisma } from '@/app/api/graphql/libs/context';
+import { storage } from '@/app/api/graphql/libs/getStorage';
 import { getImages } from '@/libs/getImages';
-import { storage } from '@/libs/getStorage';
 import type { Category, FireStore, Post, System, User } from '@prisma/client';
 
 type DataType = {

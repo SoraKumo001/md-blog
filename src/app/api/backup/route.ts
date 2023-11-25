@@ -1,7 +1,7 @@
 import { semaphore } from '@node-libraries/semaphore';
 import { NextRequest } from 'next/server';
-import { isEdge, prisma } from '@/app/api/graphql/libs/context';
-import { storage } from '@/libs/getStorage';
+import { prisma } from '@/app/api/graphql/libs/context';
+import { storage } from '@/app/api/graphql/libs/getStorage';
 import { getUserFromToken } from '@/libs/getUserFromToken';
 
 export const POST = async (req: NextRequest) => {
@@ -35,5 +35,4 @@ export const POST = async (req: NextRequest) => {
   );
   return Response.json({ system, users, categories, posts, files: fireStoreFiles });
 };
-
-export const runtime = isEdge ? 'edge' : 'nodejs';
+export const runtime = 'edge';

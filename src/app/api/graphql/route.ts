@@ -1,6 +1,6 @@
 import { createYoga } from 'graphql-yoga';
 import { cookies as getCookies } from 'next/headers';
-import { Context, isEdge, prisma } from './libs/context';
+import { Context, prisma } from './libs/context';
 import { schema } from './libs/schema';
 import { getUserFromToken } from '../../../libs/getUserFromToken';
 
@@ -15,6 +15,6 @@ const { handleRequest } = createYoga<Context>({
   },
 });
 
-export { handleRequest as GET, handleRequest as POST };
+export { handleRequest as GET, handleRequest as POST, handleRequest as OPTIONS };
 
-export const runtime = isEdge ? 'edge' : 'nodejs';
+export const runtime = 'edge';
