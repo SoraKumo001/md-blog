@@ -67,8 +67,7 @@ App.getInitialProps = async (context: AppContext) => {
   const token = cookies['auth-token'];
   const session =
     typeof window === 'undefined'
-      ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-        await import('@/libs/getUserFromToken').then((v) => v.getUserFromToken(token))
+      ? await import('@/libs/getUserFromToken').then((v) => v.getUserFromToken(token))
       : undefined;
   return {
     pageProps: {
@@ -80,5 +79,3 @@ App.getInitialProps = async (context: AppContext) => {
 };
 
 export default App;
-
-export const runtime = 'experimental-edge';

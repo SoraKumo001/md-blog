@@ -35,4 +35,5 @@ export const POST = async (req: NextRequest) => {
   );
   return Response.json({ system, users, categories, posts, files: fireStoreFiles });
 };
+
 export const runtime = 'edge';
