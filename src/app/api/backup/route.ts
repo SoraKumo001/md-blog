@@ -12,11 +12,14 @@ export const POST = async (req: NextRequest) => {
   if (!user) {
     throw new Error('Authentication error');
   }
-  const users = await prisma.user.findMany();
-  const categories = await prisma.category.findMany();
-  const system = await prisma.system.findMany();
-  const posts = await prisma.post.findMany({ include: { categories: { select: { id: true } } } });
-  const files = await prisma.fireStore.findMany();
+  const { users, categories, files, posts, system } = await prisma.$transaction(async (prisma) => {
+    const users = await prisma.user.findMany();
+    const categories = await prisma.category.findMany();
+    const system = await prisma.system.findMany();
+    const posts = await prisma.post.findMany({ include: { categories: { select: { id: true } } } });
+    const files = await prisma.fireStore.findMany();
+    return { users, categories, system, posts, files };
+  });
 
   const s = semaphore(5);
 
