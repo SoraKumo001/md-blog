@@ -30,7 +30,7 @@ export const Contents: FC<Props> = ({ id }) => {
   const router = useRouter();
   const [{ data, fetching, error }] = usePostQuery({ variables: { postId: id }, context });
   useEffect(() => {
-    if (error) router.replace('/error/404');
+    if (error) router.replace('/404');
   }, [router, error]);
   const [children, vnode] = useMarkdown(data?.findUniquePost.content);
   const session = useUser();

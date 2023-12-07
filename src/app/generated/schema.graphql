@@ -5,7 +5,9 @@ The `BigInt` scalar type represents non-fractional signed whole numeric values.
 """
 scalar BigInt
 
-"""The `Byte` scalar type represents byte value as a Buffer"""
+"""
+The `Byte` scalar type represents byte value as a Buffer
+"""
 scalar Bytes
 
 """
@@ -791,9 +793,19 @@ type Post {
   authorId: String!
   cardId: String
   card: FireStore
-  categories(filter: CategoryFilter, orderBy: [CategoryOrderBy!], limit: Int, offset: Int): [Category!]!
+  categories(
+    filter: CategoryFilter
+    orderBy: [CategoryOrderBy!]
+    limit: Int
+    offset: Int
+  ): [Category!]!
   categoriesCount(filter: CategoryFilter): Int!
-  postFiles(filter: FireStoreFilter, orderBy: [FireStoreOrderBy!], limit: Int, offset: Int): [FireStore!]!
+  postFiles(
+    filter: FireStoreFilter
+    orderBy: [FireStoreOrderBy!]
+    limit: Int
+    offset: Int
+  ): [FireStore!]!
   postFilesCount(filter: FireStoreFilter): Int!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -894,7 +906,22 @@ type Query {
   findFirstFireStore(filter: FireStoreFilter, orderBy: [FireStoreOrderBy!]): FireStore
   findManyUser(filter: UserFilter, orderBy: [UserOrderBy!], limit: Int, offset: Int): [User!]!
   findManyPost(filter: PostFilter, orderBy: [PostOrderBy!], limit: Int, offset: Int): [Post!]!
-  findManyCategory(filter: CategoryFilter, orderBy: [CategoryOrderBy!], limit: Int, offset: Int): [Category!]!
-  findManySystem(filter: SystemFilter, orderBy: [SystemOrderBy!], limit: Int, offset: Int): [System!]!
-  findManyFireStore(filter: FireStoreFilter, orderBy: [FireStoreOrderBy!], limit: Int, offset: Int): [FireStore!]!
+  findManyCategory(
+    filter: CategoryFilter
+    orderBy: [CategoryOrderBy!]
+    limit: Int
+    offset: Int
+  ): [Category!]!
+  findManySystem(
+    filter: SystemFilter
+    orderBy: [SystemOrderBy!]
+    limit: Int
+    offset: Int
+  ): [System!]!
+  findManyFireStore(
+    filter: FireStoreFilter
+    orderBy: [FireStoreOrderBy!]
+    limit: Int
+    offset: Int
+  ): [FireStore!]!
 }
