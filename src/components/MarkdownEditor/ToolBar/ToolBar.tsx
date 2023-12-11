@@ -19,7 +19,7 @@ import { classNames } from '@/libs/classNames';
 import { getFirebaseUrl } from '@/libs/getFirebaseUrl';
 import { convertWebp } from '@/libs/webp';
 import styled from './ToolBar.module.scss';
-import { FormInput } from '../Editor';
+import type { FormInput } from '../Editor/Editor';
 interface Props {
   post: PostQuery['findUniquePost'];
   control: Control<FormInput>;

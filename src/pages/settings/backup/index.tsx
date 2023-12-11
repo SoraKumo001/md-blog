@@ -4,3 +4,4 @@ const Page = () => {
   return <Backup />;
 };
 export default Page;
+export const runtime = 'experimental-edge';

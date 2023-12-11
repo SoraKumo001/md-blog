@@ -203,10 +203,10 @@ export const Editor: FC<Props> = ({ id }) => {
                 dragAndDrop: true,
                 dropIntoEditor: { enabled: true },
                 contextmenu: false,
-                occurrencesHighlight: false,
+                occurrencesHighlight: 'off',
                 renderLineHighlight: 'none',
                 quickSuggestions: false,
-                wordBasedSuggestions: false,
+                wordBasedSuggestions: 'off',
                 language: 'markdown',
               }}
             />

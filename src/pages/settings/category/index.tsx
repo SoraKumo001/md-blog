@@ -4,3 +4,4 @@ const Page = () => {
   return <CategorySetting />;
 };
 export default Page;
+export const runtime = 'experimental-edge';
