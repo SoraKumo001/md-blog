@@ -1,3 +1,4 @@
+'use server';
 import { printSchema } from 'graphql';
 import { NextPage } from 'next';
 import { schema } from '@/app/api/graphql/libs/schema';

@@ -10,6 +10,7 @@ const config = {
     cpus: 4,
   },
   images: {
+    path: 'https://cloudflare-workers.mofon001.workers.dev/',
     remotePatterns: [
       {
         protocol: 'https',

@@ -10,3 +10,4 @@ const Page = () => {
   return <Categories id={id} />;
 };
 export default Page;
+export const runtime = 'edge';
