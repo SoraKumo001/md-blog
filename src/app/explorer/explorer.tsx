@@ -1,9 +1,7 @@
+'use client';
 import { ApolloExplorer } from '@apollo/explorer/react';
-import { printSchema } from 'graphql';
-import { GetStaticProps, NextPage } from 'next';
-import { schema } from '@/app/api/graphql/libs/schema';
 
-const Page: NextPage<{ schema: string }> = ({ schema }) => {
+export const Explorer = ({ schema }: { schema: string }) => {
   return (
     <>
       <style>{`
@@ -25,11 +23,3 @@ const Page: NextPage<{ schema: string }> = ({ schema }) => {
     </>
   );
 };
-
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: { schema: printSchema(schema) },
-  };
-};
-
-export default Page;
