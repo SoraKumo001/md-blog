@@ -4,4 +4,9 @@ const Page = () => {
   return <Main />;
 };
 export default Page;
-export const runtime = 'experimental-edge';
+
+export const getStaticProps = async () => {
+  return {
+    props: {},
+  };
+};

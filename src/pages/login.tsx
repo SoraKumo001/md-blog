@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { Button } from 'react-daisyui';
 import { useSignIn } from '@/hooks/useAuth';
@@ -19,4 +20,9 @@ const Page = () => {
   );
 };
 export default Page;
-export const runtime = 'experimental-edge';
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {},
+  };
+};
