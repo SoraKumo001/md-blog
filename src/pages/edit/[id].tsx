@@ -8,5 +8,3 @@ const Page = () => {
   return <Editor id={id} />;
 };
 export default Page;
-
-// export const runtime = 'experimental-edge';

@@ -16,12 +16,6 @@ const config = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.resolve.alias['@/components/MarkdownEditor/Editor'] = false;
-    }
-    return config;
-  },
   output: 'standalone',
 };
 export default config;
