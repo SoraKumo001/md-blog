@@ -1,12 +1,12 @@
 import { GraphQLScalarType } from 'graphql';
 import { SignJWT } from 'jose';
 import { isolatedFiles, uploadFile } from '@/app/api/graphql/libs/uploadFile';
-import { getUserInfo } from '@/libs/getUserInfo';
 import { builder } from './builder';
 import { prisma } from './context';
 import { getUser } from './getUser';
 import { importFile } from './importFile';
 import { normalizationPostFiles } from './normalizationPostFiles';
+import { getUserInfo } from '../../../api/graphql/libs/getUserInfo';
 
 builder.mutationType({
   fields: (t) => ({

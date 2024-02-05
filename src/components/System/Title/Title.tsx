@@ -23,8 +23,9 @@ export const Title: FC<Props> = ({ image, children }) => {
   const systemTitle = data.findUniqueSystem.title;
   const systemDescription = data.findUniqueSystem.description;
   const title = (subTitle || '') + ` | ${systemTitle}`;
+  const ogpUrl = process.env.OGP_URL ?? `${host}/api/og`;
   const imageUrl = [
-    `${host}/api/og?title=${encodeURI(subTitle || '')}`,
+    `${ogpUrl}?title=${encodeURI(subTitle || '')}`,
     `name=${encodeURI(systemTitle)}`,
     image ? `image=${encodeURI(image)}` : [],
   ]

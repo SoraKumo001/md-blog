@@ -8,4 +8,4 @@ const Page = () => {
   return <Categories id={id} />;
 };
 export default Page;
-// export const runtime = 'experimental-edge';
+export const runtime = 'experimental-edge';

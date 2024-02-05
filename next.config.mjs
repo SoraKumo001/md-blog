@@ -2,15 +2,11 @@
  * @type { import("next").NextConfig}
  */
 const config = {
-  i18n: {
-    locales: ['ja'],
-    defaultLocale: 'ja',
-  },
   experimental: {
     cpus: 4,
   },
   images: {
-    path: 'https://cloudflare-workers.mofon001.workers.dev/',
+    path: process.env.IMAGE_URL,
     remotePatterns: [
       {
         protocol: 'https',
@@ -19,6 +15,12 @@ const config = {
         pathname: `/${process.env.GOOGLE_PROJECT_ID}.appspot.com/**`,
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.resolve.alias['@/components/MarkdownEditor/Editor'] = false;
+    }
+    return config;
   },
   output: 'standalone',
 };
