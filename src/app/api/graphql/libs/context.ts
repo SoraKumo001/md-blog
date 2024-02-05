@@ -1,5 +1,4 @@
 import { PrismaClient as PrismaClientEdge, User } from '@prisma/client/edge';
-import { withAccelerate } from '@prisma/extension-accelerate';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import type { PrismaClient } from '@prisma/client';
 
@@ -19,4 +18,4 @@ export const prisma = new PrismaClientEdge({
       level: 'query',
     },
   ],
-}).$extends(withAccelerate()) as unknown as PrismaClient;
+}) as unknown as PrismaClient;
