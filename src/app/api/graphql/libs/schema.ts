@@ -11,8 +11,11 @@ import { getUserInfo } from '../../../api/graphql/libs/getUserInfo';
 export const schema = () => {
   let schema: GraphQLSchema;
   return () => {
+    console.log('schema');
     if (!schema && process.env.DATABASE_URL) {
+      console.log('createBuilder');
       const builder = createBuilder(process.env.DATABASE_URL);
+      console.log('toSchema');
       schema = builder.toSchema({ sortSchema: false });
       builder.mutationType({
         fields: (t) => ({

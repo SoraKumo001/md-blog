@@ -8,6 +8,7 @@ const { handleRequest } = createYoga<Context>({
   schema: schema(),
   fetchAPI: { Response },
   context: async ({ request: req }) => {
+    console.log('context');
     const cookies = getCookies();
     const token = cookies.get('auth-token')?.value;
     const user = await getUserFromToken(token);
