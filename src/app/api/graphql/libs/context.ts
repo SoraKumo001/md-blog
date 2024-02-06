@@ -2,13 +2,12 @@ import { PrismaClient as PrismaClientEdge, User } from '@prisma/client/edge';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import type { PrismaClient } from '@prisma/client';
 
-export const isEdge = process.env.DATABASE_URL!.startsWith('prisma:');
-
 export type Context = {
   req: Request;
   prisma: PrismaClient;
   user?: User;
   cookies: ReadonlyRequestCookies;
+  env: { [key: string]: string };
 };
 
 export const prisma = new PrismaClientEdge({

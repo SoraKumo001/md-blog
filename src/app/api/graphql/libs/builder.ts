@@ -1,14 +1,16 @@
 import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import PrismaUtils from '@pothos/plugin-prisma-utils';
+import { PrismaClient } from '@prisma/client/edge';
 import PothosPrismaGeneratorPlugin from 'pothos-prisma-generator';
 import PrismaTypes from '@/app/generated/pothos-types';
-import { Context, prisma } from './context';
+import { Context } from './context';
 
 /**
  * Create a new schema builder instance
  */
-export const builder = new SchemaBuilder<{
+
+type BuilderType = {
   PrismaTypes: PrismaTypes;
   Scalars: {
     Upload: {
@@ -17,13 +19,21 @@ export const builder = new SchemaBuilder<{
     };
   };
   Context: Context;
-}>({
-  plugins: [PrismaPlugin, PrismaUtils, PothosPrismaGeneratorPlugin],
-  prisma: {
-    client: prisma,
-  },
-  pothosPrismaGenerator: {
-    authority: ({ context }) => (context.user ? ['USER'] : []),
-    replace: { '%%USER%%': ({ context }) => context.user?.id },
-  },
-});
+};
+
+export const createBuilder = (datasourceUrl: string) => {
+  const builder = new SchemaBuilder<BuilderType>({
+    plugins: [PrismaPlugin, PrismaUtils, PothosPrismaGeneratorPlugin],
+    prisma: {
+      client: new PrismaClient({
+        datasourceUrl,
+      }),
+    },
+    pothosPrismaGenerator: {
+      authority: ({ context }) => (context.user ? ['USER'] : []),
+      replace: { '%%USER%%': ({ context }) => context.user?.id },
+    },
+  });
+
+  return builder;
+};

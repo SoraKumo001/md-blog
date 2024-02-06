@@ -5,7 +5,7 @@ import { schema } from './libs/schema';
 import { getUserFromToken } from '../../../libs/getUserFromToken';
 
 const { handleRequest } = createYoga<Context>({
-  schema,
+  schema: schema(),
   fetchAPI: { Response },
   context: async ({ request: req }) => {
     const cookies = getCookies();

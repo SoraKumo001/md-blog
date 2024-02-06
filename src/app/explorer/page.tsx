@@ -1,11 +1,13 @@
 'use server';
 import { printSchema } from 'graphql';
 import { NextPage } from 'next';
-import { schema } from '@/app/api/graphql/libs/schema';
 import { Explorer } from './explorer';
+import { createBuilder } from '../api/graphql/libs/builder';
 
 const Page: NextPage = async () => {
-  return <Explorer schema={printSchema(schema)} />;
+  const builder = createBuilder(process.env.DATABASE_URL ?? '');
+  const schema = printSchema(builder.toSchema({ sortSchema: false }));
+  return <Explorer schema={schema} />;
 };
 
 export default Page;
