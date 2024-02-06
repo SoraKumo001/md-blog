@@ -7,6 +7,7 @@ import { getUserFromToken } from '../../../libs/getUserFromToken';
 let handleRequest: (request: Request, ctx: Context) => Response | Promise<Response>;
 
 const callRequest = (request: Request, ctx: Context) => {
+  console.log('callRequest');
   if (!handleRequest) {
     handleRequest = createYoga<Context>({
       schema: schema(),
