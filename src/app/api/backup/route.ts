@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
     return { users, categories, system, posts, files };
   });
 
-  const s = semaphore(5);
+  const s = semaphore(1);
 
   const fireStoreFiles = await Promise.all(
     files.map(async (file) => {

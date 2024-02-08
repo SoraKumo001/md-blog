@@ -1401,6 +1401,13 @@ export type UpdateSystemMutationVariables = Exact<{
 
 export type UpdateSystemMutation = { __typename?: 'Mutation', updateOneSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string, icon?: { __typename?: 'FireStore', id: string, name: string, mimeType: string, createdAt: string, updatedAt: string } | null } };
 
+export type CreateSystemMutationVariables = Exact<{
+  input: SystemCreateInput;
+}>;
+
+
+export type CreateSystemMutation = { __typename?: 'Mutation', createOneSystem: { __typename?: 'System', id: string, title: string, description: string, iconId?: string | null, cardId?: string | null, createdAt: string, updatedAt: string } };
+
 export type CategoryQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
@@ -1683,6 +1690,23 @@ export const UpdateSystemDocument = gql`
 
 export function useUpdateSystemMutation() {
   return Urql.useMutation<UpdateSystemMutation, UpdateSystemMutationVariables>(UpdateSystemDocument);
+};
+export const CreateSystemDocument = gql`
+    mutation createSystem($input: SystemCreateInput!) {
+  createOneSystem(input: $input) {
+    id
+    title
+    description
+    iconId
+    cardId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useCreateSystemMutation() {
+  return Urql.useMutation<CreateSystemMutation, CreateSystemMutationVariables>(CreateSystemDocument);
 };
 export const CategoryDocument = gql`
     query Category($id: String!) {

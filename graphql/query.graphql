@@ -179,6 +179,18 @@ mutation UpdateSystem($title: String, $description: String, $icon: SystemUpdateI
   }
 }
 
+mutation createSystem($input: SystemCreateInput!) {
+  createOneSystem(input: $input) {
+    id
+    title
+    description
+    iconId
+    cardId
+    createdAt
+    updatedAt
+  }
+}
+
 query Category($id: String!) {
   findUniqueCategory(filter: { id: $id }) {
     id

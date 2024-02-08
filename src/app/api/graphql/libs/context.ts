@@ -14,8 +14,8 @@ export type Context = {
 export const prisma = new PrismaClientEdge({
   log: [
     {
-      emit: 'stdout',
-      level: 'query',
+      emit: 'event',
+      level: 'warn',
     },
   ],
 }) as unknown as PrismaClient;

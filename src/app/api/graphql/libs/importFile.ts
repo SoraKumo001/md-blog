@@ -22,19 +22,20 @@ export const importFile = async (file: string) => {
         where: { id: value.id },
       });
     }
-    const s = semaphore(10);
+    const s = semaphore(1);
 
     data.files.forEach(async (file) => {
       await s.acquire();
       const { binary, ...storeFile } = file;
-      //Buffer.from(binary, 'base64')をblobに変換
       const blob = new Blob([Buffer.from(binary, 'base64')], { type: file.mimeType });
-      await storage.upload({
-        file: blob,
-        name: file.id,
-        published: true,
-        metadata: { cacheControl: 'public, max-age=31536000, immutable' },
-      });
+      await storage
+        .upload({
+          file: blob,
+          name: file.id,
+          published: true,
+          metadata: { cacheControl: 'public, max-age=31536000, immutable' },
+        })
+        .catch((e) => console.error(file.id, file.name, e));
       await prisma.fireStore.upsert({
         create: storeFile,
         update: storeFile,
